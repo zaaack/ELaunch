@@ -1,0 +1,53 @@
+.el-search{
+  border: none;
+  width: 600px;
+  height: 50px;
+  line-height: 40px;
+  font-family: 'non-sans';
+  padding-left: 10px;
+  font-size: 24px;
+  border: 1px solid #ccc;
+  outline:none;
+  border-radius: 8px/6px;
+}
+.el-search:focus{
+  border: 2px solid #66F;
+}
+
+ul,li{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.el-item{
+  position: relative;
+}
+.el-item.select{
+  background-color: #ff9c5d;
+}
+.el-item-icon{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  background-position: center;
+}
+.el-item-info{
+  margin-left: 55px;
+}
+.el-item-name{
+  font-size: 20px;
+  line-height: 30px;
+}
+.el-item-key{
+  float: right;
+  color: #666;
+  font-size: 14px;
+}
+.el-item-detail{
+  clear: both;
+  font-size: 12px;
+  line-height: 16px;
+  color: #999;
+}

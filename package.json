@@ -1,0 +1,16 @@
+{
+  "name": "ELaunch",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "zaaack@qq.com",
+  "scripts": {
+    "start": "electron ./index.js"
+  },
+  "devDependencies": {
+    "electron-packager": "^7.0.2",
+    "electron-prebuilt": "^1.1.0"
+  },
+  "dependencies": {
+    "nodejs-fs-utils": "^1.0.26"
+  }
+}
