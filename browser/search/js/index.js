@@ -1,4 +1,5 @@
 const ipcRender = require('electron').ipcRenderer
+const notify = require('../../utils/notify')()
 let lastCmd = ''
 
 bindEvents()

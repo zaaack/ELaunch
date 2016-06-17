@@ -2,6 +2,7 @@ const electron = require('electron');
 const {app, BrowserWindow} = electron;
 const ipcMain = require('electron').ipcMain
 const plugin = require('./plugins')
+
 let mainWin;
 
 function init() {
@@ -44,6 +45,7 @@ function createmainWindow() {
   mainWin.on('closed', () => {
     mainWin = null;
   });
+  global.notify = require('./utils/notify')(mainWin)
 }
 
 function hideWindow() {
@@ -54,7 +56,6 @@ function makeSingleInstance(){
     if (mainWin) {
       if (mainWin.isMinimized()) mainWin.restore();
       mainWin.focus();
-      plugin.shouldUpdate=true;
     }
   });
 }

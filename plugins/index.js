@@ -1,66 +1,73 @@
 const fs = require('fs');
 const os = require('os');
 const child = require('child_process')
+const config = require('../config')
 
-let config
-
-function loadConfig() {
-  config = Object.assign({}, require('../config.default.js'))
-  let usrCfgFile = `${os.homedir()}/ELaunch/config.js`
-  if (fs.existsSync(usrCfgFile)) {
-    config = Object.assign(config, require(usrCfgFile))
-  }
-}
-
-loadConfig()
+let lastUpdateTime = 0,
+    lastCmdKey,
+    isUpdateing = false,
+    isExecing = false
 
 function parseCmd(cmd) {
   let args = cmd.split(' ')
+  let key = 'app'
   if (args.length > 1 && (args[0] in config.plugins)) {
-    let key = args.shift()
-    return {
-      script: config.plugins[key].script,
-      args: args
-    }
+    key = args.shift()
   } else {
     console.log(args, 'cmd');
-    for (let cmd in config.plugins) {
-      if (config.plugins[cmd].default)
-        return {
-          script: config.plugins[cmd].script,
-          args: args
-        }
-    }
-    return {
-      script: config.plugins['app'].script,
-      args: args
+    for (let k in config.plugins) {
+      if (config.plugins[k].default) {
+        key = k
+        break
+      }
     }
   }
+  let plugin = config.plugins[key]
+  return {
+    key: key,
+    script: plugin.script,
+    args: args,
+    config: plugin.config || {}
+  }
 }
-isExecing = false
 module.exports = {
   exec: (cmd, cb) => {
-    let cmdObj = parseCmd(cmd)
-    let plugin = require(cmdObj.script)
     if (isExecing) return
+
+    let cmdInfo = parseCmd(cmd)
+    let plugin = require(cmdInfo.script)
+    plugin.setConfig && plugin.setConfig(cmdInfo.config)
+    let update_delay = cmdInfo.config.hasOwnProperty('update_delay')?
+      cmdInfo.config.update_delay:
+      config.update_delay
+    console.log('update_delay',update_delay, isUpdateing, lastCmdKey, cmdInfo.key,Date.now()-lastUpdateTime, update_delay);
+    if (!isUpdateing && (lastCmdKey !== cmdInfo.key
+      || Date.now() - lastUpdateTime > update_delay)) { //没有更新且切换插件或者超时时才更新
+      isUpdateing = true
+      console.log('update');
+      plugin.update && plugin.update(function () {
+        isUpdateing = false
+        console.log('updated');
+      })
+      lastUpdateTime = Date.now()
+    }
+    lastCmdKey = cmdInfo.key
+
     isExecing = true
-    plugin.exec(cmdObj.args, function(items) {
-      cb && cb.apply(null, arguments)
-      isExecing = false
-    })
-    // child.exec(`${cmdObj.script} ${cmdObj.args.join(' ')}`, (error, stdout, stderr)=>{
-    //   if(error) console.error(error);
-    //   cb(stdout)
-    // })
+    plugin.exec(cmdInfo.args, function (items) {
+        cb && cb.apply(null, arguments)
+        isExecing = false
+      })
+      // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{
+      //   if(error) console.error(error);
+      //   cb(stdout)
+      // })
   },
   execItem: function (cmd, item, cb) {
-    let cmdObj = parseCmd(cmd)
-    let plugin = require(cmdObj.script)
-    if (isExecing) return
-    isExecing = true
-    plugin.execItem(item, function() {
+    let cmdInfo = parseCmd(cmd)
+    let plugin = require(cmdInfo.script)
+    plugin.execItem(item, function () {
       cb && cb.apply(null, arguments)
-      isExecing = false
     })
   }
 }
