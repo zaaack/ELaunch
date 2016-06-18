@@ -30,19 +30,21 @@ function bindEvents() {
 }
 
 function onEnter($inp, cmd) {
-  if (cmd !== lastCmd) {
-    onExec(cmd)
-  } else {
+  if (cmd === lastCmd) {
     let $select = document.querySelector('.select');
     if (!$select) {
       $select = document.querySelector('.el-item');
     }
     onExecItem($select, cmd)
+  }else {
+    onExec(cmd)
   }
 }
 function onExec(cmd) {
-  ipcRender.send('exec', cmd)
-  lastCmd = cmd
+  if (cmd !== lastCmd) {
+    ipcRender.send('exec', cmd)
+    lastCmd = cmd
+  }
 }
 function onExecItem($select, cmd) {
   if (!$select) return;
@@ -56,15 +58,19 @@ function onExecItem($select, cmd) {
 ipcRender.on('execReply', (event, items) => {
   let $itemUl = document.querySelector('#el-items')
 
-  $itemUl.innerHTML = `${items.map((item, index)=>`<li class="el-item" data-value="${item.value}">
-  <img class="el-item-icon" src="${item.icon}"/>
-  <div class="el-item-info">
-    <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>
-    <div class="el-item-detail">${item.detail}</div>
-  </div>
-  <div class="el-item-opts">
-  </div>
-</li>`)}`
+  $itemUl.innerHTML = `${items.map((item, index)=>{
+    return item.custom_view?
+    `<li class="el-item" data-value="${item.value}">${item.custom_view}</li>`:
+    `<li class="el-item" data-value="${item.value}">
+      <img class="el-item-icon" src="${item.icon}"/>
+      <div class="el-item-info">
+        <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>
+        <div class="el-item-detail">${item.detail}</div>
+      </div>
+      <div class="el-item-opts">
+      </div>
+    </li>`
+  })}`
 })
 
 ipcRender.on('execItemReply', (event, arg)=>{

@@ -1,9 +1,11 @@
 const fs = require('fs');
+var path = require('path');
 const os = require('os');
 const child = require('child_process')
 const config = require('../config')
 
 let lastUpdateTime = 0,
+    lastExecTime = 0,
     lastCmdKey,
     isUpdateing = false,
     isExecing = false
@@ -23,16 +25,16 @@ function parseCmd(cmd) {
     }
   }
   let plugin = config.plugins[key]
+  console.log(path.resolve(path.dirname(config.userConfigFile), plugin.script));
   return {
     key: key,
-    script: plugin.script,
+    script: path.resolve(path.dirname(config.userConfigFile), plugin.script),
     args: args,
     config: plugin.config || {}
   }
 }
 module.exports = {
   exec: (cmd, cb) => {
-    if (isExecing) return
 
     let cmdInfo = parseCmd(cmd)
     let plugin = require(cmdInfo.script)
@@ -53,10 +55,8 @@ module.exports = {
     }
     lastCmdKey = cmdInfo.key
 
-    isExecing = true
     plugin.exec(cmdInfo.args, function (items) {
         cb && cb.apply(null, arguments)
-        isExecing = false
       })
       // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{
       //   if(error) console.error(error);

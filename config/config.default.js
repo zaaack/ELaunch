@@ -8,16 +8,18 @@ module.exports = {
     },
     find: {
       script: `${__dirname}/../plugins/find/index.js`,
-      default: true,
       config: {
-        db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
-        root_dir: '/home',
-        // include_dirs: ['/z'], //only dirs under root_dir, default 'all'
-        include_dirs: 'all',
-        exclude_path: ['/tmp'],
-        exclude_ext: ['.git', '.bzr','.hg','.svn'],
-        update_delay: 10000,
-        use_regex: false,
+        // type: 'locate',
+        // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
+        // root_dir: '/home',
+        // exclude_patt: '\\/\\..*|node_modules', //exclude hidden files
+        // update_delay: 10000,
+        // use_regex: false,
+        // locate_limit: 1000,
+        type: 'find',
+        include_path: ['~/'],
+        exclude_path: ['**/.*','**/node_*'],
+        // maxdepth: 10,
         limit: 20
       }
     }
