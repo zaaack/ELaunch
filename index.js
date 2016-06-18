@@ -23,15 +23,11 @@ function init() {
   });
   ipcMain.on('exec', (event, args)=>{
     console.log(args);
-    plugin.exec(args, (items)=>{
-      event.sender.send('execReply', items)
-    })
+    plugin.exec(args, event)
   })
-  ipcMain.on('execItem', (event, args)=>{
+  ipcMain.on('exec-item', (event, args)=>{
     console.log(args);
-    plugin.execItem(args.cmd, args.item, (ret)=>{
-      event.sender.send('execItemReply', ret)
-    })
+    plugin.execItem(args.cmd, args.item, event)
   })
   ipcMain.on('hide',()=>{
     hideWindow()

@@ -11,6 +11,7 @@
     "electron-prebuilt": "^1.1.0"
   },
   "dependencies": {
-    "nodejs-fs-utils": "^1.0.26"
+    "fs-extra": "^0.30.0",
+    "globule": "^1.0.0"
   }
 }

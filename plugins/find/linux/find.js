@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var fsUtils = require('nodejs-fs-utils')
+var fs = require('fs-extra')
 var child = require('child_process')
 var config = require('../../../config')
 var os = require('os');
@@ -17,8 +17,8 @@ module.exports = {
     update: function (cb) {
       cb && cb()
     },
-    exec: function (args, cb) {
-      if (args.join('').trim() === '') return cb([]) //空格返回空
+    exec: function (args, event) {
+      if (args.join('').trim() === '') return  //空格返回空
       let patt = args.join('').toLocaleLowerCase()
       if(patt.indexOf('*')<0){
         patt = patt.replace(/(.)/g,'*$1*')
@@ -39,18 +39,21 @@ module.exports = {
           return cb([])
         }
         stdout = stdout+''
-        cb && cb(stdout.split('\n').slice(0, pluginConfig.limit).filter(file=>!/^\s*$/.test(file)).map(file=>{
-            return {
-              name: path.basename(file),
-              detail: file,
-              icon: defaultIcon,
-              value: file
-            }
-        }))
+
+        let items =  stdout.split('\n').slice(0, pluginConfig.limit)
+            .filter(file=>!/^\s*$/.test(file)).map(file=>{
+              return {
+                name: path.basename(file),
+                detail: file,
+                icon: defaultIcon,
+                value: file
+              }
+            })
+        event.sender.send('exec-reply', items)
       })
   },
-  execItem: function (item, cb) {
-    require('electron').shell.openItem(item)
-    cb()
+  execItem: function (item,  event) {
+    require('electron').shell.openItem(item.value)
+    event.sender.send('exec-item-reply', ret)
   }
 }

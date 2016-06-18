@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var fsUtils = require('nodejs-fs-utils')
+var fs = require('fs-extra')
 var child = require('child_process')
 var config = require('../../../config')
 var os = require('os');
@@ -22,8 +22,8 @@ module.exports = {
   },
   update: function (cb) {
   },
-  exec: function (args, cb) {
+  exec: function (args, event) {
   },
-  execItem: function (item, cb) {
+  execItem: function (item, event) {
   }
 }

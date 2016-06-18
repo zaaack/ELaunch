@@ -24,6 +24,7 @@ function parseCmd(cmd) {
       }
     }
   }
+  console.log(config);
   let plugin = config.plugins[key]
   console.log(path.resolve(path.dirname(config.userConfigFile), plugin.script));
   return {
@@ -34,11 +35,11 @@ function parseCmd(cmd) {
   }
 }
 module.exports = {
-  exec: (cmd, cb) => {
+  exec: (cmd, event) => {
 
     let cmdInfo = parseCmd(cmd)
     let plugin = require(cmdInfo.script)
-    plugin.setConfig && plugin.setConfig(cmdInfo.config)
+    plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
     let update_delay = cmdInfo.config.hasOwnProperty('update_delay')?
       cmdInfo.config.update_delay:
       config.update_delay
@@ -55,19 +56,15 @@ module.exports = {
     }
     lastCmdKey = cmdInfo.key
 
-    plugin.exec(cmdInfo.args, function (items) {
-        cb && cb.apply(null, arguments)
-      })
+    plugin.exec(cmdInfo.args, event)
       // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{
       //   if(error) console.error(error);
       //   cb(stdout)
       // })
   },
-  execItem: function (cmd, item, cb) {
+  execItem: function (cmd, item, event) {
     let cmdInfo = parseCmd(cmd)
     let plugin = require(cmdInfo.script)
-    plugin.execItem(item, function () {
-      cb && cb.apply(null, arguments)
-    })
+    plugin.execItem(item, event)
   }
 }

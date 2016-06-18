@@ -48,17 +48,21 @@ function onExec(cmd) {
 }
 function onExecItem($select, cmd) {
   if (!$select) return;
-  let item = $select.getAttribute('data-value')
-  console.log('execItem',item,cmd);
-  ipcRender.send('execItem', {
+  let item = {
+    value: $select.getAttribute('data-value'),
+    opts: ''
+  }
+  console.log('exec-item',item,cmd);
+  ipcRender.send('exec-item', {
     cmd: cmd,
     item: item
   })
 }
-ipcRender.on('execReply', (event, items) => {
+ipcRender.on('exec-reply', (event, items) => {
   let $itemUl = document.querySelector('#el-items')
 
   $itemUl.innerHTML = `${items.map((item, index)=>{
+    console.log(item)
     return item.custom_view?
     `<li class="el-item" data-value="${item.value}">${item.custom_view}</li>`:
     `<li class="el-item" data-value="${item.value}">
@@ -70,9 +74,9 @@ ipcRender.on('execReply', (event, items) => {
       <div class="el-item-opts">
       </div>
     </li>`
-  })}`
+  }).join('\n')}`
 })
 
-ipcRender.on('execItemReply', (event, arg)=>{
+ipcRender.on('exec-item-reply', (event, arg)=>{
   ipcRender.send('hide')
 })

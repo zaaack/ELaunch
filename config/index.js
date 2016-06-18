@@ -1,6 +1,10 @@
 var os = require('os')
-var fs = require('fs')
-var fsUtils = require('nodejs-fs-utils')
+var fs = require('fs-extra')
+
+let db,isChanged=false,
+  userConfigFile = `${os.homedir()}/.ELaunch/config.js`,
+  dbFile = `${os.homedir()}/.ELaunch/db.json`
+
 function merge() {
   return [].slice.call(arguments).reduce((dist, src)=>{
     dist = dist || {}
@@ -18,21 +22,35 @@ function merge() {
   })
 }
 
-exports.merge = merge
-exports.userConfigFile = `${os.homedir()}/.ELaunch/config.js`
-exports.loadConfig = function () {
-  merge(exports, require('./config.default.js'))
-  if (!fs.existsSync(exports.userConfigFile)) {
-    // fsUtils.copySync(__dirname+'/config.user.js', userConfigFile, (err, cache)=>{
-    //     if (!err) {
-    //         console.log("Copied !");
-    //     } else {
-    //         console.error("Error", err)
-    //     }
-    // })
-  }
-  // merge(exports, require(exports.userConfigFile))
-  merge(exports, require('./config.user'))
-}
 
-exports.loadConfig()
+
+module.exports = {
+  userConfigFile: userConfigFile,
+  merge: merge,
+  isChanged: isChanged,
+  loadConfig: function () {
+    merge(this, require('./config.default.js'))
+    if (!fs.existsSync(userConfigFile)) {
+      // fs.copySync(__dirname+'/config.user.js', userConfigFile, (err, cache)=>{
+      //     if (!err) {
+      //         console.log("Copied !");
+      //     } else {
+      //         console.error("Error", err)
+      //     }
+      // })
+    }else if(fs.statSync(userConfigFile).mtime.getTime() > this.getDb().lastCofigChangeTime){
+      isChanged =true
+    }
+    // merge(this, require(this.userConfigFile))
+    merge(this, require('./config.user'))
+  }
+,
+  getDb: function () {
+    if(!db){
+      fs.ensureFileSync(dbFile)
+      db = fs.readJsonSync(dbFile, {encoding: 'utf-8',throws: false}) || {}
+    }
+    return db
+  }
+}
+module.exports.loadConfig()

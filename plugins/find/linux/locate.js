@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var fsUtils = require('nodejs-fs-utils')
+var fs = require('fs-extra')
 var child = require('child_process')
 var config = require('../../../config')
 var os = require('os');
@@ -18,7 +18,7 @@ module.exports = {
       let isFirst = false
       if(!fs.existsSync(pluginConfig.db_path)){
         isFirst = true
-        fsUtils.mkdirsSync(path.dirname(pluginConfig.db_path))
+        fs.mkdirsSync(path.dirname(pluginConfig.db_path))
         global.notify(`[plugin:find] Create index in first running.`,{
           body: 'It could take some minutes, plz wait.'
         })
@@ -47,7 +47,7 @@ module.exports = {
         cb && cb()
       })
     },
-    exec: function (args, cb) {
+    exec: function (args, event) {
       if (args.join('').trim() === '') return cb([]) //空格返回空
       let patt = args.join('').toLocaleLowerCase()
       let cmd = `locate -i -d "${pluginConfig.db_path}" ${pluginConfig.use_regex?`-r `:``} "${patt}" -l ${pluginConfig.locate_limit} | grep -P -v "${pluginConfig.exclude_patt}" -m ${pluginConfig.limit}`;
@@ -59,18 +59,20 @@ module.exports = {
           console.error(error)
           return cb([])
         }
-        cb && cb(stdout.split('\n').filter(file=>!/^\s*$/.test(file)).map(file=>{
+        let items = stdout.split('\n').filter(file=>!/^\s*$/.test(file)).map(file=>{
             return {
               name: path.basename(file),
               detail: file,
               icon: defaultIcon,
               value: file
             }
-        }))
+        })
+
+        event.sender.send('exec-reply', items)
       })
   },
-  execItem: function (item, cb) {
-    require('electron').shell.openItem(item)
-    cb()
+  execItem: function (item, event) {
+    require('electron').shell.openItem(item.value)
+    event.sender.send('exec-item-reply', ret)
   }
 }
