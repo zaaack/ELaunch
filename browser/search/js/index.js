@@ -1,12 +1,13 @@
-const ipcRender = require('electron').ipcRenderer
-const notify = require('../../utils/notify')()
-let lastCmd = ''
+const ipcRenderer = require('electron').ipcRenderer
+const notifier = require('../../utils/notifier').initInRenderer()
+const ui = require('./js/ui')
+;(function () {
+  document.querySelector('#el-search').addEventListener('keyup', function () {
+    onExec(this.value)
+  }, false)
 
-bindEvents()
-
-function bindEvents() {
-  let $inp = document.querySelector('#el-search')
-  $inp.addEventListener('keyup', function (e) {
+  document.addEventListener('keyup', function (e) {
+    let $inp = document.querySelector('#el-search')
     let cmd = $inp.value
     if (e.altKey && e.keyCode >= 49 && e.keyCode <= 57) { //输入数字
       let index = e.keyCode - 49
@@ -15,68 +16,71 @@ function bindEvents() {
     } else { //l 37 u 38 r 39 d 40
       switch (e.keyCode) {
       case 38: //up
-
+        ui.selectPrevItem()
+        break
+      case 40: //down
+        ui.selectNextItem()
+        break
+      case 37: //left
+        ui.selectPrevItemOpt()
+        break
+      case 39: //right
+        ui.selectNextItemOpt()
         break
       case 13: //enter
         onEnter($inp, cmd)
         break
       default:
-        onExec(cmd)
         break
       }
     }
 
   }, false)
-}
+  let lastCmd = ''
 
-function onEnter($inp, cmd) {
-  if (cmd === lastCmd) {
-    let $select = document.querySelector('.select');
-    if (!$select) {
-      $select = document.querySelector('.el-item');
+  function onEnter($inp, cmd) {
+    if (cmd === lastCmd) {
+      let $select = document.querySelector('.select');
+      if (!$select) {
+        $select = document.querySelector('.el-item');
+      }
+      onExecItem($select, cmd)
+    } else {
+      onExec(cmd)
     }
-    onExecItem($select, cmd)
-  }else {
-    onExec(cmd)
   }
-}
-function onExec(cmd) {
-  if (cmd !== lastCmd) {
-    ipcRender.send('exec', cmd)
-    lastCmd = cmd
+
+  function onExec(cmd) {
+    if (cmd !== lastCmd) {
+      ipcRenderer.send('exec', cmd)
+      lastCmd = cmd
+    }
   }
-}
-function onExecItem($select, cmd) {
-  if (!$select) return;
-  let item = {
-    value: $select.getAttribute('data-value'),
-    opts: ''
+
+  function onExecItem($select, cmd) {
+    if (!$select) return;
+    let $btn = $select.querySelector('.btn.select')
+    let item = {
+      value: $select.getAttribute('data-value'),
+      opt: $btn?$btn.getAttribute('data-name'):null
+    }
+    console.log('exec-item', item, cmd);
+    ipcRenderer.send('exec-item', {
+      cmd: cmd,
+      item: item
+    })
   }
-  console.log('exec-item',item,cmd);
-  ipcRender.send('exec-item', {
-    cmd: cmd,
-    item: item
+  ipcRenderer.on('exec-reply', (event, items) => {
+    ui.renderItems(items)
+    ipcRenderer.send('window-resize', {
+      width: document.body.offsetWidth,
+      height: document.body.offsetHeight
+    })
   })
-}
-ipcRender.on('exec-reply', (event, items) => {
-  let $itemUl = document.querySelector('#el-items')
 
-  $itemUl.innerHTML = `${items.map((item, index)=>{
-    console.log(item)
-    return item.custom_view?
-    `<li class="el-item" data-value="${item.value}">${item.custom_view}</li>`:
-    `<li class="el-item" data-value="${item.value}">
-      <img class="el-item-icon" src="${item.icon}"/>
-      <div class="el-item-info">
-        <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>
-        <div class="el-item-detail">${item.detail}</div>
-      </div>
-      <div class="el-item-opts">
-      </div>
-    </li>`
-  }).join('\n')}`
-})
-
-ipcRender.on('exec-item-reply', (event, arg)=>{
-  ipcRender.send('hide')
-})
+  ipcRenderer.on('exec-item-reply', (event, arg) => {
+    document.querySelector('#el-search').value = ''
+    document.querySelector('#el-items').innerHTML = ''
+    ipcRenderer.send('hide')
+  })
+})()

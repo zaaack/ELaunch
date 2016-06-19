@@ -1,0 +1,117 @@
+* {
+  outline-color: rgb(24, 166, 236);
+}
+body {
+  font-family: 'sans-serif';
+  width: 600px;
+  padding: 5px;
+  box-sizing: border-box;
+  height: auto;
+  margin: 0;
+}
+.el-search {
+  border: none;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto;
+  height: 50px;
+  line-height: 40px;
+  padding-left: 10px;
+  font-size: 24px;
+  border: 1px solid #ccc;
+  border-radius: 8px/6px;
+}
+li,
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.el-items {
+  max-height: 360px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: rgba(0, 0, 0, .06);
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, .2);
+    min-height: 15px;
+    border-radius: 2px;
+  }
+  &::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: rgba(0, 0, 0, .3);
+  }
+  &::-webkit-scrollbar-thumb:vertical:active {
+    background-color: rgba(0, 0, 0, .5);
+  }
+  .el-item {
+    position: relative;
+    padding: 5px 0;
+    margin: 5px 0;
+    &.select {
+      background-color: rgba(100, 214, 245, 0.08);
+    }
+
+    .el-item-icon {
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      width: 40px;
+      height: 40px;
+      background-position: center;
+    }
+    .el-item-info {
+      margin-left: 55px;
+    }
+    .el-item-name {
+      font-size: 20px;
+      line-height: 30px;
+    }
+    .el-item-key {
+      float: right;
+      margin-right: 5px;
+      font-size: 14px;
+      color: #666;
+    }
+    .el-item-detail {
+      clear: both;
+      font-size: 12px;
+      line-height: 16px;
+      color: #999;
+    }
+
+    &.select .btn-group {
+      height: auto;
+    }
+  }
+
+}
+
+.btn-group {
+  height: 0;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  text-align: right;
+  overflow: hidden;
+  .btn {
+    display: inline;
+    margin-right: 10px;
+    font-size: 12px;
+    padding: 3px 6px;
+    border: 1px solid;
+    border-radius: 3px;
+    background-color: transparent;
+    @each $index,$color in (0:#fa8e10, 1:#7ee03e, 2:#19c6a4, 3:#6d609c,
+      4:#b16d3a, 5:#24b564, 6:#e33636, 7:#c8c222){
+      &.color-#{$index}{
+        border-color: $color;
+        color: $color;
+        &.select{
+          background-color: $color;
+          color: white;
+        }
+      }
+    }
+  }
+}

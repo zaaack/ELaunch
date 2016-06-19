@@ -1,6 +1,7 @@
 var os = require('os')
 var fs = require('fs-extra')
 
+let debug = process.argv.some((value)=>value==='--debug')
 let db,isChanged=false,
   userConfigFile = `${os.homedir()}/.ELaunch/config.js`,
   dbFile = `${os.homedir()}/.ELaunch/db.json`
@@ -28,6 +29,7 @@ module.exports = {
   userConfigFile: userConfigFile,
   merge: merge,
   isChanged: isChanged,
+  debug: debug,
   loadConfig: function () {
     merge(this, require('./config.default.js'))
     if (!fs.existsSync(userConfigFile)) {
@@ -38,14 +40,14 @@ module.exports = {
       //         console.error("Error", err)
       //     }
       // })
-    }else if(fs.statSync(userConfigFile).mtime.getTime() > this.getDb().lastCofigChangeTime){
+    }else if(fs.statSync(userConfigFile).mtime.getTime() > this.db().lastCofigChangeTime){
       isChanged =true
     }
     // merge(this, require(this.userConfigFile))
     merge(this, require('./config.user'))
   }
 ,
-  getDb: function () {
+  db: function () {
     if(!db){
       fs.ensureFileSync(dbFile)
       db = fs.readJsonSync(dbFile, {encoding: 'utf-8',throws: false}) || {}

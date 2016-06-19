@@ -4,13 +4,15 @@
   "main": "index.js",
   "author": "zaaack@qq.com",
   "scripts": {
-    "start": "electron ./index.js"
+    "start": "electron ./index.js",
+    "debug": "electron ./index.js --debug",
+    "test": "node test.js",
+    "dev_search": "./node_modules/.bin/node-sass --watch --output-style compressed --recursive --output ./browser/search/css --source-map true --source-map-contents browser/search/scss"
   },
   "devDependencies": {
-    "electron-packager": "^7.0.2",
-    "electron-prebuilt": "^1.1.0"
-  },
-  "dependencies": {
+    "electron-packager": "^7.0.4",
+    "electron-prebuilt": "^1.2.3",
+    "node-sass": "^3.7.0",
     "fs-extra": "^0.30.0",
     "globule": "^1.0.0"
   }

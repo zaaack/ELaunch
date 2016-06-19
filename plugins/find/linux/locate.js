@@ -19,7 +19,7 @@ module.exports = {
       if(!fs.existsSync(pluginConfig.db_path)){
         isFirst = true
         fs.mkdirsSync(path.dirname(pluginConfig.db_path))
-        global.notify(`[plugin:find] Create index in first running.`,{
+        global.notifier(`[plugin:find] Create index in first running.`,{
           body: 'It could take some minutes, plz wait.'
         })
       }
@@ -41,7 +41,7 @@ module.exports = {
           console.error(error,stderr);
         }
         console.log('update',stdout);
-        isFirst && global.notify(`[plugin:find] Creating index finished!`,{
+        isFirst && require('../../../utils/notifier').notify(`[plugin:find] Creating index finished!`,{
           body: 'Now enjoy it!'
         })
         cb && cb()

@@ -1,5 +1,14 @@
 module.exports = {
+  title: 'ELaunch',
+  width: 600,
+  height: 60,
   update_delay: 3000,
+  shotcut: {
+    default: 'Super+Space',
+    win32: 'Super+Space',
+    linux: 'Super+Space',
+    darwin: 'Super+Space'
+  },
   plugins: {
     app: {
       script: `${__dirname}/../plugins/app/index.js`,
