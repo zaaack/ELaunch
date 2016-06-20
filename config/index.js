@@ -3,16 +3,19 @@ var fs = require('fs-extra')
 
 let debug = process.argv.some((value)=>value==='--debug')
 let db,isChanged=false,
-  userConfigFile = `${os.homedir()}/.ELaunch/config.js`,
-  dbFile = `${os.homedir()}/.ELaunch/db.json`
+  dataPath = `${os.homedir()}/.ELaunch`,
+  userConfigFile = dataPath+'/config.js',
+  dbFile = dataPath+'/db.json'
 
 function merge() {
+  let ignore = a=>a === undefined || a===null
   return [].slice.call(arguments).reduce((dist, src)=>{
-    dist = dist || {}
-    src = src === undefined? {} : src
+    dist = ignore(dist)? {}: dist
+    src = ignore(src)? {} : src
     if(typeof src === 'object' && src !== null){
       for (var i in src) {
-        if(src[i] instanceof Object && !(src[i] instanceof Array)){
+        if(src[i] instanceof Object &&
+          !(src[i] instanceof Array)){
           dist[i] = merge(dist[i], src[i])
         }else{
           dist[i] = src[i]
@@ -33,6 +36,7 @@ function saveDb() {
 
 
 module.exports = {
+  dataPath: dataPath,
   userConfigFile: userConfigFile,
   merge: merge,
   isChanged: isChanged,

@@ -11,8 +11,19 @@ module.exports = {
   plugins: {
     app: {
       script: `${__dirname}/../plugins/app/index.js`,
-      default: true,
-      config: {}
+      enable: true, //whether the plugin is enable, default is true
+      default: true, // default plugin don't need to input key
+      config: {
+        app_path: ['/usr/share/applications',
+                    '/usr/local/share/applications',
+                    '/home/z/.local/share/applications'],
+        icon_path: ['/usr/share/icons',
+                    '/home/z/.local/share/icons',
+                    '/usr/share/pixmaps']
+      },
+      command: {
+        app: {}
+      }
     },
     find: {
       script: `${__dirname}/../plugins/find/index.js`,
@@ -28,6 +39,35 @@ module.exports = {
         exclude_path: ['**/.*','**/node_*'],
         // maxdepth: 10,
         limit: 20
+      },
+      command: {
+        find: {}
+      }
+    },
+    websearch: {
+      script: `${__dirname}/../plugins/websearch/index.js`,
+      command:{
+        bi: {
+          engine: 'Bing',
+          url: 'https://www.bing.com/search/?q=%s',
+          icon: 'https://cn.bing.com/sa/simg/bing_p_rr_teal_min.ico'
+        },
+        bd: {
+          engine: 'Baidu',
+          url: 'https://www.baidu.com/s?wd=%s',
+          icon: 'https://www.baidu.com/img/baidu.svg'
+        },
+        gh: {
+          engine: 'Github',
+          url: 'http://github.com/search?q=%s',
+          icon: 'https://github.com/fluidicon.png'
+        }
+      }
+    },
+    shell: {
+      script: `${__dirname}/../plugins/shell/index.js`,
+      command:{
+        '>':{}
       }
     }
   }

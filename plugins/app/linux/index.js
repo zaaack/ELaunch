@@ -8,27 +8,25 @@ let chokidar = require('chokidar')
 
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
-let appDbFile,
-    appPaths = ['/usr/share/applications',
-                '/usr/local/share/applications',
-                '/home/z/.local/share/applications'],
-    iconPaths = ['/usr/share/icons',
-                 '/home/z/.local/share/icons',
-                 '/usr/share/pixmaps'],
-    isFirstRun = true
+let appDbFile, pluginConfig, globalConfig,
+    appDb, isFirstRun = true
 
 function init() {
   if(!isFirstRun) return
   isFirstRun=false
-
+  //init appDbFile and appDb
+  appDbFile = globalConfig.dataPath + '/app/app.db'
+  fs.ensureFileSync(appDbFile)
   appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
     lastUpdateTime: 0,
     apps: {}
   }
 
+  //update in first run
   update()
 
-  let watcher = chokidar.watch(appPaths, {
+  // watch and update
+  let watcher = chokidar.watch(pluginConfig.app_path, {
     ignore: /^.*(?!\.desktop)$/,
   }),delay = 3000,t
 
@@ -64,7 +62,7 @@ function getAppInfo(file) {
     } else {
       appIcon = appIcon.replace(/[\u4e00-\u9fa5]+/g,'**')
         .replace(/(\.png|\.jpg|\.svg)$/,'')
-      let findIconCmd = `find "${iconPaths.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\) -follow -size +2k`
+      let findIconCmd = `find "${pluginConfig.icon_path.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\) -follow -size +2k`
       console.log(findIconCmd);
       let iconList = child.execSync(findIconCmd, 'utf-8').toString().trim().split('\n')
       icon=iconList[0]
@@ -108,22 +106,15 @@ function update() {
       hasNewApp && fs.writeFileSync(appDbFile, JSON.stringify(appDb), 'utf-8')
     }
   }
-  walkDir(appPaths[Symbol.iterator]())
+  walkDir(pluginConfig.app_path[Symbol.iterator]())
 }
 
 
 
 module.exports = {
   setConfig: function (pConfig, gConfig) {
-    appDbFile = path.dirname(gConfig.userConfigFile) + '/app/app.db'
-    fs.ensureFileSync(appDbFile)
-    if(pConfig.app_path instanceof Array){
-      appPaths = appPaths.concat(pConfig.app_path)
-    }
-    if(pConfig.app_path instanceof Array){
-      iconPaths = iconPaths.concat(pConfig.icon_path)
-    }
-
+    pluginConfig = pConfig
+    globalConfig = gConfig
     init()
   },
   exec: function (args, event) {
@@ -135,14 +126,12 @@ module.exports = {
         return globule.isMatch(patt, app.name.toLocaleLowerCase()) || globule.isMatch(patt, app.en_name.toLocaleLowerCase())
       } catch (e) {
         console.error(app,e);
-      } finally {
-
       }
     })
     event.sender.send('exec-reply', items)
   },
   execItem: function (item, event) {
     require('child_process').exec(item.value)
-    event.sender.send('exec-item-reply', '')
+    event.sender.send('exec-item-reply')
   }
 }
