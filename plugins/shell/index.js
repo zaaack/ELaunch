@@ -12,6 +12,16 @@ module.exports = {
   exec: function (args, event, cmdInfo) {
     args = args.join(' ')
     let engine = pluginConfig.engine ? pluginConfig.engine : cmdInfo.key
+    console.log(cmdInfo);
+    if(cmdInfo.type === 'enter'){
+      console.log('enter');
+      console.log(args);
+      this.execItem({
+          opt: 'exec',
+          value: args
+        }, event, cmdInfo)
+      return
+    }
     event.sender.send('exec-reply', [{
       name: cmdInfo.key + ' ' + args,
       icon: `${__dirname}/assets/shell.png`,
@@ -33,18 +43,21 @@ module.exports = {
       endExecItem(event)
       break;
     case 'exec':
+    default:
       console.log('end');
       shellProcess && shellProcess.kill()
-      shellProcess = child.exec(item.value, (err, stdout, stderr) => {
+      shellProcess = child.exec(item.value, {
+        maxBuffer: 5*1024*1024
+      },(err, stdout, stderr) => {
         let hasError = err || stderr, out,
           opts = [{name: 'close', label: 'Close'},
             { name: 'copy', label: 'Copy'}]
         if (err) {
           out = err.message + '\n' + err.stack
         } else {
-          out = stderr || stdout
+          out = stderr || stderr.trim() || stdout
         }
-        console.log('child');
+        console.log('child',out, err,stdout);
         event.sender.send('exec-reply', [{
           value: out,
           custom_view: `

@@ -28,17 +28,16 @@ function init() {
       createMainWindow();
     }
   });
-  ipcMain.on('exec', (event, args) => {
-    plugin.exec(args, event)
+  ipcMain.on('exec', (event, data) => {
+    plugin.exec(data, event)
   })
-  ipcMain.on('exec-item', (event, args) => {
-    console.log(args);
-    plugin.execItem(args.cmd, args.item, event)
+  ipcMain.on('exec-item', (event, data) => {
+    plugin.execItem(data, event)
   })
-  ipcMain.on('window-resize', (event, args) => {
-    console.log(args);
-    let height = args.height || mainWindow.getContentSize()['height'];
-    let width = args.width || mainWindow.getContentSize()['width'];
+  ipcMain.on('window-resize', (event, data) => {
+    console.log(data);
+    let height = data.height || mainWindow.getContentSize()['height'];
+    let width = data.width || mainWindow.getContentSize()['width'];
     if (!config.debug) {
       mainWindow.setContentSize(width, height, true);
     }

@@ -18,8 +18,8 @@ Object.keys(config.plugins).forEach(pluginName=>{
   })
 })
 
-function parseCmd(cmd) {
-  let args = cmd.split(' ')
+function parseCmd(data) {
+  let args = data.cmd.split(' ')
   let key = 'app'
   if (args.length > 1 && (args[0] in pluginMap)) {
     key = args.shift()
@@ -31,13 +31,13 @@ function parseCmd(cmd) {
     key: key,
     script: path.resolve(config.dataPath, plugin.script),
     args: args,
+    type: data.type,
     config: plugin.config || {}
   }
 }
 module.exports = {
-  exec: (cmd, event) => {
-
-    let cmdInfo = parseCmd(cmd)
+  exec: (data, event) => {
+    let cmdInfo = parseCmd(data)
     let plugin = require(cmdInfo.script)
     plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
 
@@ -47,9 +47,9 @@ module.exports = {
       //   cb(stdout)
       // })
   },
-  execItem: function (cmd, item, event) {
-    let cmdInfo = parseCmd(cmd)
+  execItem: function (data, event) {
+    let cmdInfo = parseCmd(data)
     let plugin = require(cmdInfo.script)
-    plugin.execItem(item, event, cmdInfo)
+    plugin.execItem(data.item, event, cmdInfo)
   }
 }

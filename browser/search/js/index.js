@@ -8,7 +8,7 @@ const notifier = require('../../utils/notifier').initInRenderer()
 const ui = require('./js/ui')
 ;(function () {
   document.querySelector('#el-search').addEventListener('keyup', function () {
-    onExec(this.value)
+    onExec(this.value, 'input')
   }, false)
 
   document.addEventListener('keyup', function (e) {
@@ -22,9 +22,11 @@ const ui = require('./js/ui')
       switch (e.keyCode) {
       case 38: //up
         ui.selectPrevItem()
+        resizeWindow()
         break
       case 40: //down
         ui.selectNextItem()
+        resizeWindow()
         break
       case 37: //left
         ui.selectPrevItemOpt()
@@ -45,19 +47,23 @@ const ui = require('./js/ui')
   let lastCmd = ''
   function onEnter($inp, cmd) {
     if (cmd === lastCmd) {
-      let $select = document.querySelector('.select');
+      let $select = document.querySelector('.el-item-dom.select');
       if (!$select) {
         $select = document.querySelector('.el-item-dom');
       }
+      console.log($select);
       onExecItem($select, cmd)
     } else {
-      onExec(cmd)
+      onExec(cmd, 'enter')
     }
   }
 
-  function onExec(cmd) {
+  function onExec(cmd, type) {
     if (cmd !== lastCmd) {
-      ipcRenderer.send('exec', cmd)
+      ipcRenderer.send('exec', {
+        cmd: cmd,
+        type: type
+      })
       lastCmd = cmd
     }
   }
