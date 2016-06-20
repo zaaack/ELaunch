@@ -2,7 +2,6 @@ module.exports = {
   title: 'ELaunch',
   width: 600,
   height: 60,
-  update_delay: 3000,
   shotcut: {
     default: 'Super+Space',
     win32: 'Super+Space',
@@ -22,7 +21,6 @@ module.exports = {
         // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
         // root_dir: '/home',
         // exclude_patt: '\\/\\..*|node_modules', //exclude hidden files
-        // update_delay: 10000,
         // use_regex: false,
         // locate_limit: 1000,
         type: 'find',

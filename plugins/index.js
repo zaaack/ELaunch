@@ -6,7 +6,6 @@ const config = require('../config')
 
 let lastUpdateTime = 0,
     lastExecTime = 0,
-    lastCmdKey,
     isUpdateing = false,
     isExecing = false
 
@@ -40,21 +39,6 @@ module.exports = {
     let cmdInfo = parseCmd(cmd)
     let plugin = require(cmdInfo.script)
     plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
-    let update_delay = cmdInfo.config.hasOwnProperty('update_delay')?
-      cmdInfo.config.update_delay:
-      config.update_delay
-    console.log('update_delay',update_delay, isUpdateing, lastCmdKey, cmdInfo.key,Date.now()-lastUpdateTime, update_delay);
-    if (!isUpdateing && (lastCmdKey !== cmdInfo.key
-      || Date.now() - lastUpdateTime > update_delay)) { //没有更新且切换插件或者超时时才更新
-      isUpdateing = true
-      console.log('update');
-      plugin.update && plugin.update(function () {
-        isUpdateing = false
-        console.log('updated');
-      })
-      lastUpdateTime = Date.now()
-    }
-    lastCmdKey = cmdInfo.key
 
     plugin.exec(cmdInfo.args, event)
       // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{

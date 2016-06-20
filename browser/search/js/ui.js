@@ -1,10 +1,10 @@
 function getFocusable() {
   return [document.querySelector('#el-search')]
-    .concat([].slice.call(document.querySelectorAll('.el-item')))
+    .concat([].slice.call(document.querySelectorAll('.el-item-dom')))
 }
 
 function selectBtn(n, $selItem) {
-  let $btns = [].slice.call(($selItem||document).querySelectorAll('.el-item.select .btn'))
+  let $btns = [].slice.call(($selItem||document).querySelectorAll('.el-item-dom.select .btn'))
   if ($btns.length === 0) return
   let prevIndex = $btns.findIndex($btn => $btn.classList.contains('select'))
   if (prevIndex >= 0){
@@ -26,11 +26,11 @@ function selectBtn(n, $selItem) {
 
 //select item on Tab
 document.addEventListener('focus', function (e) {
-  if (e.target.classList.contains('el-item')) {
-    [].slice.call(document.querySelectorAll('.el-item'))
+  if (e.target.classList.contains('el-item-dom')) {
+    [].slice.call(document.querySelectorAll('.el-item-dom'))
       .forEach(item => item.classList.remove('select'))
     e.target.classList.add('select')
-  }else if (e.target.classList.contains('btn')) {
+  }else if (e.target.classList.contains('btn-dom')) {
     selectBtn(e.target)
   }
 }, true)
@@ -60,11 +60,11 @@ module.exports = {
         console.log(items);
         $itemUl.innerHTML = `${items.map((item, index)=>{
           return item.custom_view?
-          `<li class="el-item" tabindex="0" data-value='${item.value}'>
+          `<li class="el-item el-item-dom" tabindex="0" data-value='${item.value}'>
             ${item.custom_view}
           </li>`:
 
-          `<li class="el-item" tabindex="0" data-value='${item.value}'>
+          `<li class="el-item el-item-dom" tabindex="0" data-value='${item.value}'>
             <img class="el-item-icon" src="${item.icon}"/>
             <div class="el-item-info">
               <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>
@@ -73,7 +73,7 @@ module.exports = {
             ${item.opts?
               `<div class="btn-group">
                 ${item.opts.map((opt,optIndex)=>
-                  `<button class="btn color-${optIndex} ${optIndex===0?  `select`:``}" data-name="${opt.name}">${opt.label}</button>`
+                  `<button class="btn btn-dom color-${optIndex} ${optIndex===0?  `select`:``}" data-name="${opt.name}">${opt.label}</button>`
                 ).join('')}
               </div>`:``}
           </li>`

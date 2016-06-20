@@ -8,44 +8,48 @@ var pluginConfig = {
   limit: 20
 }
 let findProcess
+
+update()
+
+function update (cb) {
+  let isFirst = false
+  if(!fs.existsSync(pluginConfig.db_path)){
+    isFirst = true
+    fs.mkdirsSync(path.dirname(pluginConfig.db_path))
+    global.notifier(`[plugin:find] Create index in first running.`,{
+      body: 'It could take some minutes, plz wait.'
+    })
+  }
+
+  let cmd = `updatedb -o "${pluginConfig.db_path}" --database-root "${pluginConfig.root_dir}"`
+  console.log(cmd);
+  child.exec(cmd, (error, stdout, stderr) => {
+    if(error){
+      require('electron').dialog.showMessageBox({
+        type: 'warning',
+        title: '',
+        message: "Plz grant root access to `updatedb` to use plugin [find].",
+        buttons: ['No', 'Yes']
+      }, function (index) {
+        if(index === 1){
+          child.exec('gksu chmod u+s `which updatedb`', console.log.bind(console))
+        }
+      })
+      console.error(error,stderr);
+    }
+    console.log('update',stdout);
+    isFirst && require('../../../utils/notifier').notify(`[plugin:find] Creating index finished!`,{
+      body: 'Now enjoy it!'
+    })
+    cb && cb()
+  })
+}
+
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
       let rep = p => fs.realpathSync(p.replace('~/', os.homedir() + '/'))
       pluginConfig.root_dir = rep(pluginConfig.root_dir) || '/'
-    },
-    update: function (cb) {
-      let isFirst = false
-      if(!fs.existsSync(pluginConfig.db_path)){
-        isFirst = true
-        fs.mkdirsSync(path.dirname(pluginConfig.db_path))
-        global.notifier(`[plugin:find] Create index in first running.`,{
-          body: 'It could take some minutes, plz wait.'
-        })
-      }
-
-      let cmd = `updatedb -o "${pluginConfig.db_path}" --database-root "${pluginConfig.root_dir}"`
-      console.log(cmd);
-      child.exec(cmd, (error, stdout, stderr) => {
-        if(error){
-          require('electron').dialog.showMessageBox({
-            type: 'warning',
-            title: '',
-            message: "Plz grant root access to `updatedb` to use plugin [find].",
-            buttons: ['No', 'Yes']
-          }, function (index) {
-            if(index === 1){
-              child.exec('gksu chmod u+s `which updatedb`', console.log.bind(console))
-            }
-          })
-          console.error(error,stderr);
-        }
-        console.log('update',stdout);
-        isFirst && require('../../../utils/notifier').notify(`[plugin:find] Creating index finished!`,{
-          body: 'Now enjoy it!'
-        })
-        cb && cb()
-      })
     },
     exec: function (args, event) {
       if (args.join('').trim() === '') return cb([]) //空格返回空

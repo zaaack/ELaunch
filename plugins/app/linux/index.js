@@ -1,15 +1,50 @@
 var fs = require('fs')
 var path = require('path')
-var child = require('child_process');
+var child = require('child_process')
 var fs = require('fs-extra')
-var shell = require('electron').shell;
-var globule = require('globule');
+var shell = require('electron').shell
+var globule = require('globule')
+let chokidar = require('chokidar')
+
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
-let appDbFile,appDb = {},gConfig,
-  appPaths = ['/usr/share/applications','/usr/local/share/applications', '/home/z/.local/share/applications'],
-  iconPaths = ['/usr/share/icons', '/home/z/.local/share/icons', '/usr/share/pixmaps']
+let appDbFile,
+    appPaths = ['/usr/share/applications',
+                '/usr/local/share/applications',
+                '/home/z/.local/share/applications'],
+    iconPaths = ['/usr/share/icons',
+                 '/home/z/.local/share/icons',
+                 '/usr/share/pixmaps'],
+    isFirstRun = true
 
+function init() {
+  if(!isFirstRun) return
+  isFirstRun=false
+
+  appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
+    lastUpdateTime: 0,
+    apps: {}
+  }
+
+  update()
+
+  let watcher = chokidar.watch(appPaths, {
+    ignore: /^.*(?!\.desktop)$/,
+  }),delay = 3000,t
+
+  watcher.on('raw', (event, path, details) => {
+    if(['add','change','unlink'].indexOf(event) !== -1){
+      t && clearTimeout(t)
+      t = setTimeout(()=>{
+        try {
+          update()
+        } catch (e) {
+          console.error(e);
+        }
+      },delay)
+    }
+  })
+}
 
 function getAppInfo(file) {
   let defaultIcon = __dirname + '/../assets/app.svg'
@@ -29,19 +64,9 @@ function getAppInfo(file) {
     } else {
       appIcon = appIcon.replace(/[\u4e00-\u9fa5]+/g,'**')
         .replace(/(\.png|\.jpg|\.svg)$/,'')
-      let findIconCmd = `find "${iconPaths.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\)`
+      let findIconCmd = `find "${iconPaths.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\) -follow -size +2k`
       console.log(findIconCmd);
       let iconList = child.execSync(findIconCmd, 'utf-8').toString().trim().split('\n')
-      iconList=iconList.sort((a,b)=>{
-        let [am, bm]=[a,b].map(f=>f.match(/(\d+)/))
-        if(am && bm){
-          return +bm[1] - am[1]
-        }else if (!am) {
-          return -1
-        }else {
-          return 1
-        }
-      })
       icon=iconList[0]
     }
   } catch (e) {
@@ -56,9 +81,40 @@ function getAppInfo(file) {
   }
 }
 
+function update() {
+  let hasNewApp = false,tmpApps = {}
+  function walkDir(iter) {
+    let data = iter.next()
+    !data.done && fs.walk(data.value).on('data',function (item) {
+      if (path.extname(item.path) === '.desktop') {
+        let mtime = item.stats.mtime.getTime(),
+            appKey = path.basename(item.path)
+        if (mtime > appDb.lastUpdateTime
+            || !appDb.apps[appKey]) {
+          let appInfo = getAppInfo(item.path)
+          tmpApps[appKey] = appInfo
+          hasNewApp = true
+        }else {
+          tmpApps[appKey] = appDb.apps[appKey]
+        }
+      }
+    }).on('end',function () {
+      walkDir(iter)
+    })
+
+    if(data.done){
+      appDb.lastUpdateTime = Date.now()
+      appDb.apps = tmpApps
+      hasNewApp && fs.writeFileSync(appDbFile, JSON.stringify(appDb), 'utf-8')
+    }
+  }
+  walkDir(appPaths[Symbol.iterator]())
+}
+
+
+
 module.exports = {
   setConfig: function (pConfig, gConfig) {
-    globalConfig = gConfig
     appDbFile = path.dirname(gConfig.userConfigFile) + '/app/app.db'
     fs.ensureFileSync(appDbFile)
     if(pConfig.app_path instanceof Array){
@@ -67,35 +123,8 @@ module.exports = {
     if(pConfig.app_path instanceof Array){
       iconPaths = iconPaths.concat(pConfig.icon_path)
     }
-  },
-  update: function (cb) {
-    let hasNewApp = false
-    appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
-        lastUpdateTime: 0,
-        apps: {}
-      }
-    function walkDir(iter) {
-      let data = iter.next()
-      !data.done && fs.walk(data.value).on('data',function (item) {
-        if (path.extname(item.path) === '.desktop') {
-          let mtime = item.stats.mtime.getTime()
-          if (mtime > appDb.lastUpdateTime || globalConfig.isChanged) {
-            let appInfo = getAppInfo(item.path)
-            appDb.apps[path.basename(item.path)] = appInfo
-            hasNewApp = true
-          }
-        }
-      }).on('end',function () {
-        walkDir(iter)
-      })
 
-      if(data.done){
-        appDb.lastUpdateTime = Date.now()
-        hasNewApp && fs.writeFileSync(appDbFile, JSON.stringify(appDb), 'utf-8')
-        cb && cb()
-      }
-    }
-    walkDir(appPaths[Symbol.iterator]())
+    init()
   },
   exec: function (args, event) {
     if (args.join('').trim() === '') return //空格返回

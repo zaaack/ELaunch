@@ -1,3 +1,8 @@
+/**
+ * use .el-item-dom/.el-btn-dom to operate dom and .el-item/.btn to change style,
+ * this could make develop plugin which need custom_view more easier, like custom
+ * button style(e.g. emoji plugin shows emoji icons in grid view)
+ */
 const ipcRenderer = require('electron').ipcRenderer
 const notifier = require('../../utils/notifier').initInRenderer()
 const ui = require('./js/ui')
@@ -11,7 +16,7 @@ const ui = require('./js/ui')
     let cmd = $inp.value
     if (e.altKey && e.keyCode >= 49 && e.keyCode <= 57) { //输入数字
       let index = e.keyCode - 49
-      $select = document.querySelectorAll('.el-item')[index]
+      $select = document.querySelectorAll('.el-item-dom')[index]
       onExecItem($select, cmd)
     } else { //l 37 u 38 r 39 d 40
       switch (e.keyCode) {
@@ -36,13 +41,13 @@ const ui = require('./js/ui')
     }
 
   }, false)
-  let lastCmd = ''
 
+  let lastCmd = ''
   function onEnter($inp, cmd) {
     if (cmd === lastCmd) {
       let $select = document.querySelector('.select');
       if (!$select) {
-        $select = document.querySelector('.el-item');
+        $select = document.querySelector('.el-item-dom');
       }
       onExecItem($select, cmd)
     } else {
@@ -59,7 +64,7 @@ const ui = require('./js/ui')
 
   function onExecItem($select, cmd) {
     if (!$select) return;
-    let $btn = $select.querySelector('.btn.select')
+    let $btn = $select.querySelector('.btn-dom.select')
     let item = {
       value: $select.getAttribute('data-value'),
       opt: $btn?$btn.getAttribute('data-name'):null
