@@ -2,7 +2,23 @@
   "name": "ELaunch",
   "version": "0.0.1",
   "main": "index.js",
-  "author": "zaaack@qq.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaaack/ELaunch.git"
+  },
+  "keywords": [
+    "launcher",
+    "electron"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zaaack/ELaunch/issues"
+  },
+  "homepage": "https://github.com/zaaack/ELaunch#readme",
+  "author": {
+    "email": "zaaack@qq.com",
+    "name": "zaaack"
+  },
   "scripts": {
     "start": "electron ./index.js",
     "debug": "electron ./index.js --debug",
@@ -12,11 +28,11 @@
   "devDependencies": {
     "electron-packager": "^7.0.4",
     "electron-prebuilt": "^1.2.3",
-    "node-sass": "^3.7.0",
-    "fs-extra": "^0.30.0",
-    "globule": "^1.0.0"
+    "node-sass": "^3.7.0"
   },
   "dependencies": {
-    "chokidar": "^1.5.2"
+    "chokidar": "^1.5.2",
+    "fs-extra": "^0.30.0",
+    "globule": "^1.0.0"
   }
 }
