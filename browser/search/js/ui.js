@@ -35,7 +35,14 @@ document.addEventListener('focus', function (e) {
   }
 }, true)
 
-let itemIsSel = $el => $el === document.activeElement || $el.classList.contains('select')
+// auto focus in shown
+window.addEventListener('focus', function () {
+  document.querySelector('#el-search').focus()
+})
+
+let itemIsSel = $el =>
+  $el === document.activeElement ||
+  $el.classList.contains('select')
 module.exports = {
     selectNextItem: function () {
       let $fItems = getFocusable()

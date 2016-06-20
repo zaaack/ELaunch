@@ -75,17 +75,23 @@ const ui = require('./js/ui')
       item: item
     })
   }
-  ipcRenderer.on('exec-reply', (event, items) => {
-    ui.renderItems(items)
+
+  function resizeWindow() {
     ipcRenderer.send('window-resize', {
       width: document.body.offsetWidth,
       height: document.body.offsetHeight
     })
+  }
+
+  ipcRenderer.on('exec-reply', (event, items) => {
+    ui.renderItems(items)
+    resizeWindow()
   })
 
   ipcRenderer.on('exec-item-reply', (event, arg) => {
     document.querySelector('#el-search').value = ''
     document.querySelector('#el-items').innerHTML = ''
+    resizeWindow()
     ipcRenderer.send('hide')
   })
 })()
