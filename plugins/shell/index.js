@@ -13,15 +13,15 @@ module.exports = {
     args = args.join(' ')
     let engine = pluginConfig.engine ? pluginConfig.engine : cmdInfo.key
     console.log(cmdInfo);
-    if(cmdInfo.type === 'enter'){
-      console.log('enter');
-      console.log(args);
-      this.execItem({
-          opt: 'exec',
-          value: args
-        }, event, cmdInfo)
-      return
-    }
+    // if(cmdInfo.type === 'enter'){
+    //   console.log('enter');
+    //   console.log(args);
+    //   this.execItem({
+    //       opt: 'exec',
+    //       value: args
+    //     }, event, cmdInfo)
+    //   return
+    // }
     event.sender.send('exec-reply', [{
       name: cmdInfo.key + ' ' + args,
       icon: `${__dirname}/assets/shell.png`,
@@ -44,10 +44,21 @@ module.exports = {
       break;
     case 'exec':
     default:
-      console.log('end');
+      pluginConfig.terminal = pluginConfig.terminal || 'node'
+      if(pluginConfig.terminal !== 'node'){
+        shellProcess && shellProcess.kill()
+        shellProcess = child.exec(
+          pluginConfig.terminal.replace('%s', item.value), {
+            cwd: pluginConfig.cwd || require('os').homedir()
+          }, (err)=>err && console.error(err))
+        endExecItem(event)
+        return
+      }
+
       shellProcess && shellProcess.kill()
       shellProcess = child.exec(item.value, {
-        maxBuffer: 5*1024*1024
+        maxBuffer: 5*1024*1024,
+        cwd: pluginConfig.cwd || require('os').homedir()
       },(err, stdout, stderr) => {
         let hasError = err || stderr, out,
           opts = [{name: 'close', label: 'Close'},
@@ -55,7 +66,7 @@ module.exports = {
         if (err) {
           out = err.message + '\n' + err.stack
         } else {
-          out = stderr || stderr.trim() || stdout
+          out = stderr || stderr.trim() || stdout || 'Success!'
         }
         console.log('child',out, err,stdout);
         event.sender.send('exec-reply', [{

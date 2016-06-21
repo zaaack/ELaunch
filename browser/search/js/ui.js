@@ -67,11 +67,11 @@ module.exports = {
         console.log(items);
         $itemUl.innerHTML = `${items.map((item, index)=>{
           return item.custom_view?
-          `<li class="el-item el-item-dom" tabindex="0" data-value='${item.value}'>
+          `<li class="el-item el-item-dom" tabindex="0" data-item-index='${index}'>
             ${item.custom_view}
           </li>`:
 
-          `<li class="el-item el-item-dom" tabindex="0" data-value='${item.value}'>
+          `<li class="el-item el-item-dom" tabindex="0" data-item-index='${index}'>
             <img class="el-item-icon" src="${item.icon}"/>
             <div class="el-item-info">
               <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>

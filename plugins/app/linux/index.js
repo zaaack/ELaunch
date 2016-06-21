@@ -9,7 +9,8 @@ let chokidar = require('chokidar')
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
 let appDbFile, pluginConfig, globalConfig,
-    appDb, isFirstRun = true
+    appDb, isFirstRun = true,
+    defaultIcon = __dirname + '/../assets/app.svg'
 
 function init() {
   if(!isFirstRun) return
@@ -45,7 +46,6 @@ function init() {
 }
 
 function getAppInfo(file) {
-  let defaultIcon = __dirname + '/../assets/app.svg'
   let icon, execCmd, name,enName
   try {
     let content = fs.readFileSync(file, 'utf-8')
@@ -58,12 +58,13 @@ function getAppInfo(file) {
     execCmd = content.match(/\n\s*Exec\s*=\s*(.*?)\s*(\n|$)/)[1]
     let appIcon = content.match(/\n\s*Icon\s*=\s*(.*?)\s*(\n|$)/)[1]
     if (fs.existsSync(appIcon)) {
-      icon = appIcon
+      if(/jpg|png|svg/.test(path.extname(appIcon))){
+        icon = appIcon
+      }
     } else {
       appIcon = appIcon.replace(/[\u4e00-\u9fa5]+/g,'**')
         .replace(/(\.png|\.jpg|\.svg)$/,'')
       let findIconCmd = `find "${pluginConfig.icon_path.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\) -follow -size +2k`
-      console.log(findIconCmd);
       let iconList = child.execSync(findIconCmd, 'utf-8').toString().trim().split('\n')
       icon=iconList[0]
     }
@@ -121,6 +122,16 @@ module.exports = {
     if (args.join('').trim() === '') return //空格返回
     let patt = '*'+args.join('').toLocaleLowerCase().split('').join('*')+'*'
     let apps = Object.keys(appDb.apps).map(k => appDb.apps[k])
+    console.log(apps.length,'len');
+    if(apps.length === 0){
+      event.sender.send('exec-reply', [{
+        icon: defaultIcon,
+        name: 'Waiting for indexing, please try it later...',
+        detail:' ',
+        value: 'exit'
+      }])
+      return
+    }
     let items = apps.filter(app => {
       try {
         return globule.isMatch(patt, app.name.toLocaleLowerCase()) || globule.isMatch(patt, app.en_name.toLocaleLowerCase())

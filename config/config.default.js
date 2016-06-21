@@ -66,8 +66,17 @@ module.exports = {
     },
     shell: {
       script: `${__dirname}/../plugins/shell/index.js`,
+      config: {
+        // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',//default is 'node', 'gnome-terminal -x $SHELL -c '%s;exec $SHELL\''
+      },
       command:{
         '>':{}
+      }
+    },
+    youdao:  {
+      script: `${__dirname}/../plugins/youdao/index.js`,
+      command:{
+        'yd':{}
       }
     }
   }

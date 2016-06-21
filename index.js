@@ -35,7 +35,6 @@ function init() {
     plugin.execItem(data, event)
   })
   ipcMain.on('window-resize', (event, data) => {
-    console.log(data);
     let height = data.height || mainWindow.getContentSize()['height'];
     let width = data.width || mainWindow.getContentSize()['width'];
     if (!config.debug) {

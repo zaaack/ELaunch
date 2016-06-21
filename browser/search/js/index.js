@@ -8,7 +8,7 @@ const notifier = require('../../utils/notifier').initInRenderer()
 const ui = require('./js/ui')
 ;(function () {
   document.querySelector('#el-search').addEventListener('keyup', function () {
-    onExec(this.value, 'input')
+    onExec(this.value)
   }, false)
 
   document.addEventListener('keyup', function (e) {
@@ -51,28 +51,26 @@ const ui = require('./js/ui')
       if (!$select) {
         $select = document.querySelector('.el-item-dom');
       }
-      console.log($select);
       onExecItem($select, cmd)
     } else {
-      onExec(cmd, 'enter')
+      onExec(cmd)
     }
   }
 
-  function onExec(cmd, type) {
+  function onExec(cmd) {
     if (cmd !== lastCmd) {
       ipcRenderer.send('exec', {
-        cmd: cmd,
-        type: type
+        cmd: cmd
       })
       lastCmd = cmd
     }
   }
-
+  let _items = []
   function onExecItem($select, cmd) {
     if (!$select) return;
     let $btn = $select.querySelector('.btn-dom.select')
     let item = {
-      value: $select.getAttribute('data-value'),
+      value: _items[+$select.getAttribute('data-item-index')].value,
       opt: $btn?$btn.getAttribute('data-name'):null
     }
     console.log('exec-item', item, cmd);
@@ -90,6 +88,7 @@ const ui = require('./js/ui')
   }
 
   ipcRenderer.on('exec-reply', (event, items) => {
+    _items = items
     ui.renderItems(items)
     resizeWindow()
   })
