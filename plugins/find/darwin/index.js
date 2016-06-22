@@ -10,10 +10,13 @@ var pluginConfig = {
 let findProcess
 module.exports = {
   setConfig: function (pConfig) {
-    let plugin  = require('./find')
+    let plugin  = require('./mdfind')
     switch (pConfig.type) {
       case 'locate':
-        plugin  = require('./locate')
+        plugin  = require('../linux/locate')
+        break;
+      case 'find':
+        plugin  = require('../linux/find')
         break;
       default:
     }

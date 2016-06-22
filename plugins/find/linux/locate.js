@@ -8,6 +8,14 @@ var pluginConfig = {
   limit: 20
 }
 let findProcess
+let updatedb = 'updatedb'
+switch (process.platform) {
+  case 'darwin':
+    updatedb = '/usr/libexec/locate.updatedb'
+    break;
+  default:
+
+}
 
 update()
 
@@ -21,7 +29,7 @@ function update (cb) {
     })
   }
 
-  let cmd = `updatedb -o "${pluginConfig.db_path}" --database-root "${pluginConfig.root_dir}"`
+  let cmd = `${updatedb} -o "${pluginConfig.db_path}" --database-root "${pluginConfig.root_dir}"`
   console.log(cmd);
   child.exec(cmd, (error, stdout, stderr) => {
     if(error){

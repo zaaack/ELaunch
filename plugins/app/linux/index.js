@@ -9,7 +9,7 @@ let chokidar = require('chokidar')
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
 let appDbFile, pluginConfig, globalConfig,
-    appDb, isFirstRun = true,
+    appDb, isFirstRun = true, isFirstIndexing,
     defaultIcon = __dirname + '/../assets/app.svg'
 
 function init() {
@@ -22,6 +22,7 @@ function init() {
     lastUpdateTime: 0,
     apps: {}
   }
+  isFirstIndexing = appDb.lastUpdateTime === 0
 
   //update in first run
   update()
@@ -105,6 +106,9 @@ function update() {
       appDb.lastUpdateTime = Date.now()
       appDb.apps = tmpApps
       hasNewApp && fs.writeFileSync(appDbFile, JSON.stringify(appDb), 'utf-8')
+      if(isFirstIndexing){
+        globalConfig.context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
+      }
     }
   }
   walkDir(pluginConfig.app_path[Symbol.iterator]())
@@ -126,8 +130,8 @@ module.exports = {
     if(apps.length === 0){
       event.sender.send('exec-reply', [{
         icon: defaultIcon,
-        name: 'Waiting for indexing, please try it later...',
-        detail:' ',
+        name: 'This plugin has to index apps in first run',
+        detail:'Please try it later...',
         value: 'exit'
       }])
       return

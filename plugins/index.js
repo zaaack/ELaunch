@@ -39,7 +39,7 @@ module.exports = {
   exec: (data, event) => {
     let cmdInfo = parseCmd(data)
     let plugin = require(cmdInfo.script)
-    plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
+    plugin.setConfig && plugin.setConfig(config.merge(cmdInfo.config,cmdInfo.config[process.platform]), config)
 
     plugin.exec(cmdInfo.args, event, cmdInfo)
       // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{

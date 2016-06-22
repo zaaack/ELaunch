@@ -14,12 +14,17 @@ module.exports = {
       enable: true, //whether the plugin is enable, default is true
       default: true, // default plugin don't need to input key
       config: {
-        app_path: ['/usr/share/applications',
-                    '/usr/local/share/applications',
-                    '/home/z/.local/share/applications'],
-        icon_path: ['/usr/share/icons',
-                    '/home/z/.local/share/icons',
-                    '/usr/share/pixmaps']
+        darwin: {
+          app_path: ['/Applications','/Users/z/Applications']
+        },
+        linux: {
+          app_path: ['/usr/share/applications',
+            '/usr/local/share/applications',
+            '/home/z/.local/share/applications'],
+          icon_path: ['/usr/share/icons',
+            '/home/z/.local/share/icons',
+            '/usr/share/pixmaps']
+        }
       },
       command: {
         app: {}
@@ -34,10 +39,19 @@ module.exports = {
         // exclude_patt: '\\/\\..*|node_modules', //exclude hidden files
         // use_regex: false,
         // locate_limit: 1000,
-        type: 'find',
-        include_path: ['~/'],
-        exclude_path: ['**/.*','**/node_*'],
-        // maxdepth: 10,
+
+        linux:{
+
+          type: 'find',
+          include_path: ['~/'],
+          exclude_path: ['**/.*','**/node_*'],
+          // maxdepth: 10,
+        },
+        darwin:{
+          type:'mdfind',//Notice: mdfind only search the first path in `include_path`, and ignore `exclude_path`, plz set exclude_path in spotlight settings
+          include_path: ['~/'],
+          exclude_path: ['**/.*','**/node_*','**/Library','**/Contents'],
+        },
         limit: 20
       },
       command: {

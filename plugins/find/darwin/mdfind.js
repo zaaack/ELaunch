@@ -4,8 +4,10 @@ let child = require('child_process')
 let config = require('../../../config')
 let os = require('os')
 let pluginConfig = {
+  include_path: ["/"],
+  exclude_path: [],
   limit: 20
-}, findProcess
+}, fp
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
@@ -14,31 +16,21 @@ module.exports = {
     },
     exec: function (args, event) {
       if (args.join('').trim() === '') return  //空格返回空
-      let patt = args.join('').toLocaleLowerCase()
-      if(patt.indexOf('*')<0){
-        patt = patt.replace(/(.)/g,'*$1*')
-      }
+      let patt = args.join('')
       let includePara = pluginConfig.include_path.map(ip=>`"${ip}"`).join(' '),
           excludePara = pluginConfig.exclude_path.map(ep=>`-path "${ep}"`).join(' -o ')
-      //find "/Users/z" \( -path "**/.*" -o -path "**/node_*" \)  -a -prune -o \( -type d -o -type f \) -name "*a*" -print | grep "." -m 20
-      let cmd = `find ${includePara} ` +
-      (excludePara?`\\( ${excludePara} \\)  -a -prune `:``) +
-      `-o \\( -type d -o -type f \\) ` +
-      (pluginConfig.maxdepth?`-maxdepth ${pluginConfig.maxdepth}`:``) +
-      `-name "${patt}" -print | grep "." -m ${pluginConfig.limit}`
-      console.log(cmd);
+      let cmdArgs = ['-onlyin',`${pluginConfig.include_path[0]}`,`"${patt}"`]
+      console.log(cmdArgs);
       let defaultIcon = __dirname+'/../assets/file.svg'
-      findProcess && findProcess.kill()
-      console.time('find');
-      findProcess = child.execFile('sh',['-c',cmd], (error, stdout, stderr)=>{// don't use node to parse pipe is  more effective
-        if(error){
-          console.error(error)
-          event.sender.send('exec-reply', [])
-          return
-        }
-        stdout = stdout+''
-        console.timeEnd('find');
-        let items =  stdout.split('\n').slice(0, pluginConfig.limit)
+      fp && fp.kill()
+      fp = child.spawn('mdfind',cmdArgs)
+      let out = ''
+      fp.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+        out += data.toString('utf-8')
+        let items =  out.trim().split('\n');
+        if(items.length>=pluginConfig.limit) fp.kill()
+        items = items.slice(0, pluginConfig.limit)
             .filter(file=>!/^\s*$/.test(file)).map(file=>{
               return {
                 name: path.basename(file),
@@ -51,9 +43,19 @@ module.exports = {
                 ]
               }
             })
-        // console.log(items);
+        console.log(items);
         event.sender.send('exec-reply', items)
-      })
+      });
+
+      fp.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+      });
+      fp.on('error', (err) => {
+        console.log('Failed to start child process.',err);
+      });
+      fp.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+      });
   },
   execItem: function (item,  event) {
     switch (item.opt) {

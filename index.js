@@ -53,7 +53,7 @@ function createMainWindow() {
     resizable: config.debug ? true : false,
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
-    titleBarStyle: 'hidden',
+    frame:false,
     autoHideMenuBar: config.debug ? false : true,
     backgroundColor: 'alpha(opacity=0)',
     show: !process.argv.some((arg) => arg === '--hide'),

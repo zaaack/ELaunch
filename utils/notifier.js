@@ -1,7 +1,7 @@
 let electron = require('electron');
 
 function notify(title, options) {
-  new Notification(title, options)
+  new Notification(title, options||{body:title})
 }
 
 
@@ -9,7 +9,8 @@ module.exports = {
   initInRenderer: function () {
     let ipcRenderer = electron.ipcRenderer
     ipcRenderer.on('notify', function (event, args) {
-      notify.apply(this, args)
+      console.log(args);
+      notify.call(this,args[0],args[1])
     })
     return this
   },

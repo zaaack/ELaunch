@@ -41,6 +41,10 @@ module.exports = {
   merge: merge,
   isChanged: isChanged,
   debug: debug,
+  context: {
+    mainWindow: null,
+    notifier: require('../utils/notifier')
+  },
   loadConfig: function () {
     merge(this, require('./config.default.js'))
     if (!fs.existsSync(userConfigFile)) {

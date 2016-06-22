@@ -28,6 +28,7 @@
   "devDependencies": {
     "electron-packager": "^7.0.4",
     "electron-prebuilt": "^1.2.3",
+    "electron-rebuild": "^1.1.5",
     "node-sass": "^3.7.0"
   },
   "dependencies": {
