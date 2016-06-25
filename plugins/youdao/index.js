@@ -1,6 +1,7 @@
 var http = require('http');
 var electron = require('electron');
 var fs = require('fs-extra');
+var querystring = require('querystring');
 
 let errorMsg = {
     '20' : '要翻译的文本过长',
@@ -13,6 +14,7 @@ let errorMsg = {
 function queryApi(query, cb) {
   if(Date.now()-lastQuery<delay) return
   lastQuery = Date.now()
+  query = querystring.escape(query)
   http.get(`http://fanyi.youdao.com/openapi.do?keyfrom=ELaunch&key=917764008&type=data&doctype=json&version=1.1&q=${query}`, (res) => {
     var html = ''
     res.on('data',(data)=>{

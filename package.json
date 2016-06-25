@@ -23,7 +23,10 @@
     "start": "electron ./index.js",
     "debug": "electron ./index.js --debug",
     "test": "node test.js",
-    "dev_search": "node-sass --watch --output-style compressed --recursive --output ./browser/search/css --source-map true --source-map-contents browser/search/scss"
+    "dev_search": "node-sass --watch --output-style compressed --recursive --output ./browser/search/css --source-map true --source-map-contents browser/search/scss",
+    "build":"electron-packager ./ ELaunch --platform=darwin --arch=x64 --out='build' --ignore='node_modules/(electron.*|node-sass)' --ignore='(build|docs)'",
+    "build_linux":"electron-packager ./ ELaunch --platform=linux --arch=all --out='build' --ignore='node_modules/(electron.*|node-sass)' --ignore='(build|docs)'",
+    "build_win32":"electron-packager ./ ELaunch --platform=win32 --arch=all --out='build' --ignore='node_modules/(electron.*|node-sass)' --ignore='(build|docs)'"
   },
   "devDependencies": {
     "electron-packager": "^7.0.4",

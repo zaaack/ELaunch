@@ -1,6 +1,8 @@
 const electron = require('electron');
 const {
   app,
+  Tray,
+  Menu,
   BrowserWindow
 } = electron;
 const ipcMain = require('electron').ipcMain
@@ -12,10 +14,11 @@ let mainWindow;
 function init() {
   const shouldQuit = makeSingleInstance()
   if (shouldQuit) return app.quit()
-
+  app.dock.hide()
   app.on('ready', () => {
     createMainWindow()
     registShotcut()
+    initTray()
   });
   // Quit when all mainWindows are closed.
   app.on('window-all-closed', () => {
@@ -53,8 +56,8 @@ function createMainWindow() {
     resizable: config.debug ? true : false,
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
-    frame:false,
-    skipTaskbar: true,
+    frame: false,
+    skipTaskbar: config.debug ? false : true,
     autoHideMenuBar: config.debug ? false : true,
     backgroundColor: 'alpha(opacity=0)',
     show: !process.argv.some((arg) => arg === '--hide'),
@@ -72,28 +75,53 @@ function createMainWindow() {
     mainWindow = null;
   });
 
-  mainWindow.on('blur',()=>{
+  mainWindow.on('blur', () => {
     mainWindow.hide()
   })
+}
+
+function toggleMainWindow() {
+  if (mainWindow.isVisible()) {
+    mainWindow.hide()
+  } else {
+    mainWindow.restore();
+    mainWindow.show()
+    mainWindow.focus();
+  }
 }
 
 function registShotcut() {
   let shotcut = config.shotcut && config.shotcut[process.platform] || config.shotcut.default
   shotcut = shotcut || 'Super+Space'
-  const ret = electron.globalShortcut.register(shotcut, () => {
-    if(mainWindow.isVisible()){
-      mainWindow.hide()
-    }else{
-      mainWindow.restore();
-      mainWindow.show()
-      mainWindow.focus();
-    }
-  });
+  const ret = electron.globalShortcut.register(shotcut, toggleMainWindow);
 
   if (!ret) {
     console.log('registration failed');
   }
+}
 
+let tray = null
+
+function initTray() {
+  tray = new Tray(__dirname+'/elaunch.iconset/icon_16x16@2x.png')
+  const contextMenu = Menu.buildFromTemplate([{
+    label: 'Toggle ELaunch',
+    click(item, focusedWindow) {
+      toggleMainWindow()
+    }
+  }, {
+    label: 'Preferences',
+    click(item, focusedWindow) {
+      require('electron').shell.openItem(require('os').homedir()+'/.ELaunch/config.js')
+    }
+  }, {
+    label: 'exit',
+    click(item, focusedWindow) {
+      process.exit(0)
+    }
+  }]);
+  tray.setToolTip('ELaunch is running.')
+  tray.setContextMenu(contextMenu)
 }
 
 function makeSingleInstance() {

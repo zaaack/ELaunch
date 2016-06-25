@@ -37,6 +37,9 @@ const ui = require('./js/ui')
       case 13: //enter
         onEnter($inp, cmd)
         break
+      case 8: //backspace
+        document.querySelector('#el-search').focus()//auto jump to search input after pressed backspace
+        document.querySelector('.select').classList.remove('select')
       default:
         break
       }
