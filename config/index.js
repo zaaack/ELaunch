@@ -2,7 +2,7 @@ var os = require('os')
 var fs = require('fs-extra')
 
 let debug = process.argv.some((value)=>value==='--debug')
-let db,isChanged=false,
+let db,
   dataPath = `${os.homedir()}/.ELaunch`,
   userConfigFile = dataPath+'/config.js',
   dbFile = dataPath+'/db.json'
@@ -39,7 +39,6 @@ module.exports = {
   dataPath: dataPath,
   userConfigFile: userConfigFile,
   merge: merge,
-  isChanged: isChanged,
   debug: debug,
   context: {
     mainWindow: null,
@@ -53,8 +52,6 @@ module.exports = {
       } catch (err) {
         console.error(err)
       }
-    }else if(fs.statSync(userConfigFile).mtime.getTime() > this.db().lastCofigChangeTime){
-      isChanged =true
     }
     merge(this, require(this.userConfigFile))
     // merge(this, require('./config.user'))

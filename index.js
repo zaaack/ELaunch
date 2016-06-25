@@ -54,6 +54,7 @@ function createMainWindow() {
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
     frame:false,
+    skipTaskbar: true,
     autoHideMenuBar: config.debug ? false : true,
     backgroundColor: 'alpha(opacity=0)',
     show: !process.argv.some((arg) => arg === '--hide'),

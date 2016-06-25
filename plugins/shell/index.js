@@ -8,20 +8,26 @@ function endExecItem(event){
 module.exports = {
   setConfig: function (pConfig, globalConfig) {
     pluginConfig = pConfig
+    if(pluginConfig.terminal === 'platform'){
+      switch (process.platform) {
+        case 'linux':
+          pluginConfig.terminal = "gnome-terminal -x $SHELL -c \"%s;exec $SHELL\""
+          break;
+        case 'darwin':
+          pluginConfig.terminal = `osascript -e "tell application \\"Terminal\\"" -e "activate" -e "do script \\"%s\\"" -e "end tell"`
+          console.log(pluginConfig.terminal);
+          break
+        case 'win32':
+          pluginConfig.terminal = 'cmd.exe /k "%s"'
+          break
+        default:
+
+      }
+    }
   },
   exec: function (args, event, cmdInfo) {
     args = args.join(' ')
     let engine = pluginConfig.engine ? pluginConfig.engine : cmdInfo.key
-    console.log(cmdInfo);
-    // if(cmdInfo.type === 'enter'){
-    //   console.log('enter');
-    //   console.log(args);
-    //   this.execItem({
-    //       opt: 'exec',
-    //       value: args
-    //     }, event, cmdInfo)
-    //   return
-    // }
     event.sender.send('exec-reply', [{
       name: cmdInfo.key + ' ' + args,
       icon: `${__dirname}/assets/shell.png`,
@@ -48,7 +54,7 @@ module.exports = {
       if(pluginConfig.terminal !== 'node'){
         shellProcess && shellProcess.kill()
         shellProcess = child.exec(
-          pluginConfig.terminal.replace('%s', item.value), {
+          pluginConfig.terminal.replace(/\n/g,' ').replace('%s', item.value.replace(/\"/g,"'")), {
             cwd: pluginConfig.cwd || require('os').homedir()
           }, (err)=>err && console.error(err))
         endExecItem(event)

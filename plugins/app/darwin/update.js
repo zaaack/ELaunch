@@ -50,7 +50,7 @@ let appDbFile, pluginConfig, globalConfig,
       },isFirstIndexing = appDb.lastUpdateTime === 0
 
       pluginConfig.app_path.forEach((dir)=>{
-        appFiles = child.execSync(`mdfind -onlyin ${dir} 'kMDItemFSName=*.app'`,{
+        appFiles = child.execSync(`mdfind -onlyin ${dir} 'kMDItemFSName=*.app' | grep -v '\.app\/'`,{
           maxBuffer: 5*1024*1024
         }).toString().split('\n').map(file=>{
           if(!file) return
