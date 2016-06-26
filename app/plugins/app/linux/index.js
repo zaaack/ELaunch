@@ -85,7 +85,7 @@ function update() {
   let hasNewApp = false,tmpApps = {}
   function walkDir(iter) {
     let data = iter.next()
-    !data.done && fs.existsSync(data.value) && fs.walk(data.value).on('data',function (item) {
+    !data.done && fs.walk(data.value).on('data',function (item) {
       if (path.extname(item.path) === '.desktop') {
         let mtime = item.stats.mtime.getTime(),
             appKey = path.basename(item.path)
@@ -120,6 +120,8 @@ module.exports = {
   setConfig: function (pConfig, gConfig) {
     pluginConfig = pConfig
     globalConfig = gConfig
+    pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))
+    pluginConfig.icon_path = pluginConfig.icon_path.filter(dir=>fs.existsSync(dir))
     init()
   },
   exec: function (args, event) {
