@@ -15,6 +15,32 @@ see [release](https://github.com/zaaack/ELaunch/releases)
 plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`), see [default config](../app/config/config.default.js)
 
 
+## Develop
+
+You need install [nodejs](https://nodejs.org/en/) first, than run commands below
+```sh
+git clone https://github.com/zaaack/ELaunch.git
+cd ELaunch/app && npm i
+cd ../ && npm i
+```
+then you can start it by
+```sh
+npm start
+```
+or
+```sh
+npm i -g electron-prebuilt
+electron ./index.js
+```
+
+## Build
+
+see [electron-builder](https://github.com/electron-userland/electron-builder)
+
+```js
+npm run dist
+```
+
 ## Screen Captures
 
 ### Plugin app
@@ -59,29 +85,4 @@ see [plugin.md](docs/plugin.md)
 [Dev Plan](https://github.com/zaaack/ELaunch/issues/1)
 
 
-## Develop
-
-You need install [nodejs](https://nodejs.org/en/) first, than run commands below
-```sh
-git clone https://github.com/zaaack/ELaunch.git
-cd ELaunch
-npm i
-```
-then you can start it by
-```sh
-npm start
-```
-or
-```sh
-npm i -g electron-prebuilt
-electron ./index.js
-```
-
-## Build
-
-see [electron-builder](https://github.com/electron-userland/electron-builder)
-
-```js
-npm run dist
-```
 ## Welcome fork and contribute!

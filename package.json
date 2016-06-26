@@ -38,12 +38,6 @@
   },
   "build": {
     "appId": "net.open-demo.elaunch",
-    "app-category-type": "public.app-category.utilities"
-  },
-  "dependencies": {
-    "cheerio": "^0.20.0",
-    "chokidar": "^1.5.2",
-    "fs-extra": "^0.30.0",
-    "globule": "^1.0.0"
+    "app-category-type": "public.app-category.productivity"
   }
 }
