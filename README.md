@@ -8,12 +8,17 @@ see [release](https://github.com/zaaack/ELaunch/releases)
 
 
 
-## config
+## Config
 
-> custom config path is `~/.ELaunch/config.js`
+> Custom config path: `~/.ELaunch/config.js`
 
-plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`), see [default config](../app/config/config.default.js)
+Plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`), see [default config](app/config/config.default.js)
 
+## Usage
+
+>Default Shotcut: Super+Space for linux and windows, Cmd+Space for MacOS
+
+Then you can type in app names or commands, see [Screen Captures](#Screen Captures) below.
 
 ## Develop
 
