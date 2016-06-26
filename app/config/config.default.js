@@ -1,13 +1,8 @@
-# configuration
-> custom config path is `~/.ELaunch/config.js`
-
-below is default config, plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`)
-```js
 module.exports = {
   title: 'ELaunch',
   width: 600,
   height: 60,
-  shotcut: { //shotcut toggle
+  shotcut: {
     default: 'Super+Space',
     win32: 'Super+Space',
     linux: 'Super+Space',
@@ -15,10 +10,10 @@ module.exports = {
   },
   plugins: {
     app: {
-      script: `${__dirname}/../plugins/app/index.js`, //plugin script
+      script: `${__dirname}/../plugins/app/index.js`,
       enable: true, //whether the plugin is enable, default is true
       default: true, // default plugin don't need to input key
-      config: { //config for plugin, you can set different config depend on platform
+      config: {
         darwin: {
           app_path: ['/Applications','/Users/z/Applications']
         },
@@ -31,7 +26,7 @@ module.exports = {
             '/usr/share/pixmaps']
         }
       },
-      command: { //command key that trigger this plugin, the value is config for command and it would overwrite the plugin config
+      command: {
         app: {}
       }
     },
@@ -86,6 +81,22 @@ module.exports = {
     shell: {
       script: `${__dirname}/../plugins/shell/index.js`,
       config: {
+
+        terminal: 'node', //default
+        //terminal: 'platform', //you can set `platform` to auto use different shell in different platform: gnome-terminal for linux, Terminal.app for MacOS and cmd.exe for windows
+
+        // use custom shell to run command
+        // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',//default is 'node', 'gnome-terminal -x $SHELL -c '%s;exec $SHELL\'' // for linux
+        //terminal: `osascript -e "tell application \\"Terminal\\""
+                        // -e "activate"
+                        // -e "do script \\"%s\\""
+                        // -e "end tell"` // for mac
+        //terminal: `osascript -e "tell application \\"iTerm\\""
+                      // 	-e "activate"
+                      // 	-e "set t to create tab with default profile window 1"
+                      // 	-e "write current session in t text \\"%s\\""
+                      //  -e "end tell"` //for iterm2 in mac
+        //terminal: 'cmd /k "%s"' //for windows
       },
       command:{
         '>':{}
@@ -105,5 +116,3 @@ module.exports = {
     }
   }
 }
-
-```

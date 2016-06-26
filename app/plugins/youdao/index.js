@@ -14,7 +14,6 @@ let errorMsg = {
 function queryApi(query, cb) {
   if(Date.now()-lastQuery<delay) return
   lastQuery = Date.now()
-  query = querystring.escape(query)
   http.get(`http://fanyi.youdao.com/openapi.do?keyfrom=ELaunch&key=917764008&type=data&doctype=json&version=1.1&q=${query}`, (res) => {
     var html = ''
     res.on('data',(data)=>{
@@ -40,6 +39,7 @@ module.exports = {
     args = args.join(' ').trim()
     if(!args) return
     let ret = []
+    args = querystring.escape(args)
     queryApi(args, (data)=>{
       if(data.errorCode>0){
         ret.push({
@@ -77,16 +77,15 @@ module.exports = {
     })
   },
   execItem: function (item, event) {
-    console.log(item);
     switch (item.opt) {
       case 'copy':
         electron.clipboard.writeText(item.value.detail)
         break;
       case 'dict':
-        electron.shell.openItem(`http://dict.youdao.com/search?q=${item.value.query}`)
+        electron.shell.openExternal(`http://dict.youdao.com/search?q=${item.value.query}`)
         break;
       case 'translate':
-        electron.shell.openItem(`http://fanyi.baidu.com/#en/zh/${item.value.query}`)
+        electron.shell.openExternal(`http://fanyi.baidu.com/#en/zh/${item.value.query}`)
         break;
       default:
 

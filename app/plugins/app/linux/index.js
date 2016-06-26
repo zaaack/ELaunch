@@ -85,7 +85,7 @@ function update() {
   let hasNewApp = false,tmpApps = {}
   function walkDir(iter) {
     let data = iter.next()
-    !data.done && fs.walk(data.value).on('data',function (item) {
+    !data.done && fs.existsSync(data.value) && fs.walk(data.value).on('data',function (item) {
       if (path.extname(item.path) === '.desktop') {
         let mtime = item.stats.mtime.getTime(),
             appKey = path.basename(item.path)

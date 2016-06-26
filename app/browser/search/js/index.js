@@ -39,7 +39,6 @@ const ui = require('./js/ui')
         break
       case 8: //backspace
         document.querySelector('#el-search').focus()//auto jump to search input after pressed backspace
-        document.querySelector('.select').classList.remove('select')
       default:
         break
       }

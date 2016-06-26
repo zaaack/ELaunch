@@ -1,0 +1,28 @@
+{
+  "name": "ELaunch",
+  "version": "0.0.1",
+  "main": "index.js",
+  "description": "a cross platform launcher based on electron, just like Alfred in MacOS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaaack/ELaunch.git"
+  },
+  "keywords": [
+    "launcher",
+    "electron"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zaaack/ELaunch/issues"
+  },
+  "homepage": "https://github.com/zaaack/ELaunch#readme",
+  "author": {
+    "email": "zaaack@qq.com",
+    "name": "zaaack"
+  },
+  "dependencies": {
+    "chokidar": "^1.5.2",
+    "fs-extra": "^0.30.0",
+    "globule": "^1.0.0"
+  }
+}

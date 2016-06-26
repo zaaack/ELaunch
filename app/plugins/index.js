@@ -12,8 +12,8 @@ let lastUpdateTime = 0,
 
 Object.keys(config.plugins).forEach(pluginName=>{
   let plugin = config.plugins[pluginName],
-      cmds = plugin.command
-  cmds && Object.keys(cmds).forEach(key=>{
+      cmds = plugin.command || [{pluginName:{}}]
+  plugin.enable!==false && cmds && Object.keys(cmds).forEach(key=>{
     pluginMap[key] = config.merge({}, plugin, {config: cmds[key]})
   })
 })

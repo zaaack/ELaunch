@@ -14,7 +14,7 @@ let mainWindow;
 function init() {
   const shouldQuit = makeSingleInstance()
   if (shouldQuit) return app.quit()
-  app.dock.hide()
+  app.dock && app.dock.hide()
   app.on('ready', () => {
     createMainWindow()
     registShotcut()
@@ -60,7 +60,7 @@ function createMainWindow() {
     skipTaskbar: config.debug ? false : true,
     autoHideMenuBar: config.debug ? false : true,
     backgroundColor: 'alpha(opacity=0)',
-    show: !process.argv.some((arg) => arg === '--hide'),
+    show: false,
     transparent: true,
     alwaysOnTop: true,
     disableAutoHideCursor: true
@@ -103,7 +103,7 @@ function registShotcut() {
 let tray = null
 
 function initTray() {
-  tray = new Tray(__dirname+'/elaunch.iconset/icon_16x16@2x.png')
+  tray = new Tray(__dirname+'/icon_16x16@2x.png')
   const contextMenu = Menu.buildFromTemplate([{
     label: 'Toggle ELaunch',
     click(item, focusedWindow) {
@@ -113,6 +113,16 @@ function initTray() {
     label: 'Preferences',
     click(item, focusedWindow) {
       require('electron').shell.openItem(require('os').homedir()+'/.ELaunch/config.js')
+    }
+  },{
+    label: 'Bug Report',
+    click(item, focusedWindow) {
+      electron.shell.openExternal('https://github.com/zaaack/ELaunch/issues')
+    }
+  }, {
+    label: 'Help',
+    click(item, focusedWindow) {
+      electron.shell.openExternal('https://github.com/zaaack/ELaunch#readme')
     }
   }, {
     label: 'exit',

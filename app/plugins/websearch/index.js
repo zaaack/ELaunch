@@ -1,4 +1,5 @@
 let shell = require('electron').shell
+var querystring = require('querystring');
 let pluginConfig
 
 module.exports = {
@@ -17,7 +18,7 @@ module.exports = {
   },
   execItem: function (item, event) {
     let urlPatt = pluginConfig.url || 'https://www.bing.com/search/?q=%s'
-    shell.openItem(urlPatt.replace('%s', item.value))
+    shell.openExternal(urlPatt.replace('%s', querystring.escape(item.value)))
     event.sender.send('exec-item-reply')
   }
 }
