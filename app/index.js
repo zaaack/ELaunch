@@ -20,7 +20,7 @@ function init() {
     registShotcut()
     initTray()
   });
-  // Quit when all mainWindows are closed.
+  // Quit when all windows are closed.
   app.on('window-all-closed', () => {
     if (process.platform !== 'darmainWin') {
       app.quit();
@@ -38,8 +38,9 @@ function init() {
     plugin.execItem(data, event)
   })
   ipcMain.on('window-resize', (event, data) => {
-    let height = data.height || mainWindow.getContentSize()['height'];
-    let width = data.width || mainWindow.getContentSize()['width'];
+    let height = data.height || mainWindow.getContentSize()['height']
+    let width = data.width || config.width
+    height = Math.min(height, config.max_height)
     if (!config.debug) {
       mainWindow.setContentSize(width, height, true);
     }
@@ -52,7 +53,7 @@ function init() {
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: config.debug ? 800 : config.width,
-    height: 400,
+    height: config.max_height || 600,
     resizable: config.debug ? true : false,
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
@@ -64,7 +65,7 @@ function createMainWindow() {
     transparent: true,
     alwaysOnTop: true,
     disableAutoHideCursor: true
-  });
+  })
 
   if (!config.debug) {
     mainWindow.setContentSize(config.width, config.height, true);
@@ -78,6 +79,8 @@ function createMainWindow() {
   mainWindow.on('blur', () => {
     mainWindow.hide()
   })
+
+  config.context.mainWindow = mainWindow
 }
 
 function toggleMainWindow() {

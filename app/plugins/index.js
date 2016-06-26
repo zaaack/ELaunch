@@ -11,11 +11,18 @@ let lastUpdateTime = 0,
     pluginMap = {}
 
 Object.keys(config.plugins).forEach(pluginName=>{
-  let plugin = config.plugins[pluginName],
-      cmds = plugin.command || [{pluginName:{}}]
-  plugin.enable!==false && cmds && Object.keys(cmds).forEach(key=>{
-    pluginMap[key] = config.merge({}, plugin, {config: cmds[key]})
+  let pluginInfo = config.plugins[pluginName], cmds
+  pluginInfo.config = pluginInfo.config || {}
+  pluginInfo.config = config.merge(pluginInfo.config, pluginInfo.config[process.platform] || {})
+  cmds = pluginInfo.command || {pluginName:{}}
+  pluginInfo.enable!==false && Object.keys(cmds).forEach(key=>{
+    pluginMap[key] = config.merge({}, pluginInfo,
+      {config: cmds[key] || {} },  {config: cmds[key][process.platform] || {} })
   })
+  if(pluginInfo.config.init_on_start){ //init plugin on program start
+    let plugin = require(pluginConfig.script);
+    plugin.initOnStart && plugin.initOnStart(pluginConfig, config)
+  }
 })
 
 function parseCmd(data) {
@@ -39,7 +46,7 @@ module.exports = {
   exec: (data, event) => {
     let cmdInfo = parseCmd(data)
     let plugin = require(cmdInfo.script)
-    plugin.setConfig && plugin.setConfig(config.merge(cmdInfo.config,cmdInfo.config[process.platform]), config)
+    plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
 
     plugin.exec(cmdInfo.args, event, cmdInfo)
       // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{

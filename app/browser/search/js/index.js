@@ -84,7 +84,6 @@ const ui = require('./js/ui')
 
   function resizeWindow() {
     ipcRenderer.send('window-resize', {
-      width: document.body.offsetWidth,
       height: document.body.offsetHeight
     })
   }
@@ -101,4 +100,5 @@ const ui = require('./js/ui')
     resizeWindow()
     ipcRenderer.send('hide')
   })
+
 })()

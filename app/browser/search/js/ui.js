@@ -75,7 +75,7 @@ module.exports = {
             <img class="el-item-icon" src="${item.icon}"/>
             <div class="el-item-info">
               <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>
-              <div class="el-item-detail">${item.detail?item.detail:''}</div>
+              <div class="el-item-detail">${item.detail?item.detail:'&nbsp;'}</div>
             </div>
             ${item.opts?
               `<div class="btn-group">

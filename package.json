@@ -23,7 +23,7 @@
     "start": "electron ./app/index.js",
     "debug": "electron ./app/index.js --debug",
     "test": "node test.js",
-    "dev_search": "node-sass --watch --output-style compressed --recursive --output ./browser/search/css --source-map true --source-map-contents browser/search/scss",
+    "dev_search": "node-sass --watch --output-style compressed --recursive --output app/browser/search/css --source-map true --source-map-contents app/browser/search/scss",
     "postinstall": "install-app-deps",
     "pack": "build --dir",
     "dist": "build",

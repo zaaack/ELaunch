@@ -9,12 +9,10 @@ let chokidar = require('chokidar')
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
 let appDbFile, pluginConfig, globalConfig,
-    appDb, isFirstRun = true, isFirstIndexing,
+    appDb, isFirstIndexing,
     defaultIcon = __dirname + '/../assets/app.svg'
 
 function init() {
-  if(!isFirstRun) return
-  isFirstRun=false
   //init appDbFile and appDb
   appDbFile = globalConfig.dataPath + '/app/app.db'
   fs.ensureFileSync(appDbFile)
@@ -118,6 +116,7 @@ function update() {
 
 module.exports = {
   setConfig: function (pConfig, gConfig) {
+    if(globalConfig) return
     pluginConfig = pConfig
     globalConfig = gConfig
     pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))

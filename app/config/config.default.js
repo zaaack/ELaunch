@@ -2,6 +2,7 @@ module.exports = {
   title: 'ELaunch',
   width: 600,
   height: 60,
+  max_height: 500,
   shotcut: {
     default: 'Super+Space',
     win32: 'Super+Space',
@@ -24,6 +25,9 @@ module.exports = {
           icon_path: ['/usr/share/icons',
             '/home/z/.local/share/icons',
             '/usr/share/pixmaps']
+        },
+        win32:{
+          init_on_start: true
         }
       },
       command: {

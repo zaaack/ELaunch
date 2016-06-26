@@ -2,9 +2,32 @@
 
 Plugin for ELaunch is a simple npm package, but exports an object with specific methods below
 
-## setConfig()
+## initOnStart() [optional]
+### initOnStart(pluginConfig, globalConfig)
+This method would be called immediately after the ELaunch started, this requires`pluginConfig.initOnStart=true` in config.js:
+```js
+module.exports = {
+  //...
+  plugins: {
+    yourPluginName: {
+      //...
+      config: {
+        //...
+        initOnStart: true,
+        //or
+      },
+      //...
+    }
+  }
+  //...
+}
+
+```
+This is useful is you need to watch something like clipboard. Parameters see [setConfig](#setconfig-optional) below.
+
+## setConfig() [optional]
 ### setConfig(pluginConfig, globalConfig)
-This method would called everytime you triggered this plugin by command.
+This method would be called everytime you triggered this plugin by command.
 * pluginConfig is the config merged command config and plugin config in config file
 * globalConfig is the config file plus some useful tool:
 ```js
@@ -26,6 +49,7 @@ globalConfig = {
 }
 ```
 
+
 ## exec()
 ### exec(args, event, cmdInfo)
 
@@ -33,7 +57,7 @@ globalConfig = {
 * event: event.sender.send() , please see [electron docs](http://electron.atom.io/docs/api/ipc-main/#sending-messages)
 * cmdInfo(object): raw object of command
 ```js
-{
+cmdInfo = {
   key: key,
   script: path.resolve(config.dataPath, plugin.script),
   args: args,
@@ -43,7 +67,7 @@ globalConfig = {
 
 ### return
 ```js
-let items =[{
+let items = [{
   name: 'HAHA',
   icon: `${__dirname}/assets/shell.png`,
   value: args.join(' '),// for item.value in execItem, mostly is `args.join(' ')`
@@ -72,4 +96,4 @@ event.sender.send('exec-item-reply')//this would cause the mainWindow to hide
 ```
 
 ## Demos
- You can see demos in [core plugins](../plugins)
+ You can see more demos in [core plugins](../app/plugins)

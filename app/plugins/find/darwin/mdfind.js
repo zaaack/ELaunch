@@ -39,6 +39,7 @@ module.exports = {
                 value: file,
                 opts: [
                   {name:'open',label:'Open'}, //first is default
+                  {name:'open-folder',label:'Open Folder'},
                   {name:'copy-path',label:'Copy Path'}
                 ]
               }
@@ -61,6 +62,9 @@ module.exports = {
     switch (item.opt) {
       case 'copy-path':
       require('electron').clipboard.writeText(item.value);
+        break
+      case 'open-folder':
+        require('electron').shell.openItem(path.dirname(item.value))
         break
       case 'open':
       default:

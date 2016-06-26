@@ -9,10 +9,11 @@ let errorMsg = {
   　'40' : '不支持的语言类型',
   　'50' : '无效的key',
   　'60' : '无词典结果，仅在获取词典结果生效',
-},defaultIcon=`${__dirname}/assets/youdao.png`,delay=300,timer
+},defaultIcon=`${__dirname}/assets/youdao.png`,
+delay=300,timer,key = '917764008'
 
 function queryApi(query, cb) {
-  http.get(`http://fanyi.youdao.com/openapi.do?keyfrom=ELaunch&key=917764008&type=data&doctype=json&version=1.1&q=${query}`, (res) => {
+  http.get(`http://fanyi.youdao.com/openapi.do?keyfrom=ELaunch&key=${key}&type=data&doctype=json&version=1.1&q=${query}`, (res) => {
     var html = ''
     res.on('data',(data)=>{
       html+=data
@@ -32,6 +33,9 @@ function newOpts() {
           {name:'translate',label:'Translate'}]
 }
 module.exports = {
+  setConfig: function (pConfig, gConfig) {
+    key = pConfig.key || key
+  },
   exec: function (args, event, cmdInfo) {
     timer && clearTimeout(timer)
     timer = setTimeout(()=>{

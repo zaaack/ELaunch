@@ -12,7 +12,7 @@ see [release](https://github.com/zaaack/ELaunch/releases)
 
 > Custom config path: `~/.ELaunch/config.js`
 
-Plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`), see [default config](app/config/config.default.js)
+Plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`). After the program started, it would automatically merge custom config.js to config.default.js. If you want to use platform-specific config, you can add `linux/darwin/win32` fields in plugin config and them would be merged into plugin config according to `process.platform`. This works in command config too. See [default config](app/config/config.default.js).
 
 ## Usage
 
