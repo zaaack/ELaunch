@@ -4,14 +4,16 @@ module.exports = {
   height: 60,
   max_height: 500,
   shotcut: {
-    default: 'Super+Space',
-    win32: 'Super+Space',
-    linux: 'Super+Space',
-    darwin: 'Super+Space'
+    toggle: {
+      default: 'Super+Space',
+      win32: 'Super+Space',
+      linux: 'Super+Space',
+      darwin: 'Super+Space'
+    }
   },
   plugins: {
     app: {
-      script: `${__dirname}/../plugins/app/index.js`,
+      path: `${__dirname}/../plugins/app/index.js`,
       enable: true, //whether the plugin is enable, default is true
       default: true, // default plugin don't need to input key
       config: {
@@ -35,7 +37,7 @@ module.exports = {
       }
     },
     find: {
-      script: `${__dirname}/../plugins/find/index.js`,
+      path: `${__dirname}/../plugins/find/index.js`,
       config: {
         // type: 'locate',
         // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
@@ -63,7 +65,7 @@ module.exports = {
       }
     },
     websearch: {
-      script: `${__dirname}/../plugins/websearch/index.js`,
+      path: `${__dirname}/../plugins/websearch/index.js`,
       command:{
         bi: {
           engine: 'Bing',
@@ -83,7 +85,7 @@ module.exports = {
       }
     },
     shell: {
-      script: `${__dirname}/../plugins/shell/index.js`,
+      path: `${__dirname}/../plugins/shell/index.js`,
       config: {
 
         terminal: 'node', //default
@@ -91,11 +93,11 @@ module.exports = {
 
         // use custom shell to run command
         // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',//default is 'node', 'gnome-terminal -x $SHELL -c '%s;exec $SHELL\'' // for linux
-        //terminal: `osascript -e "tell application \\"Terminal\\""
+        //terminal: `osapath -e "tell application \\"Terminal\\""
                         // -e "activate"
-                        // -e "do script \\"%s\\""
+                        // -e "do path \\"%s\\""
                         // -e "end tell"` // for mac
-        //terminal: `osascript -e "tell application \\"iTerm\\""
+        //terminal: `osapath -e "tell application \\"iTerm\\""
                       // 	-e "activate"
                       // 	-e "set t to create tab with default profile window 1"
                       // 	-e "write current session in t text \\"%s\\""
@@ -107,13 +109,13 @@ module.exports = {
       }
     },
     youdao:  {
-      script: `${__dirname}/../plugins/youdao/index.js`,
+      path: `${__dirname}/../plugins/youdao/index.js`,
       command:{
         'yd':{}
       }
     },
     calc: {
-      script: `${__dirname}/../plugins/calc/index.js`,
+      path: `${__dirname}/../plugins/calc/index.js`,
       command: {
         calc: {}
       }

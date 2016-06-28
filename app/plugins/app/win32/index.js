@@ -1,3 +1,7 @@
+//Everything.exe -admin -startup -config <filename> -db <filename> # or cwd
+//es -n 20 -r(regex) "haha"
+//icotool.exe -i "<input path1>" "<input file path2>" "<input file path3>"... -o "<output file path1>.png" "<output file path2>.png" "<output file path3>.png"...
+// TODO: finish app query
 var fs = require('fs')
 var path = require('path')
 var child = require('child_process')
@@ -9,12 +13,10 @@ let chokidar = require('chokidar')
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
 let appDbFile, pluginConfig, globalConfig,
-    appDb, isFirstIndexing, watcher,
+    appDb, isFirstIndexing,
     defaultIcon = __dirname + '/../assets/app.svg'
 
 function init() {
-  pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))
-  pluginConfig.icon_path = pluginConfig.icon_path.filter(dir=>fs.existsSync(dir))
   //init appDbFile and appDb
   appDbFile = globalConfig.dataPath + '/app/app.db'
   fs.ensureFileSync(appDbFile)
@@ -26,12 +28,12 @@ function init() {
 
   //update in first run
   update()
+
   // watch and update
-  watcher && watcher.close()
-  watcher = chokidar.watch(pluginConfig.app_path, {
+  let watcher = chokidar.watch(pluginConfig.app_path, {
     ignore: /^.*(?!\.desktop)$/,
-  })
-  let delay = 3000,t
+  }),delay = 3000,t
+
   watcher.on('raw', (event, path, details) => {
     if(['add','change','unlink'].indexOf(event) !== -1){
       t && clearTimeout(t)
@@ -121,7 +123,8 @@ module.exports = {
     if(globalConfig) return
     pluginConfig = pConfig
     globalConfig = gConfig
-    globalConfig.on('reload-config', init)
+    pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))
+    pluginConfig.icon_path = pluginConfig.icon_path.filter(dir=>fs.existsSync(dir))
     init()
   },
   exec: function (args, event) {

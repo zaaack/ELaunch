@@ -38,3 +38,5 @@ jspm_packages
 
 .DS_Store
 dist/
+icotool_for_windows/icotool/obj
+icotool_for_windows/icotool/bin

@@ -8,22 +8,34 @@ let lastUpdateTime = 0,
     lastExecTime = 0,
     isUpdateing = false,
     isExecing = false,
-    pluginMap = {}
+    pluginMap
 
-Object.keys(config.plugins).forEach(pluginName=>{
-  let pluginInfo = config.plugins[pluginName], cmds
-  pluginInfo.config = pluginInfo.config || {}
-  pluginInfo.config = config.merge(pluginInfo.config, pluginInfo.config[process.platform] || {})
-  cmds = pluginInfo.command || {pluginName:{}}
-  pluginInfo.enable!==false && Object.keys(cmds).forEach(key=>{
-    pluginMap[key] = config.merge({}, pluginInfo,
-      {config: cmds[key] || {} },  {config: cmds[key][process.platform] || {} })
-  })
-  if(pluginInfo.config.init_on_start){ //init plugin on program start
-    let plugin = require(pluginConfig.script);
-    plugin.initOnStart && plugin.initOnStart(pluginConfig, config)
-  }
-})
+
+function loadPluginMap() {
+  pluginMap = {}
+  Object.keys(config.plugins).forEach(pluginName=>{
+    let pluginInfo = config.plugins[pluginName], cmds
+    pluginInfo.config = pluginInfo.config || {}
+    pluginInfo.config = config.merge(pluginInfo.config,
+      pluginInfo.config[process.platform] || {})
+    cmds = pluginInfo.command || {pluginName:{}}
+    Object.keys(cmds).forEach(key=>{
+      if(cmds[key] && cmds[key].enable === false) return
+      pluginMap[key] = config.merge({}, pluginInfo)
+      if(cmds[key]){
+        pluginMap[key] = config.merge(pluginMap[key], {config: cmds[key]},
+          {config: cmds[key][process.platform] || {} })
+        }
+      })
+      if(pluginInfo.config.init_on_start){ //init plugin on program start
+        let plugin = require(pluginConfig.path);
+        plugin.initOnStart && plugin.initOnStart(pluginConfig, config)
+      }
+    })
+}
+
+loadPluginMap()
+config.on('reload-config', loadPluginMap)
 
 function parseCmd(data) {
   let args = data.cmd.split(' ')
@@ -36,7 +48,7 @@ function parseCmd(data) {
   let plugin = pluginMap[key]
   return {
     key: key,
-    script: path.resolve(config.dataPath, plugin.script),
+    path: path.resolve(config.dataPath, plugin.path),
     args: args,
     type: data.type,
     config: plugin.config || {}
@@ -45,18 +57,18 @@ function parseCmd(data) {
 module.exports = {
   exec: (data, event) => {
     let cmdInfo = parseCmd(data)
-    let plugin = require(cmdInfo.script)
+    let plugin = require(cmdInfo.path)
     plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
 
     plugin.exec(cmdInfo.args, event, cmdInfo)
-      // child.exec(`${cmdInfo.script} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{
+      // child.exec(`${cmdInfo.path} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{
       //   if(error) console.error(error);
       //   cb(stdout)
       // })
   },
   execItem: function (data, event) {
     let cmdInfo = parseCmd(data)
-    let plugin = require(cmdInfo.script)
+    let plugin = require(cmdInfo.path)
     plugin.execItem(data.item, event, cmdInfo)
   }
 }

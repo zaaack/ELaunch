@@ -9,70 +9,51 @@ let chokidar = require('chokidar')
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
 let appDbFile, pluginConfig, globalConfig,
-    appDb, isFirstRun = true,
+    appDb, watchers = [],
     defaultIcon = __dirname + '/../assets/app.svg'
+
+let updateP = child.fork(`${__dirname}/update.js`,{
+  stdio:'pipe'
+})
+
+updateP.on('message', (data)=>{
+  switch (data.type) {
+    case 'finished':
+      initAppDb()
+      break;
+    case 'firstIndexingFinished':
+      globalConfig.context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
+      break;
+    case 'error':
+      console.error(data.error);
+      break;
+    default:
+  }
+})
+
 function initAppDb() {
   appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
     lastUpdateTime: 0,
     apps: {}
   }
 }
+
+function update() {
+  updateP.send({type:'update',pluginConfig: pluginConfig,globalConfig:globalConfig})
+}
+
 function init() {
-  if(!isFirstRun) return
-  isFirstRun=false
   //init appDbFile and appDb
   appDbFile = globalConfig.dataPath + '/app/app.db'
   fs.ensureFileSync(appDbFile)
   initAppDb()
-
-  let updateP = child.fork(`${__dirname}/update.js`,{
-    stdio:'pipe'
-  })
-
-  updateP.on('message', (data)=>{
-    switch (data.type) {
-      case 'finished':
-        initAppDb()
-        break;
-      case 'firstIndexingFinished':
-        globalConfig.context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
-        break;
-      case 'error':
-        console.error(data.error);
-        break;
-
-      default:
-
-    }
-  })
-  function update() {
-    console.log('s u');
-    updateP.send({type:'update',pluginConfig: pluginConfig,globalConfig:globalConfig})
-  }
   //update in first run
   update()
-
-  // watch and update
-  // let watcher = chokidar.watch(pluginConfig.app_path, {
-  //   ignore: /^.*(?!\.desktop)$/,
-  // }),delay = 3000,t
-  //
-  // watcher.on('raw', (event, path, details) => {
-  //   if(['add','change','unlink'].indexOf(event) !== -1){
-  //     t && clearTimeout(t)
-  //     t = setTimeout(()=>{
-  //       try {
-  //         update()
-  //       } catch (e) {
-  //         console.error(e);
-  //       }
-  //     },delay)
-  //   }
-  // })
+  watchers.forEach(watcher=>watcher.close())
+  watchers = []
   let delay = 3000
   pluginConfig.app_path.forEach((dir)=>{
-    let t
-    fs.watch(dir,{
+    let t, watcher = fs.watch(dir,{
       recursive: true
     },(event, filename)=>{
       console.log(`event is: ${event}`);
@@ -81,6 +62,7 @@ function init() {
         update()
       },delay)
     })
+    watchers.push(watcher)
   })
 
 }
@@ -91,6 +73,7 @@ module.exports = {
     if(globalConfig) return
     pluginConfig = pConfig
     globalConfig = gConfig
+    globalConfig.on('reload-config', init)
     init()
   },
   exec: function (args, event) {

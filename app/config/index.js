@@ -1,5 +1,9 @@
-var os = require('os')
-var fs = require('fs-extra')
+const os = require('os')
+const fs = require('fs-extra')
+const electron = require('electron');
+const EventEmitter = require('events');
+class ConfigEmitter extends EventEmitter {}
+const config = new ConfigEmitter();
 
 let debug = process.argv.some((value)=>value==='--debug')
 let db,
@@ -8,14 +12,18 @@ let db,
   dbFile = dataPath+'/db.json'
 
 function merge() {
-  let ignore = a=>a === undefined || a===null
+  let isNone = a=>a === undefined || a===null
   return [].slice.call(arguments).reduce((dist, src)=>{
-    dist = ignore(dist)? {}: dist
-    src = ignore(src)? {} : src
+    dist = isNone(dist)? {}: dist
+    src = isNone(src)? {} : src
     if(typeof src === 'object' && src !== null){
       for (var i in src) {
-        if(src[i] instanceof Object &&
-          !(src[i] instanceof Array)){
+        if(src[i] instanceof Object
+          && !(src[i] instanceof Array)
+          && !(src[i] instanceof Function)
+          && !(src[i] instanceof String)
+          && !(src[i] instanceof Number)
+          && !(src[i] instanceof Boolean)){
           dist[i] = merge(dist[i], src[i])
         }else{
           dist[i] = src[i]
@@ -35,7 +43,23 @@ function saveDb() {
 }
 
 
-module.exports = {
+
+function loadConfig() {
+  let configFromFile
+  if (!fs.existsSync(userConfigFile)) {
+    try {
+      fs.copySync(__dirname+'/config.user.js', userConfigFile)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  delete require.cache[userConfigFile]
+  configFromFile = merge({}, require('./config.default.js'),require(userConfigFile))
+  Object.keys(configFromFile).forEach((key)=>delete config[key])
+  merge(config, configFromFile)
+  return this
+}
+Object.assign(config,  {
   dataPath: dataPath,
   userConfigFile: userConfigFile,
   merge: merge,
@@ -44,19 +68,13 @@ module.exports = {
     mainWindow: null,
     notifier: require('../utils/notifier')
   },
-  loadConfig: function () {
-    merge(this, require('./config.default.js'))
-    if (!fs.existsSync(userConfigFile)) {
-      try {
-        fs.copySync(__dirname+'/config.user.js', userConfigFile)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    merge(this, require(this.userConfigFile))
-    // merge(this, require('./config.user'))
-  }
-,
+  loadConfig: loadConfig,
+  emitReload: function () {
+    config.emit('reload-config')
+    electron.BrowserWindow.getAllWindows()
+      .forEach((win)=>win.webContents.send('reload-config'))
+    return this
+  },
   db: function () {
     if(!db){
       fs.ensureFileSync(dbFile)
@@ -72,9 +90,13 @@ module.exports = {
       db[key] = value
     }
     saveDb()
+    return this
   },
   dbGet: function (key, defaults) {
     return this.db()[key] || defaults
   }
-}
-module.exports.loadConfig()
+})
+
+loadConfig()
+console.log(config);
+module.exports = config

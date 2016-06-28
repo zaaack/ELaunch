@@ -39,7 +39,7 @@ globalConfig = {
   },
   debug:, //(bool) whether it's running in debug mode
   context: { //(object)
-    mainWindow: mainWindow, //the BrowserWindow contains the input box
+    mainWindow: mainWindow, //the BrowserWindow contains the input box, this could be used to inject js/css to mainWindow, please be careful!!
     notifier: {//notifier is a wrapper for notification runs in both main process and renderer process, it has only one method is `notify(title, options)`, please see [html5 notification](http://devdocs.io/dom/notification)
       notify(title, opts){
 

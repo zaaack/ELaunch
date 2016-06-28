@@ -94,10 +94,9 @@ function toggleMainWindow() {
 }
 
 function registShotcut() {
-  let shotcut = config.shotcut && config.shotcut[process.platform] || config.shotcut.default
-  shotcut = shotcut || 'Super+Space'
-  const ret = electron.globalShortcut.register(shotcut, toggleMainWindow);
-
+  let toggleShortcut = config.shotcut.toggle
+  toggleShortcut = toggleShortcut[process.platform] || toggleShortcut.default || 'Super+Space'
+  const ret = electron.globalShortcut.register(toggleShortcut, toggleMainWindow);
   if (!ret) {
     console.log('registration failed');
   }
@@ -128,9 +127,14 @@ function initTray() {
       electron.shell.openExternal('https://github.com/zaaack/ELaunch#readme')
     }
   }, {
-    label: 'exit',
+    label: 'Reload Config',
     click(item, focusedWindow) {
-      process.exit(0)
+      config.loadConfig().emitReload()
+    }
+  }, {
+    label: 'Exit',
+    click(item, focusedWindow) {
+      app.quit()
     }
   }]);
   tray.setToolTip('ELaunch is running.')

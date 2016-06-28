@@ -6,6 +6,13 @@ A launcher based on Electron and inspired by [UAfred](https://github.com/zhenyan
 
 see [release](https://github.com/zaaack/ELaunch/releases)
 
+## Requirement
+
+* Linux: none
+* MacOS: none
+* Windows:
+  * Everything.exe for fastly searching files, this is already packed in, what you need to do is not to quit it on tray.
+  * .NET Framework 2.0 for reading file icon. Usually this is already installed in most PCs, but in some old system like windowsXP it may not being installed, you can download it on [Microsoft's website](https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=1639).
 
 
 ## Config
@@ -14,11 +21,48 @@ see [release](https://github.com/zaaack/ELaunch/releases)
 
 Plugins in default config are built-in plugins, you can overwrite them or add new plugin in custom config(`~/.ELaunch/config.js`). After the program started, it would automatically merge custom config.js to config.default.js. If you want to use platform-specific config, you can add `linux/darwin/win32` fields in plugin config and them would be merged into plugin config according to `process.platform`. This works in command config too. See [default config](app/config/config.default.js).
 
+Notice: after you edit your config, you need to reload config(on tray menu) or restart the app to make config changes work.
 ## Usage
 
 >Default Shotcut: Super+Space for linux and windows, Cmd+Space for MacOS
 
-Then you can type in app names or commands, see [Screen Captures](#Screen Captures) below.
+Then you can type in app names or commands, see [Screen Captures](#screen-captures) below.
+
+# Install plugins
+
+You can find a plugin list on [wiki](https://github.com/zaaack/ELaunch/wiki).
+
+```sh
+cd ~/.ELaunch
+npm i <package name of the plugin> --save
+```
+or
+
+```sh
+cd ~/.ELaunch
+mkdir node_modules
+cd node_modules
+git clone --depth 1 <repository url of the plugin>
+```
+Then, edit your ELaunch config file (path: `~/.ELaunch/config.js`),
+add this plugin in plugins field, something like this:
+```js
+module.exports = {
+  //... other config fields
+  plugins: {
+    //... config for other plugins
+    devdocs: {
+      path: `<path to the plugin>`,
+      command: {
+        `<command of the plugin>`: {}
+      }
+    }
+  }
+}
+```
+
+Then, restart ELaunch or click `Reload config` on tray menu to reload the config file.
+
 
 ## Develop
 
@@ -35,7 +79,7 @@ npm start
 or
 ```sh
 npm i -g electron-prebuilt
-electron ./index.js
+electron ./app/index.js
 ```
 
 ## Build

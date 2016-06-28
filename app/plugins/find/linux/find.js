@@ -3,13 +3,14 @@ let fs = require('fs-extra')
 let child = require('child_process')
 let config = require('../../../config')
 let os = require('os')
+let readline = require('readline');
 let pluginConfig = {
   limit: 20
-}, findProcess
+}, fp
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
-      let rep = p => fs.realpathSync(p.replace('~/', os.homedir() + '/'))
+      let rep = p => path.normalize(p.replace('~/', os.homedir() + '/'))
       pluginConfig.include_path = pluginConfig.include_path.map(rep) || os.homedir()
     },
     exec: function (args, event) {
@@ -25,12 +26,12 @@ module.exports = {
       (excludePara?`\\( ${excludePara} \\)  -a -prune `:``) +
       `-o \\( -type d -o -type f \\) ` +
       (pluginConfig.maxdepth?`-maxdepth ${pluginConfig.maxdepth}`:``) +
-      `-name "${patt}" -print | grep "." -m ${pluginConfig.limit}`
-      console.log(cmd);
+      `-name "${patt}" -print | grep "." -m ${pluginConfig.limit}`//if using readline, childProcess can't be killed
+      // console.log(cmd);
       let defaultIcon = __dirname+'/../assets/file.svg'
-      findProcess && findProcess.kill()
+      fp && fp.kill()
       console.time('find');
-      findProcess = child.execFile('sh',['-c',cmd], (error, stdout, stderr)=>{// don't use node to parse pipe is  more effective
+      fp = child.execFile('sh',['-c',cmd], (error, stdout, stderr)=>{
         if(error){
           console.error(error)
           event.sender.send('exec-reply', [])
