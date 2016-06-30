@@ -1,21 +1,7 @@
 $search-height: 50px;
 
-
 * {
   outline-color: rgb(24, 166, 236);
-}
-.hidden{
-  display: none;
-}
-body {
-  font-family: 'sans-serif';
-  width: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  height: auto;
-  margin: 0;
-
   &::-webkit-scrollbar {
     width: 5px;
     background-color: rgba(0, 0, 0, .06);
@@ -31,6 +17,18 @@ body {
   &::-webkit-scrollbar-thumb:vertical:active {
     background-color: rgba(0, 0, 0, .5);
   }
+}
+.hidden{
+  display: none;
+}
+body {
+  font-family: 'sans-serif';
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  height: auto;
+  margin: 0;
 }
 .el-search-wrapper{
   position: fixed;
