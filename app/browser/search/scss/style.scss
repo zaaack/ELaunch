@@ -4,23 +4,28 @@ $search-height: 50px;
   outline-color: rgb(24, 166, 236);
   &::-webkit-scrollbar {
     width: 5px;
-    background-color: rgba(0, 0, 0, .06);
+    background-color: rgba(0, 0, 0, 0.06);
   }
+
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, .2);
+    background-color: rgba(0, 0, 0, 0.2);
     min-height: 15px;
     border-radius: 2px;
   }
-  &::-webkit-scrollbar-thumb:vertical:hover {
-    background-color: rgba(0, 0, 0, .3);
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
   }
-  &::-webkit-scrollbar-thumb:vertical:active {
-    background-color: rgba(0, 0, 0, .5);
+
+  &::-webkit-scrollbar-thumb:active {
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
-.hidden{
+
+.hidden {
   display: none;
 }
+
 body {
   font-family: 'sans-serif';
   width: 100%;
@@ -30,7 +35,8 @@ body {
   height: auto;
   margin: 0;
 }
-.el-search-wrapper{
+
+.el-search-wrapper {
   position: fixed;
   z-index: 1000;
   width: 100%;
@@ -48,12 +54,14 @@ body {
     border-radius: 8px/6px;
   }
 }
+
 li,
 ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
+
 .el-items {
   width: 100%;
   padding-top: calc(#{$search-height} + 10px);
@@ -100,6 +108,7 @@ ul {
     height: auto;
   }
 }
+
 .btn-group {
   height: 0;
   overflow: hidden;
@@ -116,12 +125,14 @@ ul {
   border: 1px solid;
   border-radius: 3px;
   background-color: transparent;
+
   @each $index,$color in (0:#fa8e10, 1:#7ee03e, 2:#19c6a4, 3:#6d609c,
-    4:#b16d3a, 5:#24b564, 6:#e33636, 7:#c8c222){
-    &.color-#{$index}{
+    4:#b16d3a, 5:#24b564, 6:#e33636, 7:#c8c222) {
+
+    &.color-#{$index} {
       border-color: $color;
       color: $color;
-      &.select{
+      &.select {
         background-color: $color;
         color: white;
       }
