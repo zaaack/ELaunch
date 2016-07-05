@@ -78,7 +78,7 @@ module.exports = {
   },
   exec: function (args, event) {
     if (args.join('').trim() === '') return //空格返回
-    let patt = '*'+args.join('').toLocaleLowerCase().split('').join('*')+'*'
+    let patt = '*'+args.join('*').toLocaleLowerCase()+'*'
     let apps = Object.keys(appDb.apps).map(k => appDb.apps[k])
     console.log(apps.length,'len');
     if(apps.length === 0){
