@@ -1,6 +1,6 @@
 # ELaunch [WIP]
 ## Intro
-A launcher based on Electron and inspired by [UAfred](https://github.com/zhenyangze/uafred), now only support linux and MacOS.
+A launcher based on [Electron](https://github.com/electron/electron) and inspired by [UAfred](https://github.com/zhenyangze/uafred), now only support linux and MacOS.
 
 ## Download
 
