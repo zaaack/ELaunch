@@ -48,14 +48,19 @@ module.exports = {
 
         linux:{
 
-          type: 'find',
-          include_path: ['~/'],
-          exclude_path: ['**/.*','**/node_*'],
+          // type: 'find',
+          // include_path: ['~/'],
+          // exclude_path: ['**/.*','**/node_*'],
           // maxdepth: 10,
+
+          type: 'locate',
+          root_dir: '~',
+          exclude_regex: ['.*?/\\.','.*?/node_'],
+          maxdepth: 10,
         },
         darwin:{
           type:'mdfind',//Notice: mdfind only search the first path in `include_path`, and ignore `exclude_path`, plz set exclude_path in spotlight settings
-          include_path: ['~/'],
+          root_dir: '~/',
           exclude_path: ['**/.*','**/node_*','**/Library','**/Contents'],
         },
         limit: 20

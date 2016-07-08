@@ -12,14 +12,12 @@ module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
       let rep = p => fs.realpathSync(p.replace('~/', os.homedir() + '/'))
-      pluginConfig.include_path = pluginConfig.include_path.map(rep) || os.homedir()
+      pluginConfig.root_dir = rep(pluginConfig.root_dir) || os.homedir()
     },
     exec: function (args, event) {
       if (args.join('').trim() === '') return  //空格返回空
       let patt = args.join('')
-      let includePara = pluginConfig.include_path.map(ip=>`"${ip}"`).join(' '),
-          excludePara = pluginConfig.exclude_path.map(ep=>`-path "${ep}"`).join(' -o ')
-      let cmdArgs = ['-onlyin',`${pluginConfig.include_path[0]}`,`"${patt}"`]
+      let cmdArgs = ['-onlyin',`${pluginConfig.root_dir}`,`"${patt}"`]
       console.log(cmdArgs);
       let defaultIcon = __dirname+'/../assets/file.svg'
       fp && fp.kill()

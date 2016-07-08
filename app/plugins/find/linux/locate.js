@@ -5,7 +5,8 @@ var child = require('child_process')
 var config = require('../../../config')
 var os = require('os');
 var pluginConfig = {
-  limit: 20
+  limit: 20,
+  db_path: '~/.ELaunch/find/mlocate.db'
 }
 let findProcess
 let updatedb = 'updatedb'
@@ -56,13 +57,17 @@ function update (cb) {
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
-      let rep = p => fs.realpathSync(p.replace('~/', os.homedir() + '/'))
-      pluginConfig.root_dir = rep(pluginConfig.root_dir) || '/'
+      let rep = p => path.normalize(p.replace('~/', os.homedir() + '/'))
+      pluginConfig.root_dir = rep(pluginConfig.root_dir || '/')
     },
     exec: function (args, event) {
       if (args.join('').trim() === '') return cb([]) //空格返回空
-      let patt = args.join('').toLocaleLowerCase()
-      let cmd = `locate -i -d "${pluginConfig.db_path}" ${pluginConfig.use_regex?`-r `:``} "${patt}" -l ${pluginConfig.locate_limit} | grep -P -v "${pluginConfig.exclude_patt}" -m ${pluginConfig.limit}`;
+      let patt = args.join('').toLocaleLowerCase().replace(/([\*\.\?\[\]\!+\\])/g, '\\$1')
+      if(pluginConfig.exclude_regex && pluginConfig.exclude_regex.length>0){
+        patt = `(?!${pluginConfig.exclude_regex.join('|')}).*?${patt}`
+      }
+      console.log('patt:'+patt);
+      let cmd = `locate -i -d "${pluginConfig.db_path}" -r "${patt}" -l ${pluginConfig.locate_limit}" -m ${pluginConfig.limit}`;
       console.log(cmd);
       let defaultIcon = __dirname+'/../assets/file.svg'
       findProcess && findProcess.kill()
