@@ -19,6 +19,7 @@ function init() {
     createMainWindow()
     registShotcut()
     initTray()
+    initMenu()
   });
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
@@ -52,8 +53,8 @@ function init() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: config.debug ? 800 : config.width,
-    height: config.max_height || 600,
+    width: config.width,
+    height: config.max_height,
     resizable: config.debug ? true : false,
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
@@ -103,7 +104,6 @@ function registShotcut() {
 }
 
 let tray = null
-
 function initTray() {
   tray = new Tray(__dirname+'/icon_16x16@2x.png')
   const contextMenu = Menu.buildFromTemplate([{
@@ -139,6 +139,52 @@ function initTray() {
   }]);
   tray.setToolTip('ELaunch is running.')
   tray.setContextMenu(contextMenu)
+}
+
+function initMenu() { //init menu to fix copy/paste shortcut issue
+  if (process.platform !== 'darwin' || Menu.getApplicationMenu()) return
+  var template = [
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Undo',
+          accelerator: 'CmdOrCtrl+Z',
+          role: 'undo'
+        },
+        {
+          label: 'Redo',
+          accelerator: 'Shift+CmdOrCtrl+Z',
+          role: 'redo'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Cut',
+          accelerator: 'CmdOrCtrl+X',
+          role: 'cut'
+        },
+        {
+          label: 'Copy',
+          accelerator: 'CmdOrCtrl+C',
+          role: 'copy'
+        },
+        {
+          label: 'Paste',
+          accelerator: 'CmdOrCtrl+V',
+          role: 'paste'
+        },
+        {
+          label: 'Select All',
+          accelerator: 'CmdOrCtrl+A',
+          role: 'selectall'
+        },
+      ]
+    }]
+    var menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+
 }
 
 function makeSingleInstance() {
