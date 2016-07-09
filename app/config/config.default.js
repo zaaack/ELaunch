@@ -42,7 +42,7 @@ module.exports = {
         // type: 'locate',
         // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
         // root_dir: '/home',
-        // exclude_patt: '\\/\\..*|node_modules', //exclude hidden files
+        // exclude_patt: '\\/\\.|node_modules', //exclude hidden files
         // use_regex: false,
         // locate_limit: 1000,
 
@@ -55,13 +55,12 @@ module.exports = {
 
           type: 'locate',
           root_dir: '~',
-          exclude_regex: ['.*?/\\.','.*?/node_'],
-          maxdepth: 10,
+          // exclude_patt: '\\/\\.|node_modules|Programs' //exclude hidden files
         },
         darwin:{
           type:'mdfind',//Notice: mdfind only search the first path in `include_path`, and ignore `exclude_path`, plz set exclude_path in spotlight settings
           root_dir: '~/',
-          exclude_path: ['**/.*','**/node_*','**/Library','**/Contents'],
+          exclude_path: ['**/.*','**/node_*','**/Library','**/Contents'],// /(?!(.*?/\.)|(.*?/node_)).*?a/
         },
         limit: 20
       },

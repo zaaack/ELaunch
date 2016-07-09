@@ -10,7 +10,7 @@ let pluginConfig = {
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
-      let rep = p => path.normalize(p.replace('~/', os.homedir() + '/'))
+      let rep = p => path.normalize(p.replace(/^~/, os.homedir()))
       pluginConfig.include_path = pluginConfig.include_path.map(rep) || os.homedir()
     },
     exec: function (args, event) {
@@ -25,7 +25,7 @@ module.exports = {
       let cmd = `find ${includePara} ` +
       (excludePara?`\\( ${excludePara} \\)  -a -prune `:``) +
       `-o \\( -type d -o -type f \\) ` +
-      (pluginConfig.maxdepth?`-maxdepth ${pluginConfig.maxdepth}`:``) +
+      (pluginConfig.maxdepth?`-maxdepth ${pluginConfig.maxdepth} `:``) +
       `-name "${patt}" -print | grep "." -m ${pluginConfig.limit}`//if using readline, childProcess can't be killed
       // console.log(cmd);
       let defaultIcon = __dirname+'/../assets/file.svg'

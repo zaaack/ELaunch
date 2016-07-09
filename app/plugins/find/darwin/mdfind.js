@@ -11,7 +11,7 @@ let pluginConfig = {
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
-      let rep = p => fs.realpathSync(p.replace('~/', os.homedir() + '/'))
+      let rep = p => path.normalize(p.replace(/^~/, os.homedir()))
       pluginConfig.root_dir = rep(pluginConfig.root_dir) || os.homedir()
     },
     exec: function (args, event) {

@@ -9,7 +9,7 @@ var pluginConfig = {
 }
 let findProcess
 module.exports = {
-  setConfig: function (pConfig) {
+  setConfig: function (pConfig, gConfig) {
     let plugin  = require('./find')
     switch (pConfig.type) {
       case 'locate':
@@ -17,7 +17,7 @@ module.exports = {
         break;
       default:
     }
-    plugin.setConfig && plugin.setConfig(pConfig)
+    plugin.setConfig && plugin.setConfig.call(plugin, ...arguments)
     Object.assign(module.exports, plugin)
   },
   update: function (cb) {
