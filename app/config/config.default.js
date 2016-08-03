@@ -3,6 +3,7 @@ module.exports = {
   width: 600,
   height: 60,
   max_height: 500,
+  position: 'center', // 'center' or {x: 100, y:200}
   shotcut: {
     toggle: {
       default: 'Super+Space',

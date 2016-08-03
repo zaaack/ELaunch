@@ -75,7 +75,6 @@ const ui = require('./js/ui')
       value: _items[+$select.getAttribute('data-item-index')].value,
       opt: $btn?$btn.getAttribute('data-name'):null
     }
-    console.log('exec-item', item, cmd);
     ipcRenderer.send('exec-item', {
       cmd: cmd,
       item: item

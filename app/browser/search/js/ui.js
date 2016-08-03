@@ -64,7 +64,6 @@ module.exports = {
     },
     renderItems: function (items) {
         let $itemUl = document.querySelector('#el-items')
-        console.log(items);
         $itemUl.innerHTML = `${items.map((item, index)=>{
           return item.custom_view?
           `<li class="el-item el-item-dom" tabindex="0" data-item-index='${index}'>

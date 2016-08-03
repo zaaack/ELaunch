@@ -71,6 +71,12 @@ function createMainWindow() {
   if (!config.debug) {
     mainWindow.setContentSize(config.width, config.height, true);
   }
+  console.log(config);
+  if (config.position
+      && config.position.x
+      && config.position.y) {
+    mainWindow.setPosition(config.position.x, config.position.y)
+  }
 
   mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
   mainWindow.on('closed', () => {
