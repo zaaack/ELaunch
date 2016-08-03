@@ -11,19 +11,19 @@ let db,
   userConfigFile = dataPath+'/config.js',
   dbFile = dataPath+'/db.json'
 
+function toType(obj) {
+  return Object.prototype.toString.call(obj).toLocaleLowerCase().slice(8, -1);
+}
+
 function merge() {
   let isNone = a=>a === undefined || a===null
   return [].slice.call(arguments).reduce((dist, src)=>{
     dist = isNone(dist)? {}: dist
     src = isNone(src)? {} : src
-    if(typeof src === 'object' && src !== null){
+    if(toType(src) === 'object'){
       for (var i in src) {
-        if(src[i] instanceof Object
-          && !(src[i] instanceof Array)
-          && !(src[i] instanceof Function)
-          && !(src[i] instanceof String)
-          && !(src[i] instanceof Number)
-          && !(src[i] instanceof Boolean)){
+        if(toType(src[i]) === 'object'
+            && toType(dist[i]) === 'object'){
           dist[i] = merge(dist[i], src[i])
         }else{
           dist[i] = src[i]
@@ -54,7 +54,7 @@ function loadConfig() {
     }
   }
   delete require.cache[userConfigFile]
-  configFromFile = merge({}, require('./config.default.js'),require(userConfigFile))
+  configFromFile = merge({}, require('./config.default.js'), require(userConfigFile))
   Object.keys(configFromFile).forEach((key)=>delete config[key])
   merge(config, configFromFile)
   return this
@@ -98,5 +98,4 @@ Object.assign(config,  {
 })
 
 loadConfig()
-console.log(config);
 module.exports = config
