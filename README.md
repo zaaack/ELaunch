@@ -6,6 +6,8 @@ A launcher based on [Electron](https://github.com/electron/electron) and inspire
 
 see [release](https://github.com/zaaack/ELaunch/releases)
 
+or download from [BaiduYun](https://pan.baidu.com/s/1qXDQGLA) if you in China.
+
 ## Requirement
 
 * Linux: none
