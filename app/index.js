@@ -17,7 +17,7 @@ function init() {
   app.dock && app.dock.hide()
   app.on('ready', () => {
     createMainWindow()
-    registShotcut()
+    registShortcut()
     initTray()
     initMenu()
   });
@@ -124,8 +124,8 @@ function toggleMainWindow() {
   }
 }
 
-function registShotcut() {
-  let toggleShortcut = config.shotcut.toggle
+function registShortcut() {
+  let toggleShortcut = config.shortcut.toggle
   toggleShortcut = toggleShortcut[process.platform] || toggleShortcut.default || 'Super+Space'
   const ret = electron.globalShortcut.register(toggleShortcut, toggleMainWindow);
   if (!ret) {
