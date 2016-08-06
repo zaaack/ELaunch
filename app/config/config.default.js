@@ -5,7 +5,7 @@ module.exports = {
   max_height: 500,
   position: 'center', // 'center' or {x: 100, y:200}
   display: 'primary', // default is your primary display, you can change it by setting display id(integer), get all ids by require('electron').screen.getAllDisplays().map(d=>d.id)
-  shotcut: {
+  shortcut: {
     toggle: {
       default: 'Super+Space',
       win32: 'Super+Space',
