@@ -47,7 +47,7 @@ function init() {
     }
   })
   ipcMain.on('hide', () => {
-    mainWindow.hide()
+    hideMainWindow()
   })
 }
 
@@ -65,18 +65,14 @@ function createMainWindow() {
     show: false,
     transparent: true,
     alwaysOnTop: true,
-    disableAutoHideCursor: true
+    disableAutoHideCursor: true,
   })
 
   if (!config.debug) {
     mainWindow.setContentSize(config.width, config.height, true);
   }
-  console.log(config);
-  if (config.position
-      && config.position.x
-      && config.position.y) {
-    mainWindow.setPosition(config.position.x, config.position.y)
-  }
+
+  initPosition(mainWindow)
 
   mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
   mainWindow.on('closed', () => {
@@ -84,19 +80,47 @@ function createMainWindow() {
   });
 
   mainWindow.on('blur', () => {
-    mainWindow.hide()
+    hideMainWindow()
   })
 
   config.context.mainWindow = mainWindow
 }
 
+function initPosition(mainWindow) {
+  let display = electron.screen.getPrimaryDisplay()
+  if (config.display && Number.isInteger(config.display)) {
+    display = electron.screen.getAllDisplays()
+      .find((d) => d.id === config.display)
+  }
+
+  const bx = display.bounds.x,
+    by = display.bounds.y
+  let x = bx + (display.workAreaSize.width - config.width) / 2
+  let y = by + (display.workAreaSize.height - config.max_height) / 2
+
+  if (config.position &&
+    config.position.x !== void 0 &&
+    config.position.y !== void 0) {
+    x = bx + config.position.x
+    y = bx + config.position.y
+  }
+  mainWindow.setPosition(x, y)
+}
+
+function hideMainWindow() {
+  if (config.debug) return
+  mainWindow.hide()
+  app.hide && app.hide() // auto focus on last focused window is default feature in window/linux, we can use app.hide() in osx to implement it
+}
+
 function toggleMainWindow() {
   if (mainWindow.isVisible()) {
-    mainWindow.hide()
+    hideMainWindow()
   } else {
-    mainWindow.restore();
+    mainWindow.restore()
     mainWindow.show()
-    mainWindow.focus();
+    mainWindow.focus()
+    app.show && app.show()
   }
 }
 
@@ -110,8 +134,9 @@ function registShotcut() {
 }
 
 let tray = null
+
 function initTray() {
-  tray = new Tray(__dirname+'/icon_16x16@2x.png')
+  tray = new Tray(__dirname + '/icon_16x16@2x.png')
   const contextMenu = Menu.buildFromTemplate([{
     label: 'Toggle ELaunch',
     click(item, focusedWindow) {
@@ -120,9 +145,9 @@ function initTray() {
   }, {
     label: 'Preferences',
     click(item, focusedWindow) {
-      require('electron').shell.openItem(require('os').homedir()+'/.ELaunch/config.js')
+      require('electron').shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
     }
-  },{
+  }, {
     label: 'Bug Report',
     click(item, focusedWindow) {
       electron.shell.openExternal('https://github.com/zaaack/ELaunch/issues')
@@ -149,47 +174,38 @@ function initTray() {
 
 function initMenu() { //init menu to fix copy/paste shortcut issue
   if (process.platform !== 'darwin' || Menu.getApplicationMenu()) return
-  var template = [
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Undo',
-          accelerator: 'CmdOrCtrl+Z',
-          role: 'undo'
-        },
-        {
-          label: 'Redo',
-          accelerator: 'Shift+CmdOrCtrl+Z',
-          role: 'redo'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Cut',
-          accelerator: 'CmdOrCtrl+X',
-          role: 'cut'
-        },
-        {
-          label: 'Copy',
-          accelerator: 'CmdOrCtrl+C',
-          role: 'copy'
-        },
-        {
-          label: 'Paste',
-          accelerator: 'CmdOrCtrl+V',
-          role: 'paste'
-        },
-        {
-          label: 'Select All',
-          accelerator: 'CmdOrCtrl+A',
-          role: 'selectall'
-        },
-      ]
-    }]
-    var menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+  var template = [{
+    label: 'Edit',
+    submenu: [{
+      label: 'Undo',
+      accelerator: 'CmdOrCtrl+Z',
+      role: 'undo'
+    }, {
+      label: 'Redo',
+      accelerator: 'Shift+CmdOrCtrl+Z',
+      role: 'redo'
+    }, {
+      type: 'separator'
+    }, {
+      label: 'Cut',
+      accelerator: 'CmdOrCtrl+X',
+      role: 'cut'
+    }, {
+      label: 'Copy',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy'
+    }, {
+      label: 'Paste',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste'
+    }, {
+      label: 'Select All',
+      accelerator: 'CmdOrCtrl+A',
+      role: 'selectall'
+    }, ]
+  }]
+  var menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 
 }
 
