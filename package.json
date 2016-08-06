@@ -1,6 +1,6 @@
 {
   "name": "ELaunch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "node-sass": "^3.7.0"
   },
   "build": {
-    "appId": "net.open-demo.elaunch",
+    "appId": "io.gitub.zaaack.elaunch",
     "app-category-type": "public.app-category.productivity"
   }
 }

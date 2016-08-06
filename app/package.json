@@ -1,6 +1,6 @@
 {
   "name": "ELaunch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "description": "a cross platform launcher based on electron, just like Alfred in MacOS",
   "repository": {
