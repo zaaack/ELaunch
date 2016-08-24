@@ -4,11 +4,26 @@ const os = require('os');
 const child = require('child_process')
 const config = require('../config')
 
-let lastUpdateTime = 0,
-    lastExecTime = 0,
-    isUpdateing = false,
-    isExecing = false,
-    pluginMap
+let lastUpdateTime = 0
+let lastExecTime = 0
+let isUpdateing = false
+let isExecing = false
+let pluginMap
+
+
+
+function getPlugin(pluginInfo) {
+  let isPluginRequired = !!require.cache[pluginInfo.path]
+  let plugin = require(pluginInfo.path)
+  if (!isPluginRequired) {
+    try {
+      plugin.setConfig && plugin.setConfig(pluginInfo.config, config)
+    } catch (e) {
+      console.error('Plugin [%s] setConfig failed!!', pluginInfo.name, e)
+    }
+  }
+  return plugin
+}
 
 function getMergedPluginInfo(pluginInfo, cmdConfig) {
   cmdConfig = cmdConfig || {}
@@ -30,6 +45,7 @@ function loadPluginMap() {
   pluginMap = {}
   Object.keys(config.plugins).forEach(pluginName => {
     let pluginInfo = config.plugins[pluginName]
+    pluginInfo.name = pluginName
     let cmdConfigMap = pluginInfo.command || { [pluginName]: {} }
 
     Object.keys(cmdConfigMap).forEach(cmd => {
@@ -37,14 +53,12 @@ function loadPluginMap() {
       pluginMap[cmd] = getMergedPluginInfo(pluginInfo, cmdConfigMap[cmd])
     })
 
-
-    if(pluginInfo.config.init_on_start){ //init plugin on program start
-      let plugin = require(pluginInfo.path);
+    if(pluginInfo.config && pluginInfo.config.init_on_start){ //init plugin on program start
+      let plugin = getPlugin(pluginInfo)
       try {
         plugin.initOnStart && plugin.initOnStart(pluginInfo.config, config)
       } catch (e) {
-        console.error('Plugin[%s] initOnStart failed!', pluginName)
-        console.error(e)
+        console.error('Plugin [%s] initOnStart failed!', pluginName, e)
       }
     }
   })
@@ -62,24 +76,30 @@ function parseCmd(data) {
   if (args.length > 1 && (args[0] in pluginMap)) {
     key = args.shift()
   } else {
-    key = Object.keys(pluginMap).find(k=>pluginMap[k].default)
+    key = Object.keys(pluginMap).find(k => pluginMap[k].default)
   }
   let plugin = pluginMap[key]
+  if (!plugin) {
+    console.log(key, pluginMap);
+  }
   return {
     key: key,
     path: path.resolve(config.dataPath, plugin.path),
     args: args,
     type: data.type,
+    plugin: plugin,
     config: plugin.config || {}
   }
 }
 module.exports = {
   exec: (data, event) => {
     let cmdInfo = parseCmd(data)
-    let plugin = require(cmdInfo.path)
-    plugin.setConfig && plugin.setConfig(cmdInfo.config, config)
-
-    plugin.exec(cmdInfo.args, event, cmdInfo)
+    let plugin = getPlugin(cmdInfo.plugin)
+    try {
+      plugin.exec(cmdInfo.args, event, cmdInfo)
+    } catch (e) {
+      console.error('Plugin [%s] exec failed!', cmdInfo.plugin.name, e)
+    }
       // child.exec(`${cmdInfo.path} ${cmdInfo.args.join(' ')}`, (error, stdout, stderr)=>{
       //   if(error) console.error(error);
       //   cb(stdout)
@@ -87,7 +107,11 @@ module.exports = {
   },
   execItem: function (data, event) {
     let cmdInfo = parseCmd(data)
-    let plugin = require(cmdInfo.path)
-    plugin.execItem(data.item, event, cmdInfo)
+    let plugin = getPlugin(cmdInfo.plugin)
+    try {
+      plugin.execItem(data.item, event, cmdInfo)
+    } catch (e) {
+      console.error('Plugin [%s] execItem failed!', cmdInfo.plugin.name, e)
+    }
   }
 }
