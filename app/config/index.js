@@ -24,7 +24,7 @@ function merge() {
       for (var i in src) {
         if(toType(src[i]) === 'object'
             && toType(dist[i]) === 'object'){
-          dist[i] = merge(dist[i], src[i])
+          dist[i] = merge({}, dist[i], src[i])
         }else{
           dist[i] = src[i]
         }
