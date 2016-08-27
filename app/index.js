@@ -4,28 +4,33 @@ const ipcMain = require('electron').ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
 
-let mainWindow;
+let mainWindow, configWindow;
 
 
-function initPosition(mainWindow) {
+function setPosition(win, pos) {
   let display = electron.screen.getPrimaryDisplay()
   if (config.display && Number.isInteger(config.display)) {
     display = electron.screen.getAllDisplays()
       .find((d) => d.id === config.display)
   }
 
-  const bx = display.bounds.x,
-    by = display.bounds.y
-  let x = bx + (display.workAreaSize.width - config.width) / 2
-  let y = by + (display.workAreaSize.height - config.max_height) / 2
+  const bx = display.bounds.x
+  const by = display.bounds.y
+  const dw = display.workAreaSize.width
+  const dh = display.workAreaSize.height
+  const wb = win.getBounds()
+  // set window to center in primary display when default
+  let x = bx + (dw - wb.width) / 2
+  let y = by + (dh - wb.height) / 2
 
-  if (config.position &&
-    config.position.x !== void 0 &&
-    config.position.y !== void 0) {
-    x = bx + config.position.x
-    y = bx + config.position.y
+  if (pos && pos.x && pos.y) {
+    x = bx + pos.x
+    y = bx + pos.y
+  } else if (pos && pos.width && pos.height){
+    x = bx + (dw - pos.width) / 2
+    y = by + (dh - pos.height) / 2
   }
-  mainWindow.setPosition(x, y)
+  win.setPosition(x, y)
 }
 
 function hideMainWindow() {
@@ -65,7 +70,12 @@ function createMainWindow() {
     mainWindow.setContentSize(config.width, config.height, true);
   }
 
-  initPosition(mainWindow)
+  setPosition(mainWindow, {
+    x: config.position && config.position.x,
+    y: config.position && config.position.y,
+    width: config.width,
+    height: config.max_height
+  })
 
   mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
   mainWindow.on('closed', () => {
@@ -102,7 +112,16 @@ function initTray() {
   }, {
     label: 'Preferences',
     click(item, focusedWindow) {
-      require('electron').shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
+      if (config.debug) {
+        configWindow = new BrowserWindow({
+            width: 800,
+            height: 600,
+            title: 'ELaunch preferences'
+        })
+        setPosition(configWindow)
+      } else {
+        electron.shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
+      }
     }
   }, {
     label: 'Bug Report',
