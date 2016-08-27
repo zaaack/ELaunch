@@ -8,9 +8,16 @@ let chokidar = require('chokidar')
 
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
-let appDbFile, pluginConfig, globalConfig,
-    appDb, watchers = [],
+let pluginConfig, globalConfig, context,
+    appDbFile, appDb, watchers = [],
     defaultIcon = __dirname + '/../assets/app.svg'
+
+function initAppDb() {
+  appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
+    lastUpdateTime: 0,
+    apps: {}
+  }
+}
 
 let updateP = child.fork(`${__dirname}/update.js`,{
   stdio:'pipe'
@@ -22,7 +29,7 @@ updateP.on('message', (data)=>{
       initAppDb()
       break;
     case 'firstIndexingFinished':
-      globalConfig.context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
+      context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
       break;
     case 'error':
       console.error(data.error);
@@ -31,15 +38,13 @@ updateP.on('message', (data)=>{
   }
 })
 
-function initAppDb() {
-  appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
-    lastUpdateTime: 0,
-    apps: {}
-  }
-}
 
 function update() {
-  updateP.send({type:'update',pluginConfig: pluginConfig,globalConfig:globalConfig})
+  updateP.send({
+    type:'update',
+    pluginConfig: pluginConfig,
+    globalConfig: globalConfig
+  })
 }
 
 function init() {
@@ -51,15 +56,16 @@ function init() {
   update()
   watchers.forEach(watcher=>watcher.close())
   watchers = []
-  let delay = 3000
+  let delay = 1000 * 60 * 5 // update after 5min for copy time
   pluginConfig.app_path.forEach((dir)=>{
     let t, watcher = fs.watch(dir,{
       recursive: true
-    },(event, filename)=>{
+    }, (event, filename)=>{
       console.log(`event is: ${event}`);
       t && clearTimeout(t)
       t = setTimeout(()=>{
         update()
+        t = null
       },delay)
     })
     watchers.push(watcher)
@@ -69,10 +75,11 @@ function init() {
 
 
 module.exports = {
-  setConfig: function (pConfig, gConfig) {
-    if(globalConfig) return
+  setConfig: function (pConfig, gConfig, ctx) {
     pluginConfig = pConfig
     globalConfig = gConfig
+    context = ctx
+    console.log(context)
     globalConfig.on('reload-config', init)
     init()
   },

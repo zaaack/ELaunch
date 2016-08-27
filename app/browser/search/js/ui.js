@@ -1,4 +1,4 @@
-function getFocusable() {
+function getFocusableItems() {
   return [document.querySelector('#el-search')]
     .concat([].slice.call(document.querySelectorAll('.el-item-dom')))
 }
@@ -23,36 +23,39 @@ function selectBtn(n, $selItem) {
   $selBtn.classList.add('select')
 }
 
+function bindFocusEvents() {
+  //select item on Tab
+  document.addEventListener('focus', function (e) {
+    if (e.target.classList.contains('el-item-dom')) {
+      [].slice.call(document.querySelectorAll('.el-item-dom'))
+        .forEach(item => item.classList.remove('select'))
+      e.target.classList.add('select')
+    }else if (e.target.classList.contains('btn-dom')) {
+      selectBtn(e.target)
+    }
+  }, true)
 
-//select item on Tab
-document.addEventListener('focus', function (e) {
-  if (e.target.classList.contains('el-item-dom')) {
-    [].slice.call(document.querySelectorAll('.el-item-dom'))
-      .forEach(item => item.classList.remove('select'))
-    e.target.classList.add('select')
-  }else if (e.target.classList.contains('btn-dom')) {
-    selectBtn(e.target)
-  }
-}, true)
+  // auto focus in shown
+  window.addEventListener('focus', function () {
+    document.querySelector('#el-search').focus()
+  })
+}
 
-// auto focus in shown
-window.addEventListener('focus', function () {
-  document.querySelector('#el-search').focus()
-})
+bindFocusEvents()
 
-let itemIsSel = $el =>
+let isSelectedItem = $el =>
   $el === document.activeElement ||
   $el.classList.contains('select')
 module.exports = {
     selectNextItem: function () {
-      let $fItems = getFocusable()
-      let prevIndex = $fItems.findIndex(itemIsSel)
+      let $fItems = getFocusableItems()
+      let prevIndex = $fItems.findIndex(isSelectedItem)
       let $selItem = $fItems[(prevIndex + 1) % $fItems.length]
       $selItem.focus()
     },
     selectPrevItem: function () {
-      let $fItems = getFocusable()
-      let prevIndex = $fItems.findIndex(itemIsSel)
+      let $fItems = getFocusableItems()
+      let prevIndex = $fItems.findIndex(isSelectedItem)
       let $selItem = $fItems[(prevIndex - 1 + $fItems.length) % $fItems.length]
       $selItem.focus()
     },

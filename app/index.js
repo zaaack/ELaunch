@@ -1,90 +1,11 @@
-const electron = require('electron');
-const {
-  app,
-  Tray,
-  Menu,
-  BrowserWindow
-} = electron;
+const electron = require('electron')
+const { app, Tray, Menu, BrowserWindow } = electron
 const ipcMain = require('electron').ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
 
 let mainWindow;
 
-function init() {
-  const shouldQuit = makeSingleInstance()
-  if (shouldQuit) return app.quit()
-  app.dock && app.dock.hide()
-  app.on('ready', () => {
-    createMainWindow()
-    registShortcut()
-    initTray()
-    initMenu()
-  });
-  // Quit when all windows are closed.
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darmainWin') {
-      app.quit();
-    }
-  });
-  app.on('activate', () => {
-    if (mainWindow === null) {
-      createMainWindow();
-    }
-  });
-  ipcMain.on('exec', (event, data) => {
-    plugin.exec(data, event)
-  })
-  ipcMain.on('exec-item', (event, data) => {
-    plugin.execItem(data, event)
-  })
-  ipcMain.on('window-resize', (event, data) => {
-    let height = data.height || mainWindow.getContentSize()['height']
-    let width = data.width || config.width
-    height = Math.min(height, config.max_height)
-    if (!config.debug) {
-      mainWindow.setContentSize(width, height, true);
-    }
-  })
-  ipcMain.on('hide', () => {
-    hideMainWindow()
-  })
-}
-
-function createMainWindow() {
-  mainWindow = new BrowserWindow({
-    width: config.width,
-    height: config.max_height,
-    resizable: config.debug ? true : false,
-    title: config.title,
-    type: config.debug ? 'normal' : 'splash',
-    frame: false,
-    skipTaskbar: config.debug ? false : true,
-    autoHideMenuBar: config.debug ? false : true,
-    backgroundColor: 'alpha(opacity=0)',
-    show: false,
-    transparent: true,
-    alwaysOnTop: true,
-    disableAutoHideCursor: true,
-  })
-
-  if (!config.debug) {
-    mainWindow.setContentSize(config.width, config.height, true);
-  }
-
-  initPosition(mainWindow)
-
-  mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
-  mainWindow.on('blur', () => {
-    hideMainWindow()
-  })
-
-  config.context.mainWindow = mainWindow
-}
 
 function initPosition(mainWindow) {
   let display = electron.screen.getPrimaryDisplay()
@@ -108,7 +29,6 @@ function initPosition(mainWindow) {
 }
 
 function hideMainWindow() {
-  if (config.debug) return
   mainWindow.hide()
   app.hide && app.hide() // auto focus on last focused window is default feature in window/linux, we can use app.hide() in osx to implement it
 }
@@ -122,6 +42,43 @@ function toggleMainWindow() {
     mainWindow.focus()
     app.show && app.show()
   }
+}
+
+function createMainWindow() {
+  mainWindow = new BrowserWindow({
+    width: config.width,
+    height: config.max_height,
+    resizable: config.debug,
+    title: config.title,
+    type: config.debug ? 'normal' : 'splash',
+    frame: false,
+    skipTaskbar: !config.debug,
+    autoHideMenuBar: !config.debug,
+    backgroundColor: 'alpha(opacity=0)',
+    show: false,
+    transparent: true,
+    alwaysOnTop: !config.debug,
+    disableAutoHideCursor: true,
+  })
+
+  if (!config.debug) {
+    mainWindow.setContentSize(config.width, config.height, true);
+  }
+
+  initPosition(mainWindow)
+
+  mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+
+  mainWindow.on('blur', () => {
+    if (!config.debug) {
+      hideMainWindow()
+    }
+  })
+
+  config.context.mainWindow = mainWindow
 }
 
 function registShortcut() {
@@ -217,5 +174,51 @@ function makeSingleInstance() {
     }
   });
 }
+
+
+
+function init() {
+  const shouldQuit = makeSingleInstance()
+  if (shouldQuit) return app.quit()
+  app.dock && app.dock.hide()
+  app.on('ready', () => {
+    createMainWindow()
+    registShortcut()
+    initTray()
+    initMenu()
+    config.context.app = app
+    config.context.locale = app.getLocale()
+    config.emit('app-ready')
+  });
+  // Quit when all windows are closed.
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darmainWin') {
+      app.quit();
+    }
+  });
+  app.on('activate', () => {
+    if (mainWindow === null) {
+      createMainWindow();
+    }
+  });
+  ipcMain.on('exec', (event, data) => {
+    plugin.exec(data, event)
+  })
+  ipcMain.on('exec-item', (event, data) => {
+    plugin.execItem(data, event)
+  })
+  ipcMain.on('window-resize', (event, data) => {
+    let height = data.height || mainWindow.getContentSize()['height']
+    let width = data.width || config.width
+    height = Math.min(height, config.max_height)
+    if (!config.debug) {
+      mainWindow.setContentSize(width, height, true);
+    }
+  })
+  ipcMain.on('hide', () => {
+    hideMainWindow()
+  })
+}
+
 
 init()
