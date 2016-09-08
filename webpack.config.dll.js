@@ -1,5 +1,7 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
+
+const baseDir = './app/browser/pref'
 
 module.exports = {
   entry: {
@@ -8,12 +10,12 @@ module.exports = {
   devtool: '#source-map',
   output: {
     filename: '[name].dll.js',
-    path: path.resolve(__dirname, './extension/dist/dll'),
+    path: path.resolve(__dirname, `${baseDir}/dist/dll`),
     library: "[name]"
   },
   plugins: [
     new webpack.DllPlugin({
-      path: path.resolve(__dirname, './extension/dist/dll/[name]-manifest.json'),
+      path: path.resolve(__dirname, `${baseDir}/dist/dll/[name]-manifest.json`),
       name: "[name]"
     }),
     new webpack.optimize.UglifyJsPlugin({

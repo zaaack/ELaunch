@@ -7,7 +7,6 @@
 ./node_modules/redux
 ./node_modules/react-redux
 ./node_modules/react-router
-./node_modules/dexie
 [libs]
 ./flow-typed/.*
 [options]
