@@ -1,10 +1,12 @@
+const { $, $$ } = require('../../utils/dom-util')
+
 function getFocusableItems() {
-  return [document.querySelector('#el-search')]
-    .concat([].slice.call(document.querySelectorAll('.el-item-dom')))
+  return [$('#search-input')]
+    .concat([].slice.call($$('.js-item')))
 }
 
 function selectBtn(n, $selItem) {
-  let $btns = [].slice.call(($selItem||document).querySelectorAll('.el-item-dom.select .btn'))
+  let $btns = [].slice.call(($selItem||document).querySelectorAll('.js-item.select .btn'))
   if ($btns.length === 0) return
   let prevIndex = $btns.findIndex($btn => $btn.classList.contains('select'))
   if (prevIndex >= 0){
@@ -25,19 +27,20 @@ function selectBtn(n, $selItem) {
 
 function bindFocusEvents() {
   //select item on Tab
-  document.addEventListener('focus', function (e) {
-    if (e.target.classList.contains('el-item-dom')) {
-      [].slice.call(document.querySelectorAll('.el-item-dom'))
+  $.on('focus', function (e) {
+    console.log(e)
+    if (e.target.classList.contains('js-item')) {
+      [].slice.call($$('.js-item'))
         .forEach(item => item.classList.remove('select'))
       e.target.classList.add('select')
-    }else if (e.target.classList.contains('btn-dom')) {
+    }else if (e.target.classList.contains('js-btn')) {
       selectBtn(e.target)
     }
   }, true)
 
   // auto focus in shown
   window.addEventListener('focus', function () {
-    document.querySelector('#el-search').focus()
+    $('#search-input').focus()
   })
 }
 
@@ -66,23 +69,23 @@ module.exports = {
       selectBtn(-1)
     },
     renderItems: function (items) {
-        let $itemUl = document.querySelector('#el-items')
+        let $itemUl = $('#items')
         $itemUl.innerHTML = `${items.map((item, index)=>{
           return item.custom_view?
-          `<li class="el-item el-item-dom" tabindex="0" data-item-index='${index}'>
+          `<li class="item js-item" tabindex="0" data-index='${index}'>
             ${item.custom_view}
           </li>`:
 
-          `<li class="el-item el-item-dom" tabindex="0" data-item-index='${index}'>
-            <img class="el-item-icon" src="${item.icon}"/>
-            <div class="el-item-info">
-              <div class="el-item-name">${item.name}<span class="el-item-key">Alt+${index+1}</span></div>
-              <div class="el-item-detail">${item.detail?item.detail:'&nbsp;'}</div>
+          `<li class="item js-item" tabindex="0" data-index='${index}'>
+            <img class="icon" src="${item.icon}"/>
+            <div class="info">
+              <div class="name">${item.name}<span class="key">Alt+${index+1}</span></div>
+              <div class="detail">${item.detail?item.detail:'&nbsp;'}</div>
             </div>
             ${item.opts?
               `<div class="btn-group">
                 ${item.opts.map((opt,optIndex)=>
-                  `<button class="btn btn-dom color-${optIndex} ${optIndex===0?  `select`:``}" data-name="${opt.name}">${opt.label}</button>`
+                  `<button class="btn js-btn color-${optIndex} ${optIndex===0?  `select`:``}" data-name="${opt.name}">${opt.label}</button>`
                 ).join('')}
               </div>`:``}
           </li>`

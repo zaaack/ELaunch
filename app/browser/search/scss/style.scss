@@ -2,6 +2,7 @@ $search-height: 50px;
 
 * {
   outline-color: rgb(24, 166, 236);
+
   &::-webkit-scrollbar {
     width: 5px;
     background-color: rgba(0, 0, 0, 0.06);
@@ -36,13 +37,14 @@ body {
   margin: 0;
 }
 
-.el-search-wrapper {
+.search-wrapper {
   position: fixed;
   z-index: 1000;
   width: 100%;
   padding: 5px;
   background: white;
-  .el-search {
+
+  .search {
     box-sizing: border-box;
     width: calc(100% - 10px);
     height: $search-height;
@@ -62,50 +64,55 @@ ul {
   list-style: none;
 }
 
-.el-items {
+.items {
   width: 100%;
   padding-top: calc(#{$search-height} + 10px);
   word-break: break-all;
   word-wrap: break-word;
-}
 
-.el-item {
-  position: relative;
-  padding: 5px;
-  &.select {
-    background-color: rgba(100, 214, 245, 0.08);
-  }
+  .item {
+    position: relative;
+    padding: 5px;
 
-  .el-item-icon {
-    position: absolute;
-    left: 5px;
-    top: 5px;
-    width: 40px;
-    height: 40px;
-    background-position: center;
-  }
-  .el-item-info {
-    margin-left: 55px;
-  }
-  .el-item-name {
-    font-size: 20px;
-    line-height: 30px;
-  }
-  .el-item-key {
-    float: right;
-    margin-right: 5px;
-    font-size: 14px;
-    color: #666;
-  }
-  .el-item-detail {
-    clear: both;
-    font-size: 12px;
-    line-height: 16px;
-    color: #999;
-  }
+    &.select {
+      background-color: rgba(100, 214, 245, 0.08);
+    }
 
-  &.select .btn-group {
-    height: auto;
+    .icon {
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      width: 40px;
+      height: 40px;
+      background-position: center;
+    }
+
+    .info {
+      margin-left: 55px;
+    }
+
+    .name {
+      font-size: 20px;
+      line-height: 30px;
+    }
+
+    .key {
+      float: right;
+      margin-right: 5px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .detail {
+      clear: both;
+      font-size: 12px;
+      line-height: 16px;
+      color: #999;
+    }
+
+    &.select .btn-group {
+      height: auto;
+    }
   }
 }
 
@@ -114,7 +121,6 @@ ul {
   overflow: hidden;
   transition: all 0.2s ease-in-out;
   text-align: right;
-  overflow: hidden;
 }
 
 .btn {
@@ -127,11 +133,11 @@ ul {
   background-color: transparent;
 
   @each $index,$color in (0:#fa8e10, 1:#7ee03e, 2:#19c6a4, 3:#6d609c,
-    4:#b16d3a, 5:#24b564, 6:#e33636, 7:#c8c222) {
-
+  4:#b16d3a, 5:#24b564, 6:#e33636, 7:#c8c222) {
     &.color-#{$index} {
       border-color: $color;
       color: $color;
+
       &.select {
         background-color: $color;
         color: white;

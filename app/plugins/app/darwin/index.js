@@ -1,16 +1,17 @@
-var fs = require('fs')
-var path = require('path')
-var child = require('child_process')
-var fs = require('fs-extra')
-var shell = require('electron').shell
-var globule = require('globule')
-let chokidar = require('chokidar')
+const path = require('path')
+const child = require('child_process')
+const fs = require('fs-extra')
+const shell = require('electron').shell
+const globule = require('globule')
+const chokidar = require('chokidar')
+
+const defaultIcon = __dirname + '/../assets/app.svg'
 
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
 let pluginConfig, globalConfig, context,
-    appDbFile, appDb, watchers = [],
-    defaultIcon = __dirname + '/../assets/app.svg'
+    appDbFile, appDb, watchers = []
+
 
 function initAppDb() {
   appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
@@ -19,11 +20,11 @@ function initAppDb() {
   }
 }
 
-let updateP = child.fork(`${__dirname}/update.js`,{
+const updateProcess = child.fork(`${__dirname}/update.js`,{
   stdio:'pipe'
 })
 
-updateP.on('message', (data)=>{
+updateProcess.on('message', (data)=>{
   switch (data.type) {
     case 'finished':
       initAppDb()
@@ -40,7 +41,7 @@ updateP.on('message', (data)=>{
 
 
 function update() {
-  updateP.send({
+  updateProcess.send({
     type:'update',
     pluginConfig: pluginConfig,
     globalConfig: globalConfig
@@ -66,7 +67,7 @@ function init() {
       t = setTimeout(()=>{
         update()
         t = null
-      },delay)
+      }, delay)
     })
     watchers.push(watcher)
   })
@@ -85,7 +86,7 @@ module.exports = {
   },
   exec: function (args, event) {
     if (args.join('').trim() === '') return //空格返回
-    let patt = '*'+args.join('*').toLocaleLowerCase()+'*'
+    let patt = '*'+args.join('*').toLowerCase()+'*'
     let apps = Object.keys(appDb.apps).map(k => appDb.apps[k])
     console.log(apps.length,'len');
     if(apps.length === 0){

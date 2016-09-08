@@ -30,7 +30,11 @@ function setPosition(win, pos) {
     x = bx + (dw - pos.width) / 2
     y = by + (dh - pos.height) / 2
   }
-  win.setPosition(x|0, y|0)
+
+  x = Math.round(x, 10)
+  y = Math.round(y, 10)
+
+  win.setPosition(x, y)
 }
 
 function hideMainWindow() {

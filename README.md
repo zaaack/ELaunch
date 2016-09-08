@@ -73,6 +73,10 @@ You need install [nodejs](https://nodejs.org/en/) first, than run commands below
 git clone https://github.com/zaaack/ELaunch.git
 cd ELaunch/app && npm i
 cd ../ && npm i
+
+# build native modules (node-inspector)
+./node_modules/.bin/electron-rebuild
+
 ```
 then you can start it by
 ```sh
@@ -82,6 +86,17 @@ or
 ```sh
 npm i -g electron-prebuilt
 electron ./app/index.js
+```
+
+## debug
+
+see: http://electron.atom.io/docs/tutorial/debugging-main-process/
+
+```js
+
+npm run debug-brk
+ELECTRON_RUN_AS_NODE=true node_modules/.bin/electron node_modules/node-inspector/bin/inspector.js
+
 ```
 
 ## Build

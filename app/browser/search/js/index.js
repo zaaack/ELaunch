@@ -1,8 +1,9 @@
 /**
- * use .el-item-dom/.el-btn-dom to operate dom and .el-item/.btn to change style,
+ * use .js-item/.js-btn to operate dom and .item/.btn to change style,
  * this could make develop plugin which need custom_view more easier, like custom
  * button style(e.g. emoji plugin shows emoji icons in grid view)
  */
+const { $, $$ } = require('../utils/dom-util.js')
 const ipcRenderer = require('electron').ipcRenderer
 const notifier = require('../../utils/notifier').initInRenderer()
 const ui = require('./js/ui')
@@ -20,9 +21,9 @@ function onExec(cmd) {
 }
 function onExecItem($select, cmd) {
   if (!$select) return;
-  let $btn = $select.querySelector('.btn-dom.select')
+  let $btn = $select.querySelector('.js-btn.select')
   let item = {
-    value: _items[+$select.getAttribute('data-item-index')].value,
+    value: _items[+$select.getAttribute('data-index')].value,
     opt: $btn?$btn.getAttribute('data-name'):null
   }
   ipcRenderer.send('exec-item', {
@@ -33,9 +34,9 @@ function onExecItem($select, cmd) {
 
 function onEnter($inp, cmd) {
   if (cmd === lastCmd) {
-    let $select = document.querySelector('.el-item-dom.select');
+    let $select = $('.js-item.select');
     if (!$select) {
-      $select = document.querySelector('.el-item-dom');
+      $select = $('.js-item');
     }
     onExecItem($select, cmd)
   } else {
@@ -50,18 +51,18 @@ function resizeWindow() {
 }
 
 function bindInputKeyUp() {
-  document.querySelector('#el-search').addEventListener('keyup', function () {
+  $('#search-input').addEventListener('keyup', function () {
     onExec(this.value)
-  }, false)
+  })
 }
 
 function bindDocKeyUp() {
-  document.addEventListener('keyup', function (e) {
-    let $inp = document.querySelector('#el-search')
+  $.on('keyup', function (e) {
+    let $inp = $('#search-input')
     let cmd = $inp.value
     if (e.altKey && e.keyCode >= 49 && e.keyCode <= 57) { //输入数字
       let index = e.keyCode - 49
-      let $select = document.querySelectorAll('.el-item-dom')[index]
+      let $select = $$('.js-item')[index]
       onExecItem($select, cmd)
     } else { //l 37 u 38 r 39 d 40
       switch (e.keyCode) {
@@ -83,11 +84,18 @@ function bindDocKeyUp() {
         onEnter($inp, cmd)
         break
       case 8: //backspace
-        document.querySelector('#el-search').focus()//auto jump to search input after pressed backspace
+        $('#search-input').focus()//auto jump to search input after pressed backspace
+        break
       default:
         break
       }
     }
+  })
+}
+
+function bindItemClick() {
+  $.on('click', (e) => {
+    const item = e.closest('.js-item') || e.closest('.js-btn')
   })
 }
 
@@ -99,8 +107,8 @@ function bindIpcEvents() {
   })
 
   ipcRenderer.on('exec-item-reply', (event, arg) => {
-    document.querySelector('#el-search').value = ''
-    document.querySelector('#el-items').innerHTML = ''
+    $('#search-input').value = ''
+    $('#items').innerHTML = ''
     resizeWindow()
     ipcRenderer.send('hide')
   })
