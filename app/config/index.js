@@ -5,7 +5,7 @@ const EventEmitter = require('events');
 class ConfigEmitter extends EventEmitter {}
 const config = new ConfigEmitter();
 
-let debug = process.argv.some((value)=>value==='--debug')
+let debug = process.argv.some((value)=>value.includes('--debug'))
 let db,
   dataPath = `${os.homedir()}/.ELaunch`,
   userConfigFile = dataPath+'/config.js',
@@ -24,7 +24,7 @@ function merge() {
       for (var i in src) {
         if(toType(src[i]) === 'object'
             && toType(dist[i]) === 'object'){
-          dist[i] = merge(dist[i], src[i])
+          dist[i] = merge({}, dist[i], src[i])
         }else{
           dist[i] = src[i]
         }

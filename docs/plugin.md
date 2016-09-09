@@ -27,7 +27,7 @@ This is useful is you need to watch something like clipboard. Parameters see [se
 
 ## setConfig() [optional]
 ### setConfig(pluginConfig, globalConfig)
-This method would be called everytime you triggered this plugin by command.
+This method would be called this first time you triggered this plugin by command or on ELaunch start if the plugin has `init_on_start` field set.
 * pluginConfig is the config merged command config and plugin config in config file
 * globalConfig is the config file plus some useful tool:
 ```js

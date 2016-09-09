@@ -1,114 +1,43 @@
-const electron = require('electron');
-const {
-  app,
-  Tray,
-  Menu,
-  BrowserWindow
-} = electron;
+const electron = require('electron')
+const { app, Tray, Menu, BrowserWindow } = electron
 const ipcMain = require('electron').ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
 
-let mainWindow;
+let mainWindow, configWindow;
 
-function init() {
-  const shouldQuit = makeSingleInstance()
-  if (shouldQuit) return app.quit()
-  app.dock && app.dock.hide()
-  app.on('ready', () => {
-    createMainWindow()
-    registShortcut()
-    initTray()
-    initMenu()
-  });
-  // Quit when all windows are closed.
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darmainWin') {
-      app.quit();
-    }
-  });
-  app.on('activate', () => {
-    if (mainWindow === null) {
-      createMainWindow();
-    }
-  });
-  ipcMain.on('exec', (event, data) => {
-    plugin.exec(data, event)
-  })
-  ipcMain.on('exec-item', (event, data) => {
-    plugin.execItem(data, event)
-  })
-  ipcMain.on('window-resize', (event, data) => {
-    let height = data.height || mainWindow.getContentSize()['height']
-    let width = data.width || config.width
-    height = Math.min(height, config.max_height)
-    if (!config.debug) {
-      mainWindow.setContentSize(width, height, true);
-    }
-  })
-  ipcMain.on('hide', () => {
-    hideMainWindow()
-  })
-}
 
-function createMainWindow() {
-  mainWindow = new BrowserWindow({
-    width: config.width,
-    height: config.max_height,
-    resizable: config.debug ? true : false,
-    title: config.title,
-    type: config.debug ? 'normal' : 'splash',
-    frame: false,
-    skipTaskbar: config.debug ? false : true,
-    autoHideMenuBar: config.debug ? false : true,
-    backgroundColor: 'alpha(opacity=0)',
-    show: false,
-    transparent: true,
-    alwaysOnTop: true,
-    disableAutoHideCursor: true,
-  })
-
-  if (!config.debug) {
-    mainWindow.setContentSize(config.width, config.height, true);
-  }
-
-  initPosition(mainWindow)
-
-  mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
-  mainWindow.on('blur', () => {
-    hideMainWindow()
-  })
-
-  config.context.mainWindow = mainWindow
-}
-
-function initPosition(mainWindow) {
+function setPosition(win, pos) {
   let display = electron.screen.getPrimaryDisplay()
   if (config.display && Number.isInteger(config.display)) {
     display = electron.screen.getAllDisplays()
       .find((d) => d.id === config.display)
   }
 
-  const bx = display.bounds.x,
-    by = display.bounds.y
-  let x = bx + (display.workAreaSize.width - config.width) / 2
-  let y = by + (display.workAreaSize.height - config.max_height) / 2
+  const bx = display.bounds.x
+  const by = display.bounds.y
+  const dw = display.workAreaSize.width
+  const dh = display.workAreaSize.height
+  const wb = win.getBounds()
+  // set window to center in primary display when default
+  let x = bx + (dw - wb.width) / 2
+  let y = by + (dh - wb.height) / 2
 
-  if (config.position &&
-    config.position.x !== void 0 &&
-    config.position.y !== void 0) {
-    x = bx + config.position.x
-    y = bx + config.position.y
+  if (pos && pos.x && pos.y) {
+    x = bx + pos.x
+    y = bx + pos.y
+  } else if (pos && pos.width && pos.height){
+    x = bx + (dw - pos.width) / 2
+    y = by + (dh - pos.height) / 2
   }
-  mainWindow.setPosition(Math.round(x), Math.round(y))
+
+  x = Math.round(x, 10)
+  y = Math.round(y, 10)
+
+  win.setPosition(x, y)
 }
 
 function hideMainWindow() {
-  if (config.debug) return
   mainWindow.hide()
   app.hide && app.hide() // auto focus on last focused window is default feature in window/linux, we can use app.hide() in osx to implement it
 }
@@ -122,6 +51,48 @@ function toggleMainWindow() {
     mainWindow.focus()
     app.show && app.show()
   }
+}
+
+function createMainWindow() {
+  mainWindow = new BrowserWindow({
+    width: config.width,
+    height: config.max_height,
+    resizable: config.debug,
+    title: config.title,
+    type: config.debug ? 'normal' : 'splash',
+    frame: false,
+    skipTaskbar: !config.debug,
+    autoHideMenuBar: !config.debug,
+    backgroundColor: 'alpha(opacity=0)',
+    show: false,
+    transparent: true,
+    alwaysOnTop: !config.debug,
+    disableAutoHideCursor: true,
+  })
+
+  if (!config.debug) {
+    mainWindow.setContentSize(config.width, config.height, true);
+  }
+
+  setPosition(mainWindow, {
+    x: config.position && config.position.x,
+    y: config.position && config.position.y,
+    width: config.width,
+    height: config.max_height
+  })
+
+  mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+
+  mainWindow.on('blur', () => {
+    if (!config.debug) {
+      hideMainWindow()
+    }
+  })
+
+  config.context.mainWindow = mainWindow
 }
 
 function registShortcut() {
@@ -145,7 +116,16 @@ function initTray() {
   }, {
     label: 'Preferences',
     click(item, focusedWindow) {
-      require('electron').shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
+      if (config.debug) {
+        configWindow = new BrowserWindow({
+          width: 800,
+          height: 600,
+          title: 'ELaunch preferences'
+        })
+        setPosition(configWindow)
+      } else {
+        electron.shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
+      }
     }
   }, {
     label: 'Bug Report',
@@ -217,5 +197,51 @@ function makeSingleInstance() {
     }
   });
 }
+
+
+
+function init() {
+  const shouldQuit = makeSingleInstance()
+  if (shouldQuit) return app.quit()
+  app.dock && app.dock.hide()
+  app.on('ready', () => {
+    createMainWindow()
+    registShortcut()
+    initTray()
+    initMenu()
+    config.context.app = app
+    config.context.locale = app.getLocale()
+    config.emit('app-ready')
+  });
+  // Quit when all windows are closed.
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darmainWin') {
+      app.quit();
+    }
+  });
+  app.on('activate', () => {
+    if (mainWindow === null) {
+      createMainWindow();
+    }
+  });
+  ipcMain.on('exec', (event, data) => {
+    plugin.exec(data, event)
+  })
+  ipcMain.on('exec-item', (event, data) => {
+    plugin.execItem(data, event)
+  })
+  ipcMain.on('window-resize', (event, data) => {
+    let height = data.height || mainWindow.getContentSize()['height']
+    let width = data.width || config.width
+    height = Math.min(height, config.max_height)
+    if (!config.debug) {
+      mainWindow.setContentSize(width, height, true);
+    }
+  })
+  ipcMain.on('hide', () => {
+    hideMainWindow()
+  })
+}
+
 
 init()

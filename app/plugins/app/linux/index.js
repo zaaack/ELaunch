@@ -1,58 +1,26 @@
-var fs = require('fs')
-var path = require('path')
-var child = require('child_process')
-var fs = require('fs-extra')
-var shell = require('electron').shell
-var globule = require('globule')
-let chokidar = require('chokidar')
+const fs = require('fs')
+const path = require('path')
+const child = require('child_process')
+const fs = require('fs-extra')
+const shell = require('electron').shell
+const globule = require('globule')
+const chokidar = require('chokidar')
+
+const defaultIcon = __dirname + '/../assets/app.svg'
 
 //app/apps.db 用于缓存应用信息，当有新应用安装时才更新
 //{lastUpdateDate:0 ,apps:[]}
-let appDbFile, pluginConfig, globalConfig,
-    appDb, isFirstIndexing, watcher,
-    defaultIcon = __dirname + '/../assets/app.svg'
-
-function init() {
-  pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))
-  pluginConfig.icon_path = pluginConfig.icon_path.filter(dir=>fs.existsSync(dir))
-  //init appDbFile and appDb
-  appDbFile = globalConfig.dataPath + '/app/app.db'
-  fs.ensureFileSync(appDbFile)
-  appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
-    lastUpdateTime: 0,
-    apps: {}
-  }
-  isFirstIndexing = appDb.lastUpdateTime === 0
-
-  //update in first run
-  update()
-  // watch and update
-  watcher && watcher.close()
-  watcher = chokidar.watch(pluginConfig.app_path, {
-    ignore: /^.*(?!\.desktop)$/,
-  })
-  let delay = 3000,t
-  watcher.on('raw', (event, path, details) => {
-    if(['add','change','unlink'].indexOf(event) !== -1){
-      t && clearTimeout(t)
-      t = setTimeout(()=>{
-        try {
-          update()
-        } catch (e) {
-          console.error(e);
-        }
-      },delay)
-    }
-  })
-}
+let appDbFile, pluginConfig, globalConfig, context,
+    appDb, isFirstIndexing, watcher
 
 function getAppInfo(file) {
   let icon, execCmd, name,enName
   try {
-    let content = fs.readFileSync(file, 'utf-8')
-    let locale = child.execSync("locale|grep LANGUAGE |awk '{print substr($0,10)}'", 'utf-8').toString().trim()
-    name = enName = content.match(/\n\s*Name\s*=\s*(.*?)\s*(\n|$)/)[1]
-    let lm = content.match(new RegExp(`\n\\s*Name\\s*\\[\\s*${locale}\\s*\\]\\s*=\\s*(.*?)\\s*(\n|$)`))
+    const content = fs.readFileSync(file, 'utf-8')
+    // let locale = child.execSync("locale|grep LANGUAGE |awk '{print substr($0,10)}'", 'utf-8').toString().trim()
+    const locale = context.locale
+    name = enName = content.match(/(?:^|\n)\s*Name\s*=\s*(.*?)\s*(\n|$)/)[1]
+    let lm = content.match(new RegExp(`(?:^|\n)\\s*Name\\s*\\[\\s*${locale}\\s*\\]\\s*=\\s*(.*?)\\s*(\n|$)`))
     if (lm) {
       name = lm[1]
     }
@@ -105,22 +73,54 @@ function update() {
     if(data.done){
       appDb.lastUpdateTime = Date.now()
       appDb.apps = tmpApps
-      hasNewApp && fs.writeFileSync(appDbFile, JSON.stringify(appDb), 'utf-8')
+      hasNewApp && fs.outputJSONSync(appDbFile, appDb, 'utf-8')
       if(isFirstIndexing){
-        globalConfig.context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
+        context.notifier.notify('First Indexing Finished! Now Search Your Apps!')
       }
     }
   }
   walkDir(pluginConfig.app_path[Symbol.iterator]())
 }
 
+function init() {
+  pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))
+  pluginConfig.icon_path = pluginConfig.icon_path.filter(dir=>fs.existsSync(dir))
+  //init appDbFile and appDb
+  appDbFile = globalConfig.dataPath + '/app/app.db'
+  fs.ensureFileSync(appDbFile)
+  appDb = fs.readJsonSync(appDbFile, {throws: false, encoding:'utf-8'}) || {
+    lastUpdateTime: 0,
+    apps: {}
+  }
+  isFirstIndexing = appDb.lastUpdateTime === 0
 
+  //update in first run
+  update()
+  // watch and update
+  watcher && watcher.close()
+  watcher = chokidar.watch(pluginConfig.app_path, {
+    ignore: /^.*(?!\.desktop)$/,
+  })
+  let delay = 3000,t
+  watcher.on('raw', (event, path, details) => {
+    if(['add','change','unlink'].indexOf(event) !== -1){
+      t && clearTimeout(t)
+      t = setTimeout(()=>{
+        try {
+          update()
+        } catch (e) {
+          console.error(e);
+        }
+      },delay)
+    }
+  })
+}
 
 module.exports = {
-  setConfig: function (pConfig, gConfig) {
-    if(globalConfig) return
+  setConfig: function (pConfig, gConfig, ctx) {
     pluginConfig = pConfig
     globalConfig = gConfig
+    context = ctx
     globalConfig.on('reload-config', init)
     init()
   },
