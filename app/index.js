@@ -104,7 +104,7 @@ function initPosition(mainWindow) {
     x = bx + config.position.x
     y = bx + config.position.y
   }
-  mainWindow.setPosition(x, y)
+  mainWindow.setPosition(Math.round(x), Math.round(y))
 }
 
 function hideMainWindow() {

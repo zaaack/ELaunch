@@ -17,17 +17,28 @@ let appDbFile, pluginConfig, globalConfig,
          "icon_256x256.png","icon_32x32@2x.png","icon_16x16.png","icon_256x256@2x.png icon_512x512.png"]
       try {
         name = child.execSync(`mdls "${file}" -name kMDItemDisplayName`).toString().match(/\"(.*?)\"/)[1]
-        if(!fs.existsSync(icon)){
-          let info = fs.readFileSync(`${file}/Contents/Info.plist`,'utf-8')
-          icon = info.match(/\<key\>CFBundleIconFile\<\/key\>\s*\<string\>(.*?)\<\/string\>/)[1]
-          if(icon.match(/\.icns/)){
-            icon = `${file}/Contents/Resources/${icon}`
-          }else{
-            icon = `${file}/Contents/Resources/${icon}.icns`
+        if (! fs.existsSync(`${file}/Contents/Info.plist`)) {
+          icon = defaultIcon;
+        }
+        else if(!fs.existsSync(icon)){
+          let plistPath = `${file}/Contents/Info.plist`;
+          plistPath = plistPath.replace(/ /g, '\\ ').replace("(", "\\(").replace(")", "\\)");
+          let plistContent = child.execSync(`plutil -p ${plistPath}`).toString();
+          let iconMatch = plistContent.match(/\"CFBundleIconFile\" => \"(.*?)\"/);
+          if (iconMatch != null) {
+            icon = iconMatch[1]
+            if (icon.match(/\.icns/)) {
+              icon = `${file}/Contents/Resources/${icon}`
+            } else {
+              icon = `${file}/Contents/Resources/${icon}.icns`
+            }
+            if (!fs.existsSync(iconPath)) {
+              child.execSync(`iconutil -c iconset -o "${iconPath}" "${icon}"`, console.error.bind(console))
+            }
+          } else {
+            icon = defaultIcon;
           }
         }
-        if(!fs.existsSync(iconPath))
-          child.execSync(`iconutil -c iconset -o "${iconPath}" "${icon}"`, console.error.bind(console))
       } catch (e) {
         console.error({message:e.message,stack:e.stack}, bname);
       }
