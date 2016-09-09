@@ -93,11 +93,56 @@ function bindDocKeyUp() {
   })
 }
 
+<<<<<<< HEAD
+  }, false)
+
+  let lastCmd = ''
+  function onEnter($inp, cmd) {
+    if (cmd === lastCmd) {
+      let $select = document.querySelector('.el-item-dom.select');
+      if (!$select) {
+        $select = document.querySelector('.el-item-dom');
+      }
+      onExecItem($select, cmd)
+    } else {
+      onExec(cmd)
+    }
+  }
+
+  function onExec(cmd) {
+    if (cmd !== lastCmd) {
+      ipcRenderer.send('exec', {
+        cmd: cmd
+      })
+      lastCmd = cmd
+    }
+  }
+  let _items = []
+  function onExecItem($select, cmd) {
+    if (!$select) return;
+    let $btn = $select.querySelector('.btn-dom.select')
+    let item = {
+      value: _items[+$select.getAttribute('data-item-index')].value,
+      opt: $btn?$btn.getAttribute('data-name'):null
+    }
+    ipcRenderer.send('exec-item', {
+      cmd: cmd,
+      item: item
+    })
+  }
+
+  function resizeWindow() {
+    ipcRenderer.send('window-resize', {
+      height: document.body.offsetHeight
+    })
+  }
+=======
 function bindItemClick() {
   $.on('click', (e) => {
     const item = e.closest('.js-item') || e.closest('.js-btn')
   })
 }
+>>>>>>> upstream/master
 
 function bindIpcEvents() {
   ipcRenderer.on('exec-reply', (event, items) => {
