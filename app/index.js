@@ -118,9 +118,9 @@ function initTray() {
     click(item, focusedWindow) {
       if (config.debug) {
         configWindow = new BrowserWindow({
-            width: 800,
-            height: 600,
-            title: 'ELaunch preferences'
+          width: 800,
+          height: 600,
+          title: 'ELaunch preferences'
         })
         setPosition(configWindow)
       } else {

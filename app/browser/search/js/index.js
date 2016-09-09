@@ -66,28 +66,28 @@ function bindDocKeyUp() {
       onExecItem($select, cmd)
     } else { //l 37 u 38 r 39 d 40
       switch (e.keyCode) {
-      case 38: //up
-        ui.selectPrevItem()
-        resizeWindow()
-        break
-      case 40: //down
-        ui.selectNextItem()
-        resizeWindow()
-        break
-      case 37: //left
-        ui.selectPrevItemOpt()
-        break
-      case 39: //right
-        ui.selectNextItemOpt()
-        break
-      case 13: //enter
-        onEnter($inp, cmd)
-        break
-      case 8: //backspace
-        $('#search-input').focus()//auto jump to search input after pressed backspace
-        break
-      default:
-        break
+        case 38: //up
+          ui.selectPrevItem()
+          resizeWindow()
+          break
+        case 40: //down
+          ui.selectNextItem()
+          resizeWindow()
+          break
+        case 37: //left
+          ui.selectPrevItemOpt()
+          break
+        case 39: //right
+          ui.selectNextItemOpt()
+          break
+        case 13: //enter
+          onEnter($inp, cmd)
+          break
+        case 8: //backspace
+          $('#search-input').focus()//auto jump to search input after pressed backspace
+          break
+        default:
+          break
       }
     }
   })
@@ -115,9 +115,9 @@ function bindIpcEvents() {
 }
 
 function bindEvents() {
-   bindInputKeyUp()
-   bindDocKeyUp()
-   bindIpcEvents()
+  bindInputKeyUp()
+  bindDocKeyUp()
+  bindIpcEvents()
 }
 
 function init() {
