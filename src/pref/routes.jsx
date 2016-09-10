@@ -1,49 +1,41 @@
 import React from 'react'
 import Main from './containers/Main'
 
-const noop = () => null
+const container = (props) => props.children
 
 export default {
   path: '/',
   component: Main,
-  indexRoute: { component: noop },
+  indexRoute: { component: container },
   childRoutes: [{
-    path: 'general',
-    text: 'General',
-    component: noop,
+    path: 'global',
+    text: 'Global',
+    component: container,
     childRoutes: [{
-      path: 'appearance', // 样式
-      component: noop,
-      text: 'Appearance',
-    }, {
-      path: 'behavior',
-      component: noop,
-      text: 'Behavior',
+      path: 'general', // 样式
+      component: container,
+      text: 'General',
     }, {
       path: 'keymap',
       text: 'Keymap',
-      component: noop,
-    }, {
-      path: 'update',
-      text: 'Update',
-      component: noop,
+      component: container,
     }],
   }, {
     path: 'plugins',
     text: 'Plugins',
-    component: noop,
+    component: container,
     childRoutes: [{
       path: 'installed',
       text: 'Installed Plugins',
-      component: noop,
+      component: container,
     }, {
       path: 'available',
       text: 'Available Plugins',
-      component: noop,
+      component: container,
     }, {
       path: 'themes',
-      text: 'Install Themes',
-      component: noop,
+      text: 'Themes',
+      component: container,
     }],
   }],
 }

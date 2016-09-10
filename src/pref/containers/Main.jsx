@@ -24,13 +24,6 @@ export default class Main extends React.Component {
           <SideMenu />
         </Sidebar>
         <Panel>
-          <AppBar>
-            <IconButton
-              icon="menu"
-              inverse
-              onClick={this.toggleDrawerPinned}
-            />
-          </AppBar>
           {this.props.children}
         </Panel>
       </Layout>

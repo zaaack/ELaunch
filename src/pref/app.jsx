@@ -1,5 +1,6 @@
 import './app.scss'
 import 'react-toolbox/lib/commons.scss'
+import '../../app/utils/notifier'
 // import 'normalize.css/normalize.css'
 
 import React from 'react'
