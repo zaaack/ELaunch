@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+:global {
+  .hide {
+    display: none;
+  }
+
+  #root, .root {
+    height: 100%;
+  }
+}

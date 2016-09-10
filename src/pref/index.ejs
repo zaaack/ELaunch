@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<%
+
+const crypto = require('crypto')
+const fs = require('fs')
+const path = require('path')
+const base = htmlWebpackPlugin.options.baseDir
+
+function hash (file, algorithm, encoding) {
+	const str = fs.readFileSync(path.join(base, file), 'utf-8')
+  const h = crypto
+      .createHash(algorithm || 'sha1')
+      .update(str, 'utf8')
+      .digest(encoding || 'hex').substring(0, 20)
+
+  return `${file}?${h}`
+}
+%>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+  <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
+  <link rel="stylesheet" href="<%=hash('dist/app.bundle.css')%>" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+	<div id="root"></div>
+
+	<script src="<%=hash('dist/dll/vendor.dll.js')%>" charset="utf-8"></script>
+
+</body>
+</html>

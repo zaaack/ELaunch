@@ -7,29 +7,29 @@ const autoprefixer = require('autoprefixer')
 let isDev = process.env.NODE_ENV === 'development'
 
 //设置css modules的模块名更可读，由于我们使用了sass，所以只需要模块话根类名就行了。如果设置了modules参数会默认全局使用模块化类名，没有设置则可以通过:local(className){} 手动指定
-const baseCssLoader = 'css?souceMap&localIdentName=[local]__[hash:base64:5]!postcss-loader!sass-loader?souceMap'
+const baseCssLoader = 'css?souceMap&modules&importLoaders=1&localIdentName=[local]__[hash:base64:5]!postcss-loader!sass-loader?souceMap'
 let cssLoader = ExtractTextPlugin.extract('style', baseCssLoader)
 let debug = false
 let devtool = '#source-map'
 
-let buildPlugins = []
+let buildPlugins = [
+  //生成html上的模块的hash值，但是只包括当前打包的模块，不支持dll文件，不过由于它默认支持ejs模版，因此我们可以通过模版实现。
+  new HtmlWebpackPlugin({
+    baseDir: 'app/browser/pref',
+    filename: '../index.html',
+    template: 'src/pref/index.ejs',
+    hash: true,
+    excludeChunks: []
+  }),
+]
 let devPlugins = []
+let plugins = buildPlugins
 
 if (isDev) {
   debug = true
   devtool = '#inline-source-map'
   cssLoader = 'style!' + baseCssLoader
-  devPlugins = []
-} else {
-  buildPlugins = [
-    //生成html上的模块的hash值，但是只包括当前打包的模块，不支持dll文件，不过由于它默认支持ejs模版，因此我们可以通过模版实现。
-    new HtmlWebpackPlugin({
-      filename: '../index.html',
-      template: 'src/pref/index.ejs',
-      hash: true,
-      excludeChunks: []
-    }),
-  ]
+  plugins = devPlugins
 }
 
 const baseDir = './app/browser/pref'
@@ -97,17 +97,17 @@ module.exports = {
     // 这样就能实现服务端与本地的配置不同了。
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'), // 直接替换，所以需要 JSON.stringify 加上引号
       },
     }),
     // 将文件打包为后通过manifest.json在require时判断是否包含，这样比起common trunk plugin
     // 就彻底不需要每次编译分析第三方库了，节省了编译时间
     new webpack.DllReferencePlugin({
       context: __dirname,
-      manifest: require(`${distDir}/dist/dll/vendor-manifest.json`)
+      manifest: require(`${baseDir}/dist/dll/vendor-manifest.json`)
     }),
-  ].concat(buildPlugins).concat(devPlugins),
-  target: electron,
+  ].concat(plugins),
+  target: 'electron',
   // webpack-dev-server配置
   // http://webpack.github.io/docs/webpack-dev-server.html#api
   devServer: {

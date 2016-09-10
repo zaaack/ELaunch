@@ -4,7 +4,7 @@ const ipcMain = require('electron').ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
 
-let mainWindow, configWindow;
+let mainWindow, prefWindow;
 
 
 function setPosition(win, pos) {
@@ -81,9 +81,9 @@ function createMainWindow() {
     height: config.max_height
   })
 
-  mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`)
   mainWindow.on('closed', () => {
-    mainWindow = null;
+    mainWindow = null
   });
 
   mainWindow.on('blur', () => {
@@ -93,6 +93,16 @@ function createMainWindow() {
   })
 
   config.context.mainWindow = mainWindow
+}
+
+function createPrefWindow() {
+  prefWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+      title: 'ELaunch Preferences'
+  })
+  prefWindow.loadURL(`http://127.0.0.1:8080/`);
+  setPosition(prefWindow)
 }
 
 function registShortcut() {
@@ -117,12 +127,7 @@ function initTray() {
     label: 'Preferences',
     click(item, focusedWindow) {
       if (config.debug) {
-        configWindow = new BrowserWindow({
-            width: 800,
-            height: 600,
-            title: 'ELaunch preferences'
-        })
-        setPosition(configWindow)
+        createPrefWindow()
       } else {
         electron.shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
       }
@@ -203,19 +208,26 @@ function makeSingleInstance() {
 function init() {
   const shouldQuit = makeSingleInstance()
   if (shouldQuit) return app.quit()
-  app.dock && app.dock.hide()
+  if (!config.debug) {
+    app.dock && app.dock.hide()
+  }
   app.on('ready', () => {
     createMainWindow()
     registShortcut()
     initTray()
     initMenu()
+
+    if (config.debug) {
+      createPrefWindow()
+    }
+
     config.context.app = app
     config.context.locale = app.getLocale()
     config.emit('app-ready')
   });
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darmainWin') {
+    if (process.platform !== 'darwin') {
       app.quit();
     }
   });
