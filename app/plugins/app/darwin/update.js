@@ -19,16 +19,20 @@ function getAppInfo(file) {
   try {
     name = child.execSync(`mdls "${file}" -name kMDItemDisplayName`).toString().match(/\"(.*?)\"/)[1]
     if (!fs.existsSync(icon)) {
-      let info = fs.readFileSync(`${file}/Contents/Info.plist`, 'utf-8')
-      icon = info.match(/\<key\>CFBundleIconFile\<\/key\>\s*\<string\>(.*?)\<\/string\>/)[1]
-      if (icon.match(/\.icns/)) {
-        icon = `${file}/Contents/Resources/${icon}`
+      if (!fs.existsSync(`${file}/Contents/Info.plist`)) {
+        icon = defaultIcon;
       } else {
-        icon = `${file}/Contents/Resources/${icon}.icns`
+          icon = child.execSync(`/usr/libexec/PlistBuddy \"${file}/Contents/Info.plist\" -c 'Print :CFBundleIconFile'`).toString("utf-8")
+          if (icon.match(/\.icns/)) {
+            icon = `${file}/Contents/Resources/${icon}`
+          } else {
+            icon = `${file}/Contents/Resources/${icon}.icns`
+          }
       }
     }
-    if (!fs.existsSync(iconPath))
+    if (!fs.existsSync(iconPath)) {
       child.execSync(`iconutil -c iconset -o "${iconPath}" "${icon}"`, console.error.bind(console))
+    }
   } catch (e) {
     console.error({
       message: e.message,
