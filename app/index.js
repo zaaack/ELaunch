@@ -99,7 +99,9 @@ function createPrefWindow() {
   prefWindow = new BrowserWindow({
       width: 800,
       height: 600,
-      title: 'ELaunch Preferences'
+      title: 'ELaunch Preferences',
+      autoHideMenuBar: !config.debug,
+      backgroundColor: 'alpha(opacity=0)',
   })
   prefWindow.loadURL(`http://127.0.0.1:8080/`);
   setPosition(prefWindow)

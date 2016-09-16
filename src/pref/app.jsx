@@ -11,8 +11,21 @@ import configureStore from './store/configureStore'
 
 const store = configureStore()
 const history = syncHistoryWithStore(hashHistory, store)
+const rootEl = document.getElementById('root')
 
 render(
   <Root store={store} history={history} />,
-  document.getElementById('root')
+  rootEl
 )
+
+if (module.hot) {
+  module.hot.accept('./containers/Root', () => {
+    // If you use Webpack 2 in ES modules mode, you can
+    // use <App /> here rather than require() a <NextApp />.
+    const NextRoot = require('./containers/Root').default;
+    render(
+      <NextRoot store={store} history={history} />,
+      rootEl
+    )
+  })
+}

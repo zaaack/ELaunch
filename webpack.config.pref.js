@@ -11,6 +11,7 @@ const baseCssLoader = 'css?souceMap&modules&importLoaders=1&localIdentName=[loca
 let cssLoader = ExtractTextPlugin.extract('style', baseCssLoader)
 let debug = false
 let devtool = '#source-map'
+let appEntry = './src/pref/app.jsx'
 
 let buildPlugins = [
   //生成html上的模块的hash值，但是只包括当前打包的模块，不支持dll文件，不过由于它默认支持ejs模版，因此我们可以通过模版实现。
@@ -30,13 +31,16 @@ if (isDev) {
   devtool = '#inline-source-map'
   cssLoader = 'style!' + baseCssLoader
   plugins = devPlugins
+  appEntry = [
+    'react-hot-loader/patch',
+  ].concat([appEntry])
 }
 
 const baseDir = './app/browser/pref'
 module.exports = {
   // 需要打包的文件配置
   entry: {
-    app: './src/pref/app.jsx', //通过key value的形式配置了需要打包的文件,
+    app: appEntry, //通过key value的形式配置了需要打包的文件,
   },
   debug: debug,
   devtool: devtool,
@@ -73,7 +77,7 @@ module.exports = {
       }, {
         test: /\.jsx$/,
         exclude: /(node_modules|bower_components)/,
-        loaders: ['react-hot', "babel"]
+        loaders: ["babel"]
       },
     ],
   },
@@ -107,11 +111,12 @@ module.exports = {
       manifest: require(`${baseDir}/dist/dll/vendor-manifest.json`)
     }),
   ].concat(plugins),
-  target: 'electron',
+  target: 'electron-renderer',
   // webpack-dev-server配置
   // http://webpack.github.io/docs/webpack-dev-server.html#api
   devServer: {
     contentBase: baseDir, //serve 的html的路径
-    hot: true, //用于 react-hot-loader 实现热更新（其实我在命令行中已经加上--hot就不是必要的了 ）
+    hot: true,
+    inline: true
   },
 }
