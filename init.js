@@ -1,8 +1,8 @@
 const fs = require('fs')
 
-// make locals symlink
-// const localsDstPath = './src/pref/locals'
-//
-// if (!fs.existsSync(localsDstPath)) {
-//   fs.symlinkSync('../../app/browser/pref/locals/', localsDstPath, 'dir')
-// }
+// init symlinks
+const localsDstPath = './src/pref/locales'
+
+if (!fs.existsSync(localsDstPath)) {
+  fs.symlinkSync('../../app/browser/pref/locales/', localsDstPath, 'dir')
+}

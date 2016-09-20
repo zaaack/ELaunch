@@ -1,4 +1,5 @@
 $search-height: 50px;
+$body-padding: 5px;
 
 * {
   outline-color: rgb(24, 166, 236);
@@ -28,32 +29,29 @@ $search-height: 50px;
 }
 
 body {
-  font-family: 'sans-serif';
-  width: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  box-sizing: border-box;
+  font-family: sans-serif;
+  box-sizing: content-box;
   height: auto;
   margin: 0;
+  padding: $body-padding;
 }
 
 .search-wrapper {
-  position: fixed;
   z-index: 1000;
   width: 100%;
-  padding: 5px;
   background: white;
+  margin-bottom: $body-padding;
 
   .search {
     box-sizing: border-box;
-    width: calc(100% - 10px);
+    width: 100%;
     height: $search-height;
     margin: 0 auto;
     line-height: 40px;
-    padding-left: 10px;
+    padding-left: $body-padding;
     font-size: 24px;
     border: 1px solid #ccc;
-    border-radius: 8px/6px;
+    border-radius: 3px;
   }
 }
 
@@ -65,11 +63,13 @@ ul {
 }
 
 .items {
-  width: 100%;
-  margin: 0 5px;
-  padding-top: calc(#{$search-height} + 10px);
+  box-sizing: border-box;
+  margin: 0 -$body-padding;
+  padding: $body-padding;
   word-break: break-all;
   word-wrap: break-word;
+  max-height: 400px;
+  overflow-y: auto;
 
   .item {
     position: relative;

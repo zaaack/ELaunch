@@ -1,7 +1,7 @@
-const EventBus = require('./EventBus')
+const ElectronBus = require('./ElectronBus')
 const electron = require('electron')
 
-class MyBus extends EventBus {}
+class MyBus extends ElectronBus {}
 
 const myBus = new MyBus()
 if (electron.ipcRenderer) {

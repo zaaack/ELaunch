@@ -31,8 +31,8 @@ function setPosition(win, pos) {
     y = by + (dh - pos.height) / 2
   }
 
-  x = Math.round(x, 10)
-  y = Math.round(y, 10)
+  x = Math.round(x)
+  y = Math.round(y)
 
   win.setPosition(x, y)
 }
@@ -60,11 +60,11 @@ function createMainWindow() {
     resizable: config.debug,
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
-    frame: false,
+    frame: config.debug,
     skipTaskbar: !config.debug,
     autoHideMenuBar: !config.debug,
     backgroundColor: 'alpha(opacity=0)',
-    show: false,
+    show: config.debug,
     transparent: true,
     alwaysOnTop: !config.debug,
     disableAutoHideCursor: true,
@@ -143,11 +143,6 @@ function initTray() {
     label: 'Help',
     click(item, focusedWindow) {
       electron.shell.openExternal('https://github.com/zaaack/ELaunch#readme')
-    }
-  }, {
-    label: 'Reload Config',
-    click(item, focusedWindow) {
-      config.loadConfig().emitReload()
     }
   }, {
     label: 'Exit',

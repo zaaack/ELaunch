@@ -1,3 +1,9 @@
+/*!
+ * ElectronBus v4.2.11 - git.io/ee
+ * cross main / multi renderer process event bus
+ * @preserve
+ */
+
 const EventEmitter = require('events')
 const electron = require('electron')
 
@@ -6,7 +12,7 @@ function sendToAllWindows(...args) {
     .forEach(win => win.webContents.send(...args))
 }
 
-module.exports = class EventBus extends EventEmitter {
+module.exports = class ElectronBus extends EventEmitter {
   constructor(name='default') {
     super()
     this._name = name
@@ -52,7 +58,7 @@ module.exports = class EventBus extends EventEmitter {
     if (electron.ipcRenderer) { // renderer process
       ipcRenderer.send(...ipcArgs)
     } else { // main process
-      sendToAllWindow(...ipcArgs)
+      sendToAllWindows(...ipcArgs)
       super.emit(event, ...args)
     }
   }

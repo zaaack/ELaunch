@@ -1,7 +1,6 @@
 import React from 'react'
 import SideMenu from '../components/SideMenu'
-import { AppBar, Checkbox, IconButton } from 'react-toolbox'
-import { Layout, NavDrawer, Drawer, Panel, Sidebar } from 'react-toolbox'
+import { Layout, Panel, Sidebar } from 'react-toolbox/lib/layout'
 
 export default class Main extends React.Component {
   state = {
@@ -24,7 +23,9 @@ export default class Main extends React.Component {
           <SideMenu />
         </Sidebar>
         <Panel>
-          {this.props.children}
+          <div style={{ padding: '1.8rem' }}>
+            {this.props.children}
+          </div>
         </Panel>
       </Layout>
     )
