@@ -1,12 +1,11 @@
-const { merge } = require('./merge')
+const { merge, getType } = require('./merge')
 
 module.exports = {
   get(obj, key, defaultValue) {
-    return key.split('.').reduce((subObj, SubKey) => {
+    return key.split('.').reduce((subObj, subKey) => {
       if (subObj === defaultValue) return subObj
-      const subValue = subObj[SubKey]
-      if (subValue) {
-        return subValue
+      if (subKey in subObj) {
+        return subObj[subKey]
       } else {
         return defaultValue
       }
@@ -15,17 +14,17 @@ module.exports = {
   set(obj, key, value) {
     if (value === void 0) return
     const keys = key.split('.')
-    keys.reduce((subObj, subKey) => {
-      const subValue = subObj[subKey]
-      if (subValue) {
-        return subValue
-      } else if (keys[keys.length - 1] === subKey){
-        merge(subObj[subKey], value)
+    let subObj = obj
+    keys.forEach((key, index) => {
+      const oldVal = subObj[key]
+      if (index === keys.length - 1) {
+        subObj[key] = value
+      } else if (oldVal){
+        subObj = oldVal
       } else {
-        subObj[subKey] = {}
-        return subObj[subKey]
+        subObj[key] = {}
       }
-    }, obj)
+    })
     return obj
   },
 }

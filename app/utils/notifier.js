@@ -1,7 +1,4 @@
 const electron = require('electron')
-const test = require('./test')
-
-test.on('ev', (...args) => console.log(...args))
 
 function notify(title, options) {
   new Notification(title, options||{body:title})

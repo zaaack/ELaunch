@@ -30,9 +30,9 @@ i18n
     backend: backendOptions,
     saveMissing: true,
     saveMissingTo: 'all',
-    missingKeyHandler(lng, ns, key, fallbackValue) {
-      // write missing key to all locales
-    },
+    // missingKeyHandler(lng, ns, key, fallbackValue) {
+    //   // write missing key to all locales
+    // },
 
     // have a common namespace used around the full app
     ns: ['common'],

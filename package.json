@@ -24,28 +24,52 @@
     "debug": "electron ./app/index.js --debug=5858",
     "debug-brk": "electron ./app/index.js --debug-brk=5858",
     "inspect": "cross-env ELECTRON_RUN_AS_NODE=true electron node_modules/node-inspector/bin/inspector.js",
-    "test": "node test.js",
+    "test": "ava",
     "init": "node init.js",
     "dev:search": "node-sass --watch --output-style compressed --recursive --output app/browser/search/css --source-map true --source-map-contents app/browser/search/scss",
     "dev:pref": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.pref.js --hot --inline",
     "build:pref": "cross-env NODE_ENV=production webpack --config ./webpack.config.pref.js -p --progress --profile --colors",
     "build:dll": "cross-env NODE_ENV=production webpack --config ./webpack.config.dll.js -p --progress --profile --colors",
-    "postinstall": "install-app-deps; electron-rebuild",
+    "postinstall": "install-app-deps;",
+    "rebuild": "electron-rebuild",
     "pack": "build --dir",
     "dist": "build",
     "dist-all": "build -l -w -m"
   },
+  "ava": {
+    "files": [
+      "app/**/__test__/**/*.js",
+      "src/**/__test__/**/*.js"
+    ],
+    "require": "babel-register",
+    "babel": "inherit"
+  },
+  "pre-commit": [
+    "test"
+  ],
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2",
+      "react"
+    ],
+    "plugins": [
+      "transform-runtime",
+      "transform-flow-strip-types",
+      "transform-class-properties"
+    ]
+  },
   "devDependencies": {
-    "autobind-decorator": "^1.3.3",
+    "autobind-decorator": "^1.3.4",
     "autoprefixer": "^6.3.7",
-    "babel-core": "^6.11.4",
+    "ava": "^0.16.0",
+    "babel-core": "^6.3.21",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-class-properties": "^6.11.5",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
     "babel-plugin-transform-runtime": "^6.12.0",
     "babel-preset-es2015": "^6.9.0",
-    "babel-preset-es2016": "^6.11.3",
     "babel-preset-react": "^6.11.1",
     "babel-runtime": "^6.11.6",
     "classnames": "^2.2.5",
@@ -69,11 +93,13 @@
     "i18next": "^3.4.1",
     "i18next-browser-languagedetector": "^1.0.0",
     "i18next-node-fs-backend": "^0.1.2",
+    "immutability-helper": "^2.0.0",
     "immutable": "^3.8.1",
     "node-inspector": "^0.12.8",
     "node-sass": "^3.8.0",
     "normalize.css": "^4.2.0",
     "postcss-loader": "^0.9.1",
+    "pre-commit": "^1.1.3",
     "react": "^15.3.0",
     "react-addons-css-transition-group": "^15.3.1",
     "react-dom": "^15.3.0",
@@ -91,6 +117,7 @@
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",
     "sass-loader": "^4.0.0",
+    "spectron": "^3.4.0",
     "style-loader": "^0.13.1",
     "stylelint": "^7.1.0",
     "stylelint-config-standard": "^12.0.0",

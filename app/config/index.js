@@ -20,8 +20,9 @@ function loadConfig() {
       console.error(err)
     }
   }
-  delete require.cache[userConfigFile]
-  rawConfig = merge({}, require('./config.default.js'), require(userConfigFile))
+
+  const userConfig = eval(fs.readFileSync(userConfigFile, 'utf8'))
+  rawConfig = merge({}, require('./config.default.js'), userConfig)
   return this
 }
 Object.assign(config,  {
@@ -34,10 +35,10 @@ Object.assign(config,  {
     return merge({}, rawConfig)
   },
   get(key, defaultValue) {
-    return deepKey.get(this, key, defaultValue)
+    return deepKey.get(rawConfig, key, defaultValue)
   },
   set(key, value) {
-    deepKey.set(this, key, value)
+    deepKey.set(rawConfig, key, value)
   },
   context: {
     mainWindow: null,

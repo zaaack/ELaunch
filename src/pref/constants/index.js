@@ -12,8 +12,6 @@ function mirror(obj) {
   }, {})
 }
 
-export default mirror({
-  ActionTypes: {
-    CHANGE_CONFIG: null,
-  },
+export const ActionTypes = mirror({
+  CHANGE_CONFIG: null,
 })

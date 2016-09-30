@@ -85,14 +85,11 @@ module.exports = {
   postcss: [autoprefixer({
     browsers: ['last 2 version', 'Explorer >= 9']
   })],
-  //babel 配置
-  babel: {
-    presets: ['es2015', 'react'],
-    plugins: ['transform-runtime', 'transform-flow-strip-types', 'transform-class-properties'], // 为了autobind也是拼了。。
-  },
   resolve: {
     extensions: ['', '.jsx', '.js']
   },
+  externals: [{
+  }],
   // webpack 插件配置
   plugins: [
     // 抽取样式到单独的 文件中，文件名称则为[name].css
