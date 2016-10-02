@@ -1,10 +1,11 @@
 const electron = require('electron')
 const { app, Tray, Menu, BrowserWindow } = electron
-const ipcMain = require('electron').ipcMain
+const ipcMain = electron.ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
 
-let mainWindow, prefWindow;
+let mainWindow
+let prefWindow
 
 
 function setPosition(win, pos) {
@@ -26,7 +27,7 @@ function setPosition(win, pos) {
   if (pos && pos.x && pos.y) {
     x = bx + pos.x
     y = bx + pos.y
-  } else if (pos && pos.width && pos.height){
+  } else if (pos && pos.width && pos.height) {
     x = bx + (dw - pos.width) / 2
     y = by + (dh - pos.height) / 2
   }
@@ -39,7 +40,9 @@ function setPosition(win, pos) {
 
 function hideMainWindow() {
   mainWindow.hide()
-  app.hide && app.hide() // auto focus on last focused window is default feature in window/linux, we can use app.hide() in osx to implement it
+  // auto focus on last focused window is default feature in window/linux,
+  // we can use app.hide() in osx to implement it
+  if (app.hide) app.hide()
 }
 
 function toggleMainWindow() {
@@ -49,14 +52,14 @@ function toggleMainWindow() {
     mainWindow.restore()
     mainWindow.show()
     mainWindow.focus()
-    app.show && app.show()
+    if (app.show) app.show()
   }
 }
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: config.width,
-    height: config.max_height,
+    height: config.maxHeight,
     resizable: config.debug,
     title: config.title,
     type: config.debug ? 'normal' : 'splash',
@@ -78,7 +81,7 @@ function createMainWindow() {
     x: config.position && config.position.x,
     y: config.position && config.position.y,
     width: config.width,
-    height: config.max_height
+    height: config.maxHeight,
   })
 
   mainWindow.loadURL(`file://${__dirname}/browser/search/index.html`)
@@ -97,13 +100,13 @@ function createMainWindow() {
 
 function createPrefWindow() {
   prefWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-      title: 'ELaunch Preferences',
-      autoHideMenuBar: !config.debug,
-      backgroundColor: 'alpha(opacity=0)',
+    width: 800,
+    height: 600,
+    title: 'ELaunch Preferences',
+    autoHideMenuBar: !config.debug,
+    backgroundColor: 'alpha(opacity=0)',
   })
-  prefWindow.loadURL(`http://127.0.0.1:8080/`);
+  prefWindow.loadURL('http://127.0.0.1:8080/');
   setPosition(prefWindow)
 }
 
@@ -119,12 +122,12 @@ function registShortcut() {
 let tray = null
 
 function initTray() {
-  tray = new Tray(__dirname + '/icon_16x16@2x.png')
+  tray = new Tray(`${__dirname}/icon_16x16@2x.png`)
   const contextMenu = Menu.buildFromTemplate([{
     label: 'Toggle ELaunch',
     click(item, focusedWindow) {
       toggleMainWindow()
-    }
+    },
   }, {
     label: 'Preferences',
     click(item, focusedWindow) {
@@ -133,62 +136,61 @@ function initTray() {
       } else {
         electron.shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
       }
-    }
+    },
   }, {
     label: 'Bug Report',
     click(item, focusedWindow) {
       electron.shell.openExternal('https://github.com/zaaack/ELaunch/issues')
-    }
+    },
   }, {
     label: 'Help',
     click(item, focusedWindow) {
       electron.shell.openExternal('https://github.com/zaaack/ELaunch#readme')
-    }
+    },
   }, {
     label: 'Exit',
     click(item, focusedWindow) {
       app.quit()
-    }
+    },
   }]);
   tray.setToolTip('ELaunch is running.')
   tray.setContextMenu(contextMenu)
 }
 
-function initMenu() { //init menu to fix copy/paste shortcut issue
+function initMenu() { // init menu to fix copy/paste shortcut issue
   if (process.platform !== 'darwin' || Menu.getApplicationMenu()) return
   var template = [{
     label: 'Edit',
     submenu: [{
       label: 'Undo',
       accelerator: 'CmdOrCtrl+Z',
-      role: 'undo'
+      role: 'undo',
     }, {
       label: 'Redo',
       accelerator: 'Shift+CmdOrCtrl+Z',
-      role: 'redo'
+      role: 'redo',
     }, {
-      type: 'separator'
+      type: 'separator',
     }, {
       label: 'Cut',
       accelerator: 'CmdOrCtrl+X',
-      role: 'cut'
+      role: 'cut',
     }, {
       label: 'Copy',
       accelerator: 'CmdOrCtrl+C',
-      role: 'copy'
+      role: 'copy',
     }, {
       label: 'Paste',
       accelerator: 'CmdOrCtrl+V',
-      role: 'paste'
+      role: 'paste',
     }, {
       label: 'Select All',
       accelerator: 'CmdOrCtrl+A',
-      role: 'selectall'
-    }, ]
+      role: 'selectall',
+    }, ],
   }]
   var menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
 }
 
 function makeSingleInstance() {
@@ -199,7 +201,6 @@ function makeSingleInstance() {
     }
   });
 }
-
 
 
 function init() {
@@ -217,9 +218,11 @@ function init() {
     if (config.debug) {
       createPrefWindow()
     }
-
     config.context.app = app
-    config.context.locale = app.getLocale()
+
+    if (!config.language) {
+      config.set('language', app.getLocale())
+    }
     config.emit('app-ready')
   });
   // Quit when all windows are closed.
@@ -242,7 +245,7 @@ function init() {
   ipcMain.on('window-resize', (event, data) => {
     let height = data.height || mainWindow.getContentSize()['height']
     let width = data.width || config.width
-    height = Math.min(height, config.max_height)
+    height = Math.min(height, config.maxHeight)
     if (!config.debug) {
       mainWindow.setContentSize(width, height, true);
     }

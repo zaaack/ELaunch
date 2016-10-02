@@ -8,4 +8,5 @@ function mirror(obj) {
 
 export const ActionTypes = mirror({
   CHANGE_CONFIG: null,
+  UPDATE_CONFIG: null,
 })

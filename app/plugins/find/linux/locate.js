@@ -30,7 +30,7 @@ function update(cb) {
     })
   }
 
-  let cmd = `${updatedb} -o "${pluginConfig.db_path}" --database-root "${pluginConfig.root_dir}"`
+  let cmd = `${updatedb} -o "${pluginConfig.db_path}" --database-root "${pluginConfig.rootDir}"`
   console.log(cmd);
   child.exec(cmd, (error, stdout, stderr) => {
     if (error) {
@@ -71,7 +71,7 @@ module.exports = {
     config.merge(pluginConfig, pConfig)
     globalConfig = gConfig
     let rep = p => path.normalize(p.replace(/^~/, os.homedir()))
-    pluginConfig.root_dir = rep(pluginConfig.root_dir || '/')
+    pluginConfig.rootDir = rep(pluginConfig.rootDir || '/')
     pluginConfig.db_path = rep(pluginConfig.db_path)
     delay = pluginConfig.update_delay || 60000*30
     if (Date.now() - lastUpdateTime > delay) {

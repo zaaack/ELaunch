@@ -1,16 +1,19 @@
 const fs = require('fs-extra')
 const i18n = require('i18next')
+const isRenderer = require('is-electron-renderer')
 const Backend = require('i18next-node-fs-backend')
-const LanguageDetector = require('i18next-browser-languagedetector')
 const electron = require('electron')
 const { dataPath } = require('./constants')
 
-const localesPathBuiltin = `${__dirname}/../locales`
+const localesPathBuiltin = `${__dirname}/locales`
 const localesPathProd = `${dataPath}/locales`
 let localesPath = `${dataPath}/locales`
 
-if (process.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
   localesPath = localesPathBuiltin
+  if (isRenderer) {
+    localesPath = './app/locales'
+  }
 }
 
 if (!fs.existsSync(localesPath)) {
@@ -31,8 +34,9 @@ const backendOptions = {
 
 i18n
   .use(Backend)
-  .use(LanguageDetector)
   .init({
+    lng: 'en',
+    lngs: ['en', 'zh'],
     fallbackLng: 'en',
     backend: backendOptions,
     saveMissing: true,

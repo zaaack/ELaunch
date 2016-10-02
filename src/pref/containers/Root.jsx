@@ -6,8 +6,8 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from '../../../app/i18n'
 
 export default class Root extends React.Component {
-  render() {
 
+  render() {
     const { store, history } = this.props
     let devTools
 
@@ -28,7 +28,6 @@ export default class Root extends React.Component {
         </I18nextProvider>
       </Provider>
     )
-
   }
 }
 

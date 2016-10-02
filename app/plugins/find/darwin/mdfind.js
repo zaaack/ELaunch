@@ -5,19 +5,19 @@ let config = require('../../../config')
 let os = require('os')
 let pluginConfig = {
   include_path: ["/"],
-  exclude_path: [],
+  excludePaths: [],
   limit: 20
 }, fp
 module.exports = {
     setConfig: function (pConfig) {
       config.merge(pluginConfig, pConfig)
       let rep = p => path.normalize(p.replace(/^~/, os.homedir()))
-      pluginConfig.root_dir = rep(pluginConfig.root_dir) || os.homedir()
+      pluginConfig.rootDir = rep(pluginConfig.rootDir) || os.homedir()
     },
     exec: function (args, event) {
       if (args.join('').trim() === '') return  //空格返回空
       let patt = args.join('')
-      let cmdArgs = ['-onlyin',`${pluginConfig.root_dir}`,`"${patt}"`]
+      let cmdArgs = ['-onlyin',`${pluginConfig.rootDir}`,`"${patt}"`]
       console.log(cmdArgs);
       let defaultIcon = __dirname+'/../assets/file.svg'
       fp && fp.kill()

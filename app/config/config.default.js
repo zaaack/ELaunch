@@ -5,93 +5,98 @@ module.exports = {
   title: 'ELaunch',
   width: 600,
   height: 60,
-  max_height: 500,
+  maxHeight: 500,
+  language: null,
   position: 'center', // 'center' or {x: 100, y:200}
-  display: 'primary', // default is your primary display, you can change it by setting display id(integer), get all ids by require('electron').screen.getAllDisplays().map(d=>d.id)
+  // default is your primary display, you can change it by setting display id(integer),
+  // get all ids by require('electron').screen.getAllDisplays().map(d=>d.id)
+  display: 'primary',
   shortcut: {
     toggle: {
       default: 'Super+Space',
       win32: 'Super+Space',
       linux: 'Super+Space',
-      darwin: 'Super+Space'
-    }
+      darwin: 'Super+Space',
+    },
   },
   plugins: {
     app: {
       path: `${__dirname}/../plugins/app/index.js`,
-      enable: true, //whether the plugin is enable, default is true
+      enable: true, // whether the plugin is enable, default is true
       default: true, // default plugin don't need to input key
       config: {
         darwin: {
-          app_path: ['/Applications',`${home}/Applications`]
+          appPaths: ['/Applications', `${home}/Applications`],
         },
         linux: {
-          app_path: ['/usr/share/applications',
+          appPaths: ['/usr/share/applications',
             '/usr/local/share/applications',
             `${home}/.local/share/applications`],
-          icon_path: ['/usr/share/icons',
+          iconPaths: ['/usr/share/icons',
             `${home}/.local/share/icons`,
-            '/usr/share/pixmaps']
+            '/usr/share/pixmaps'],
         },
-        win32:{
-          init_on_start: true
-        }
+        win32: {
+        },
       },
       command: {
-        app: {}
-      }
+        app: {},
+      },
     },
     find: {
       path: `${__dirname}/../plugins/find/index.js`,
       config: {
         // type: 'locate',
         // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
-        // root_dir: '/home',
+        // rootDir: '/home',
         // exclude_patt: '\\/\\.|node_modules', //exclude hidden files
         // use_regex: false,
         // locate_limit: 1000,
 
-        linux:{
+        linux: {
 
           // type: 'find',
           // include_path: ['~/'],
-          // exclude_path: ['**/.*','**/node_*'],
+          // excludePaths: ['**/.*','**/node_*'],
           // maxdepth: 10,
 
           type: 'locate',
-          root_dir: '~',
+          rootDir: '~',
           // exclude_patt: '\\/\\.|node_modules|Programs' //exclude hidden files
         },
-        darwin:{
-          type:'mdfind',//Notice: mdfind only search the first path in `include_path`, and ignore `exclude_path`, plz set exclude_path in spotlight settings
-          root_dir: '~/',
-          exclude_path: ['**/.*','**/node_*','**/Library','**/Contents'],// /(?!(.*?/\.)|(.*?/node_)).*?a/
+        darwin: {
+          // Notice: mdfind only search the first path in `include_path`,
+          // and ignore `excludePaths`, plz set excludePaths in spotlight settings
+          type: 'mdfind',
+          rootDir: '~/',
+          excludePaths: ['**/.*', '**/node_*', '**/Library', '**/Contents'],
+          // /(?!(.*?/\.)|(.*?/node_)).*?a/
         },
-        limit: 20
+        limit: 20,
       },
       command: {
-        find: {}
-      }
+        find: {},
+      },
     },
-    websearch: {
+    webSearch: {
       path: `${__dirname}/../plugins/websearch/index.js`,
-      command:{
+      command: {
         bi: {
           engine: 'Bing',
           url: 'https://www.bing.com/search/?q=%s',
-          icon: 'https://cn.bing.com/sa/simg/bing_p_rr_teal_min.ico'
+          icon: 'https://cn.bing.com/sa/simg/bing_p_rr_teal_min.ico',
         },
         bd: {
           engine: 'Baidu',
           url: 'https://www.baidu.com/s?wd=%s',
-          icon: 'https://www.baidu.com/img/baidu.svg'
+          icon: 'https://www.baidu.com/img/baidu.svg',
         },
         gh: {
           engine: 'Github',
           url: 'http://github.com/search?q=%s',
-          icon: 'https://github.com/fluidicon.png'
-        }
-      }
+          icon: 'https://github.com/fluidicon.png',
+        },
+      },
     },
     shell: {
       path: `${__dirname}/../plugins/shell/index.js`,
@@ -113,21 +118,21 @@ module.exports = {
                       //  -e "end tell"` //for iterm2 in mac
         //terminal: 'cmd /k "%s"' //for windows
       },
-      command:{
-        '>':{}
-      }
+      command: {
+        '>': {},
+      },
     },
-    youdao:  {
+    youdao: {
       path: `${__dirname}/../plugins/youdao/index.js`,
-      command:{
-        'yd':{}
-      }
+      command: {
+        'yd': {},
+      },
     },
     calc: {
       path: `${__dirname}/../plugins/calc/index.js`,
       command: {
-        calc: {}
-      }
-    }
-  }
+        calc: {},
+      },
+    },
+  },
 }

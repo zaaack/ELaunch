@@ -23,8 +23,11 @@
   "dependencies": {
     "chokidar": "^1.5.2",
     "co": "^4.6.0",
+    "electron-gh-releases": "^2.0.4",
     "fs-extra": "^0.30.0",
     "globule": "^1.0.0",
+    "i18next": "^3.4.3",
+    "i18next-node-fs-backend": "^0.1.2",
     "is-electron-renderer": "^2.0.1"
   }
 }

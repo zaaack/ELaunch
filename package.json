@@ -20,8 +20,8 @@
     "name": "zaaack"
   },
   "scripts": {
-    "start": "electron ./app/index.js",
-    "debug": "electron ./app/index.js --debug=5858",
+    "start": "cross-env NODE_ENV=development electron ./app/index.js",
+    "debug": "cross-env NODE_ENV=development electron ./app/index.js --debug=5858",
     "debug-brk": "electron ./app/index.js --debug-brk=5858",
     "inspect": "cross-env ELECTRON_RUN_AS_NODE=true electron node_modules/node-inspector/bin/inspector.js",
     "test": "ava",
@@ -91,7 +91,6 @@
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
     "i18next": "^3.4.1",
-    "i18next-browser-languagedetector": "^1.0.0",
     "i18next-node-fs-backend": "^0.1.2",
     "immutability-helper": "^2.0.0",
     "immutable": "^3.8.1",
@@ -105,7 +104,7 @@
     "react-addons-css-transition-group": "^15.3.1",
     "react-dom": "^15.3.0",
     "react-hot-loader": "^3.0.0-beta.1",
-    "react-i18next": "^1.8.0",
+    "react-i18next": "^1.10.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.1",
     "react-router-redux": "^4.0.5",
@@ -133,6 +132,9 @@
   "eslintConfig": {
     "parser": "babel-eslint",
     "extends": "airbnb",
+    "import/core-modules": [
+      "electron"
+    ],
     "plugins": [
       "flowtype",
       "html"

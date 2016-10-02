@@ -20,7 +20,7 @@ module.exports = {
         patt = patt.replace(/(.)/g,'*$1*')
       }
       let includePara = pluginConfig.include_path.map(ip=>`"${ip}"`).join(' '),
-          excludePara = pluginConfig.exclude_path.map(ep=>`-path "${ep}"`).join(' -o ')
+          excludePara = pluginConfig.excludePaths.map(ep=>`-path "${ep}"`).join(' -o ')
       //find "/Users/z" \( -path "**/.*" -o -path "**/node_*" \)  -a -prune -o \( -type d -o -type f \) -name "*a*" -print | grep "." -m 20
       let cmd = `find ${includePara} ` +
       (excludePara?`\\( ${excludePara} \\)  -a -prune `:``) +

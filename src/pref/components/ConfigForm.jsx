@@ -1,27 +1,35 @@
 import React, { PropTypes } from 'react'
-import { deepKey } from '../../../app/utils/deepKey'
-import { compose } from 'redux'
+import { compose, bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { translate } from 'react-i18next'
+import { changeConfig, updateConfig } from '../actions'
 import { ActionTypes } from '../constants'
-import { config } from '../../../app/config/index'
+import config from '../../../app/config'
 
-export default class ConfigForm extends React.Component {
+function mapStateToProps(state) {
+  return {
+    ...state.config,
+  }
+}
 
-  static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-  }
-  state = {
-    changedKeys: [],
-    configCopy: config.rawConfig,
-  }
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    changeConfig,
+    updateConfig,
+  }, dispatch)
+}
 
-  handleChange(key, value) {
-    this.props.dispatch({
-      type: ActionTypes.CHANGE_CONFIG,
-      key,
-      value,
-    })
-  }
+export function configForm(Component) {
+  return compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    translate(null, { bindI18n: ''})
+  )(Component)
+}
 
-  dispatchConfig() {
-  }
+export const configFormProptypes = {
+  t: PropTypes.func.isRequired,
+  changeConfig: PropTypes.func.isRequired,
+  updateConfig: PropTypes.func.isRequired,
+  rawConfig: PropTypes.object.isRequired,
+  failedKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
 }

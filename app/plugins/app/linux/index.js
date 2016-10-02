@@ -32,7 +32,7 @@ function getAppInfo(file) {
     } else {
       appIcon = appIcon.replace(/[\u4e00-\u9fa5]+/g,'**')
         .replace(/(\.png|\.jpg|\.svg)$/,'')
-      let findIconCmd = `find "${pluginConfig.icon_path.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\) -follow -size +2k`
+      let findIconCmd = `find "${pluginConfig.iconPaths.join('" "')}" \\( -name "${appIcon}.png" -o -name  "${appIcon}.svg" \\) -follow -size +2k`
       let iconList = child.execSync(findIconCmd, 'utf-8').toString().trim().split('\n')
       icon=iconList[0]
     }
@@ -78,12 +78,12 @@ function update() {
       }
     }
   }
-  walkDir(pluginConfig.app_path[Symbol.iterator]())
+  walkDir(pluginConfig.appPaths[Symbol.iterator]())
 }
 
 function init() {
-  pluginConfig.app_path = pluginConfig.app_path.filter(dir=>fs.existsSync(dir))
-  pluginConfig.icon_path = pluginConfig.icon_path.filter(dir=>fs.existsSync(dir))
+  pluginConfig.appPaths = pluginConfig.appPaths.filter(dir=>fs.existsSync(dir))
+  pluginConfig.iconPaths = pluginConfig.iconPaths.filter(dir=>fs.existsSync(dir))
   //init appDbFile and appDb
   appDbFile = globalConfig.dataPath + '/app/app.db'
   fs.ensureFileSync(appDbFile)
@@ -97,7 +97,7 @@ function init() {
   update()
   // watch and update
   watcher && watcher.close()
-  watcher = chokidar.watch(pluginConfig.app_path, {
+  watcher = chokidar.watch(pluginConfig.appPaths, {
     ignore: /^.*(?!\.desktop)$/,
   })
   let delay = 3000,t
