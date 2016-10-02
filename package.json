@@ -38,8 +38,8 @@
   },
   "ava": {
     "files": [
-      "app/**/__test__/**/*.js",
-      "src/**/__test__/**/*.js"
+      "app/**/__test__/**/*.test.js",
+      "src/**/__test__/**/*.test.js"
     ],
     "require": "babel-register",
     "babel": "inherit"
@@ -95,6 +95,7 @@
     "i18next-node-fs-backend": "^0.1.2",
     "immutability-helper": "^2.0.0",
     "immutable": "^3.8.1",
+    "is-electron-renderer": "^2.0.1",
     "node-inspector": "^0.12.8",
     "node-sass": "^3.8.0",
     "normalize.css": "^4.2.0",

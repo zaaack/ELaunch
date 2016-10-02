@@ -1,13 +1,20 @@
-import i18n from 'i18next'
-import Backend from 'i18next-node-fs-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
+const fs = require('fs-extra')
+const i18n = require('i18next')
+const Backend = require('i18next-node-fs-backend')
+const LanguageDetector = require('i18next-browser-languagedetector')
+const electron = require('electron')
+const { dataPath } = require('./constants')
 
-const localesDir = 'locales'
-let localesPath = `./${localesDir}`
+const localesPathBuiltin = `${__dirname}/../locales`
+const localesPathProd = `${dataPath}/locales`
+let localesPath = `${dataPath}/locales`
 
-console.log(process.cwd())
-if (process.env.NODE_ENV === 'development') {
-  localesPath = `${process.cwd()}/app/browser/pref/${localesDir}`
+if (process.NODE_ENV === 'development') {
+  localesPath = localesPathBuiltin
+}
+
+if (!fs.existsSync(localesPath)) {
+  fs.copySync(localesPathBuiltin, localesPath, e => console.error(e))
 }
 
 const backendOptions = {
@@ -45,4 +52,4 @@ i18n
   })
 
 
-export default i18n
+module.exports = i18n

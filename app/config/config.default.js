@@ -1,3 +1,6 @@
+const os = require('os')
+const home = os.homedir()
+
 module.exports = {
   title: 'ELaunch',
   width: 600,
@@ -20,14 +23,14 @@ module.exports = {
       default: true, // default plugin don't need to input key
       config: {
         darwin: {
-          app_path: ['/Applications','/Users/z/Applications']
+          app_path: ['/Applications',`${home}/Applications`]
         },
         linux: {
           app_path: ['/usr/share/applications',
             '/usr/local/share/applications',
-            '/home/z/.local/share/applications'],
+            `${home}/.local/share/applications`],
           icon_path: ['/usr/share/icons',
-            '/home/z/.local/share/icons',
+            `${home}/.local/share/icons`,
             '/usr/share/pixmaps']
         },
         win32:{
@@ -98,7 +101,7 @@ module.exports = {
         //terminal: 'platform', //you can set `platform` to auto use different shell in different platform: gnome-terminal for linux, Terminal.app for MacOS and cmd.exe for windows
 
         // use custom shell to run command
-        // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',//default is 'node', 'gnome-terminal -x $SHELL -c '%s;exec $SHELL\'' // for linux
+        // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',
         //terminal: `osapath -e "tell application \\"Terminal\\""
                         // -e "activate"
                         // -e "do path \\"%s\\""

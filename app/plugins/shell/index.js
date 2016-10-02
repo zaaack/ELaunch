@@ -14,8 +14,11 @@ module.exports = {
           pluginConfig.terminal = "gnome-terminal -x $SHELL -c \"%s;exec $SHELL\""
           break;
         case 'darwin':
-          pluginConfig.terminal = `osascript -e "tell application \\"Terminal\\"" -e "activate" -e "do script \\"%s\\"" -e "end tell"`
-          console.log(pluginConfig.terminal);
+          pluginConfig.terminal = `osascript
+            -e "tell application \\"Terminal\\""
+            -e "activate"
+            -e "do script \\"%s\\""
+            -e "end tell"`.replace(/\n/g, '')
           break
         case 'win32':
           pluginConfig.terminal = 'cmd.exe /k "%s"'

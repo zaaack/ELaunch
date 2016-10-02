@@ -79,9 +79,6 @@ function parseCmd(data) {
     key = Object.keys(pluginMap).find(k => pluginMap[k].default)
   }
   const plugin = pluginMap[key]
-  if (!plugin) {
-    console.log(key, pluginMap);
-  }
   return {
     key: key,
     path: path.resolve(config.dataPath, plugin.path),

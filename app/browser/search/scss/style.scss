@@ -1,9 +1,13 @@
 $search-height: 50px;
 $body-padding: 5px;
 
-* {
+%outline {
   outline-color: rgb(24, 166, 236);
+  outline-style: auto;
+  outline-width: 3px;
+}
 
+* {
   &::-webkit-scrollbar {
     width: 5px;
     background-color: rgba(0, 0, 0, 0.06);
@@ -22,6 +26,10 @@ $body-padding: 5px;
   &::-webkit-scrollbar-thumb:active {
     background-color: rgba(0, 0, 0, 0.5);
   }
+}
+
+*:focus {
+  outline-style: none;
 }
 
 .hidden {
@@ -52,6 +60,10 @@ body {
     font-size: 24px;
     border: 1px solid #ccc;
     border-radius: 3px;
+
+    &:focus {
+      @extend %outline;
+    }
   }
 }
 
@@ -77,6 +89,11 @@ ul {
 
     &.select {
       background-color: rgba(100, 214, 245, 0.08);
+    }
+
+    &:focus,
+    &.select {
+      @extend %outline;
     }
 
     .icon {
@@ -132,6 +149,7 @@ ul {
   border: 1px solid;
   border-radius: 3px;
   background-color: transparent;
+  outline-width: none;
 
   @each $index,$color in (0:#fa8e10, 1:#7ee03e, 2:#19c6a4, 3:#6d609c,
   4:#b16d3a, 5:#24b564, 6:#e33636, 7:#c8c222) {

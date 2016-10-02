@@ -1,36 +1,55 @@
 const os = require('os')
 const fs = require('fs-extra')
+const isRenderer = require('is-electron-renderer')
 const electron = require('electron')
 const { merge } = require('../utils/merge')
 const deepKey = require('../utils/deepKey')
 const ElectronBus = require('../utils/ElectronBus')
+const defaultConfig = require('./config.default.js')
+const i18next = require('../i18n')
+const { debug, dataPath, userConfigFile } = require('../constants')
 const config = new ElectronBus('config')
 
-const debug = process.argv.some((value)=>value.includes('--debug'))
-const dataPath = `${os.homedir()}/.ELaunch`
-const userConfigFile = dataPath+'/config.js'
-let rawConfig
+let rawConfig = {}
 
+Object.freeze(defaultConfig)
+
+function writeDefaultConfig() {
+  try {
+    rawConfig = merge({}, defaultConfig)
+    writeConfig()
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 function loadConfig() {
-  if (!fs.existsSync(userConfigFile)) {
-    try {
-      fs.copySync(__dirname+'/config.user.js', userConfigFile)
-    } catch (err) {
-      console.error(err)
+  const exist = fs.existsSync(userConfigFile)
+  if (!exist) {
+    writeDefaultConfig()
+  } else {
+    const userConfigStr = fs.readFileSync(userConfigFile, 'utf8')
+    if (userConfigStr.trim().startsWith('module.exports')) {
+      writeDefaultConfig()
+    } else {
+      rawConfig = merge({}, defaultConfig, JSON.parse(userConfigStr))
     }
   }
-
-  const userConfig = eval(fs.readFileSync(userConfigFile, 'utf8'))
-  rawConfig = merge({}, require('./config.default.js'), userConfig)
   return this
 }
+
+function writeConfig() {
+  fs.outputJsonSync(userConfigFile, rawConfig, 'utf8')
+}
+
 Object.assign(config,  {
   dataPath,
   userConfigFile,
-  merge,
   debug,
+  isRenderer,
+  merge,
   loadConfig,
+  writeConfig,
   get rawConfig() {
     return merge({}, rawConfig)
   },
@@ -38,11 +57,19 @@ Object.assign(config,  {
     return deepKey.get(rawConfig, key, defaultValue)
   },
   set(key, value) {
-    deepKey.set(rawConfig, key, value)
+    try {
+      writeConfig()
+      deepKey.set(rawConfig, key, value)
+      return true
+    } catch (e) {
+      console.error(e)
+      return false
+    }
   },
   context: {
     mainWindow: null,
-    notifier: require('../utils/notifier')
+    notifier: require('../utils/notifier'),
+    i18next,
   },
   emitReload: function () {
     config.emit('reload-config')
@@ -55,8 +82,8 @@ Object.assign(config,  {
 loadConfig()
 module.exports = new Proxy(config, {
   get(target, name) {
-    return name in rawConfig
-      ? rawConfig[name]
-      : target[name]
+    return name in target
+      ? target[name]
+      : rawConfig[name]
   }
 })

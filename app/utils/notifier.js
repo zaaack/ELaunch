@@ -1,4 +1,8 @@
 const electron = require('electron')
+const isRenderer = require('is-electron-renderer')
+const ElectronBus = require('./ElectronBus')
+
+const notifierBus = new ElectronBus('notifier')
 
 function notify(title, options) {
   new Notification(title, options||{body:title})
@@ -6,24 +10,18 @@ function notify(title, options) {
 
 
 module.exports = {
-  initInRenderer: function () {
-    let ipcRenderer = electron.ipcRenderer
-    ipcRenderer.on('notify', function (event, args) {
-      console.log(args);
-      notify.call(this,args[0],args[1])
+  initInRenderer () {
+    notifierBus.on('notify', function (title, options) {
+      console.log('notify', title, options)
+      notify.call(this, title, options)
     })
     return this
   },
-  notify: function (title, options) {
-    if (electron.ipcRenderer) { //in renderer process
+  notify (title, options) {
+    if (isRenderer) { //in renderer process
       notify(title, options)
     } else {
-      let allWins = require('electron').BrowserWindow.getAllWindows()
-      if(allWins.length>0){
-        allWins[0].webContents.send('notify', arguments)
-      }else {
-        console.error('[notifier] no window find');
-      }
+      notifierBus.emit('notify', ...arguments)
     }
   }
 }

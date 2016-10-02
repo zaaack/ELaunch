@@ -22,7 +22,9 @@
   },
   "dependencies": {
     "chokidar": "^1.5.2",
+    "co": "^4.6.0",
     "fs-extra": "^0.30.0",
-    "globule": "^1.0.0"
+    "globule": "^1.0.0",
+    "is-electron-renderer": "^2.0.1"
   }
 }

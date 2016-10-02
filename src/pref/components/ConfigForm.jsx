@@ -11,7 +11,7 @@ export default class ConfigForm extends React.Component {
   }
   state = {
     changedKeys: [],
-    rawConfig: config.rawConfig,
+    configCopy: config.rawConfig,
   }
 
   handleChange(key, value) {

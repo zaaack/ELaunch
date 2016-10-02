@@ -1,15 +1,9 @@
 function mirror(obj) {
   /* eslint-disable no-param-reassign, no-sequences */
-  return Object.keys(obj).reduce((newObj, key) => {
-    const value = newObj[key]
-    if (typeof value === 'object'
-      && value !== null) {
-      newObj[key] = mirror(value)
-    } else {
-      newObj[key] = key
-    }
-    return newObj
-  }, {})
+  return Object.keys(obj).reduce((o, key) => {
+    o[key] = key
+    return o
+  }, obj)
 }
 
 export const ActionTypes = mirror({

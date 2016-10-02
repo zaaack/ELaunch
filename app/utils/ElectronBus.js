@@ -31,7 +31,7 @@ module.exports = class ElectronBus extends EventEmitter {
     const ipc = electron.ipcMain || electron.ipcRenderer
     ipc.on(this._ipcChannel, (e, eventJson) => {
       const eventData = JSON.parse(eventJson)
-      const listeners = this._listenersMap[eventData] || []
+      const listeners = this._listenersMap[eventData.event] || []
       listeners.forEach(listener => {
         try {
           listener(...eventData.args)
