@@ -3,7 +3,7 @@ const i18n = require('i18next')
 const isRenderer = require('is-electron-renderer')
 const Backend = require('i18next-node-fs-backend')
 const electron = require('electron')
-const { dataPath } = require('./constants')
+const { dataPath, languages, fallbackLng } = require('./constants')
 
 const localesPathBuiltin = `${__dirname}/locales`
 const localesPathProd = `${dataPath}/locales`
@@ -36,8 +36,8 @@ i18n
   .use(Backend)
   .init({
     lng: 'en',
-    lngs: ['en', 'zh'],
-    fallbackLng: 'en',
+    lngs: languages.map(ln => ln.value),
+    fallbackLng,
     backend: backendOptions,
     saveMissing: true,
     saveMissingTo: 'all',

@@ -40,3 +40,4 @@ jspm_packages
 dist/
 icotool_for_windows/icotool/obj
 icotool_for_windows/icotool/bin
+common.missing.json

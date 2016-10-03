@@ -12,9 +12,22 @@ class SideMenu extends Component {
   constructor(props) {
     super(props)
 
-    this.status = {
-    }
     autobind(this.constructor)
+  }
+
+  renderItem(uri, text) {
+    const { router } = this.context
+    const isActive = router.isActive(uri)
+    return (
+      <Link to={uri}>
+        <ListItem
+          caption={text}
+          disabled={isActive}
+          selectable
+          ripple
+        />
+      </Link>
+    )
   }
 
   render() {
@@ -32,24 +45,22 @@ class SideMenu extends Component {
             els.push(
               <ListSubHeader caption={item.text} />
             )
-            item.childRoutes.forEach(
-              childItem => els.push(
-                <Link to={`${item.path}/${childItem.path}`}>
-                  <ListItem caption={childItem.text} />
-                </Link>
-              ))
+            item.childRoutes.forEach(childItem =>
+              els.push(this.renderItem(
+                `${item.path}/${childItem.path}`, childItem.text)))
           } else {
-            els.push(
-              <Link to={item.path}>
-                <ListItem caption={item.text} />
-              </Link>
-            )
+            els.push(this.renderItem(item.path, item.text))
           }
           return els
         })}
       </List>
     )
   }
+}
+
+
+SideMenu.contextTypes = {
+  router: React.PropTypes.object,
 }
 
 export default (SideMenu)

@@ -5,16 +5,15 @@ import '../../app/utils/notifier'
 
 import React from 'react'
 import { render } from 'react-dom'
+import Root from './containers/Root'
 import { hashHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
-import Root from './containers/Root'
 import configureStore from './store/configureStore'
 
-import config from '../../app/config'
+const rootEl = document.getElementById('root')
 
 const store = configureStore()
 const history = syncHistoryWithStore(hashHistory, store)
-const rootEl = document.getElementById('root')
 
 render(
   <Root store={store} history={history} />,

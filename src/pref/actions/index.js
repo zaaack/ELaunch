@@ -1,26 +1,26 @@
-import { CHANGE_CONFIG, UPDATE_CONFIG } from '../constants'
+import { ActionTypes } from '../constants'
 import config from '../../../app/config'
-import deepKey from '../../../app/utils/deepKey'
+import dotDrop from 'dot-prop'
 
 export function changeConfig(key, value) {
   return {
-    type: CHANGE_CONFIG,
+    type: ActionTypes.CHANGE_CONFIG,
     key,
     value,
   }
 }
 
-export function updateConfig(changedKeys, rawConfig) {
+export function updateConfig(changedKeySet, rawConfig) {
   const failedKeys = []
-  changedKeys.forEach(key => {
-    const value = deepKey.get(rawConfig)
+  changedKeySet.forEach(key => {
+    const value = dotDrop.get(rawConfig, key)
     const changed = config.set(key, value)
     if (!changed) {
       failedKeys.push(key)
     }
   })
   return {
-    type: UPDATE_CONFIG,
+    type: ActionTypes.UPDATE_CONFIG,
     failedKeys,
   }
 }

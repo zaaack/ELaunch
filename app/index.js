@@ -3,40 +3,10 @@ const { app, Tray, Menu, BrowserWindow } = electron
 const ipcMain = electron.ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
+const { setPosition } = require('./utils/winUtils')
 
 let mainWindow
 let prefWindow
-
-
-function setPosition(win, pos) {
-  let display = electron.screen.getPrimaryDisplay()
-  if (config.display && Number.isInteger(config.display)) {
-    display = electron.screen.getAllDisplays()
-      .find((d) => d.id === config.display)
-  }
-
-  const bx = display.bounds.x
-  const by = display.bounds.y
-  const dw = display.workAreaSize.width
-  const dh = display.workAreaSize.height
-  const wb = win.getBounds()
-  // set window to center in primary display when default
-  let x = bx + (dw - wb.width) / 2
-  let y = by + (dh - wb.height) / 2
-
-  if (pos && pos.x && pos.y) {
-    x = bx + pos.x
-    y = bx + pos.y
-  } else if (pos && pos.width && pos.height) {
-    x = bx + (dw - pos.width) / 2
-    y = by + (dh - pos.height) / 2
-  }
-
-  x = Math.round(x)
-  y = Math.round(y)
-
-  win.setPosition(x, y)
-}
 
 function hideMainWindow() {
   mainWindow.hide()
@@ -45,14 +15,18 @@ function hideMainWindow() {
   if (app.hide) app.hide()
 }
 
+function showMainWindow() {
+  mainWindow.restore()
+  mainWindow.show()
+  mainWindow.focus()
+  if (app.show) app.show()
+}
+
 function toggleMainWindow() {
   if (mainWindow.isVisible()) {
     hideMainWindow()
   } else {
-    mainWindow.restore()
-    mainWindow.show()
-    mainWindow.focus()
-    if (app.show) app.show()
+    showMainWindow()
   }
 }
 
@@ -115,7 +89,7 @@ function registShortcut() {
   toggleShortcut = toggleShortcut[process.platform] || toggleShortcut.default || 'Super+Space'
   const ret = electron.globalShortcut.register(toggleShortcut, toggleMainWindow);
   if (!ret) {
-    console.log('registration failed');
+    console.error('regist shortcut failed', toggleShortcut);
   }
 }
 
@@ -159,7 +133,7 @@ function initTray() {
 
 function initMenu() { // init menu to fix copy/paste shortcut issue
   if (process.platform !== 'darwin' || Menu.getApplicationMenu()) return
-  var template = [{
+  const template = [{
     label: 'Edit',
     submenu: [{
       label: 'Undo',
@@ -187,9 +161,9 @@ function initMenu() { // init menu to fix copy/paste shortcut issue
       label: 'Select All',
       accelerator: 'CmdOrCtrl+A',
       role: 'selectall',
-    }, ],
+    }],
   }]
-  var menu = Menu.buildFromTemplate(template);
+  const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 }
 
@@ -205,9 +179,12 @@ function makeSingleInstance() {
 
 function init() {
   const shouldQuit = makeSingleInstance()
-  if (shouldQuit) return app.quit()
+  if (shouldQuit) {
+    app.quit()
+    return
+  }
   if (!config.debug) {
-    app.dock && app.dock.hide()
+    if (app.dock) app.dock.hide()
   }
   app.on('ready', () => {
     createMainWindow()
@@ -243,11 +220,11 @@ function init() {
     plugin.execItem(data, event)
   })
   ipcMain.on('window-resize', (event, data) => {
-    let height = data.height || mainWindow.getContentSize()['height']
-    let width = data.width || config.width
-    height = Math.min(height, config.maxHeight)
+    const dataHeight = data.height || mainWindow.getContentSize().height
+    const height = Math.min(dataHeight, config.maxHeight)
+    const width = data.width || config.width
     if (!config.debug) {
-      mainWindow.setContentSize(width, height, true);
+      mainWindow.setContentSize(width, height, true)
     }
   })
   ipcMain.on('hide', () => {

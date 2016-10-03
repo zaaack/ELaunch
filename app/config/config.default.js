@@ -125,7 +125,7 @@ module.exports = {
     youdao: {
       path: `${__dirname}/../plugins/youdao/index.js`,
       command: {
-        'yd': {},
+        yd: {},
       },
     },
     calc: {

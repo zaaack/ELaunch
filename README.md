@@ -88,7 +88,7 @@ npm i -g electron-prebuilt
 electron ./app/index.js
 ```
 
-## debug
+## Debug
 
 see: http://electron.atom.io/docs/tutorial/debugging-main-process/
 

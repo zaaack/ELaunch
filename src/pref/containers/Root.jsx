@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import routes from '../routes'
-import { Router } from 'react-router'
+import { Router, RouterContext } from 'react-router'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '../../../app/i18n'
 

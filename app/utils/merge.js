@@ -6,7 +6,7 @@ function getType(obj) {
 }
 
 function merge() {
-  return [].slice.call(arguments).reduce((dist, src)=>{
+  return [].slice.call(arguments).reduce((dist, src) => {
     dist = isNone(dist) ? {} : dist
     src = isNone(src) ? {} : src
     if (getType(dist) !== 'object') {
@@ -15,10 +15,10 @@ function merge() {
       return src
     } else {
       for (var i in src) {
-        if(getType(src[i]) === 'object'
-            && getType(dist[i]) === 'object'){
+        if (getType(src[i]) === 'object'
+            && getType(dist[i]) === 'object') {
           dist[i] = merge({}, dist[i], src[i])
-        }else{
+        } else {
           dist[i] = src[i]
         }
       }

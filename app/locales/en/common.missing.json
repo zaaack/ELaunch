@@ -1,4 +1,15 @@
 {
+  "Global": "Global",
+  "General": "General",
+  "Keymap": "Keymap",
+  "Plugins": "Plugins",
+  "Installed Plugins": "Installed Plugins",
+  "Available Plugins": "Available Plugins",
+  "Themes": "Themes",
+  "Choose language": "Choose language",
+  "OK": "OK",
+  "Saving config failed!": "Saving config failed!",
+  "Some field couldn't be saved!": "Some field couldn't be saved!",
   "Width": "Width",
   "Max Height": "Max Height"
 }
