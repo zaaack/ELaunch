@@ -3,6 +3,7 @@ const i18n = require('../i18n')
 const dotDrop = require('dot-prop')
 const { fallbackLng } = require('../constants')
 const promisify = require('../utils/promisify')
+const winUtils =  require('../utils/winUtils')
 
 let config
 let rawConfig
@@ -29,6 +30,15 @@ function syncOnSet(key, value) {
   switch (key) {
     case 'language':
       setLanguage(value)
+      break;
+    case 'display':
+    case 'position':
+    case 'position.x':
+    case 'position.y':
+      if (!config.isRenderer) {
+        const mainWin = config.context.mainWindow
+        winUtils.setPosition(mainWin, rawConfig.position)
+      }
       break;
     default:
   }

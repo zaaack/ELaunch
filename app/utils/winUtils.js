@@ -7,7 +7,7 @@ module.exports = {
     let display = electron.screen.getPrimaryDisplay()
     if (config.display && Number.isInteger(config.display)) {
       display = electron.screen.getAllDisplays()
-        .find((d) => d.id === config.display)
+        .find((d) => d.id === config.display) || display
     }
 
     const bx = display.bounds.x
@@ -19,7 +19,9 @@ module.exports = {
     let x = bx + (dw - wb.width) / 2
     let y = by + (dh - wb.height) / 2
 
-    if (pos && pos.x && pos.y) {
+    const isCustom = pos && Number.isInteger(pos.x)
+      && Number.isInteger(pos.y)
+    if (isCustom) {
       x = bx + pos.x
       y = bx + pos.y
     } else if (pos && pos.width && pos.height) {

@@ -5,6 +5,7 @@ import { translate } from 'react-i18next'
 import autoBind from 'autobind-decorator'
 import Dialog from 'react-toolbox/lib/dialog'
 import { changeConfig, updateConfig } from '../actions'
+import config from '../../../app/config'
 
 export class BaseConfigForm extends React.Component {
 
@@ -76,6 +77,7 @@ export class BaseConfigForm extends React.Component {
 function mapStateToProps(state) {
   return {
     ...state.config,
+    config,
   }
 }
 

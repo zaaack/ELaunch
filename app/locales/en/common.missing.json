@@ -11,5 +11,12 @@
   "Saving config failed!": "Saving config failed!",
   "Some field couldn't be saved!": "Some field couldn't be saved!",
   "Width": "Width",
-  "Max Height": "Max Height"
+  "Max Height": "Max Height",
+  "Choose Display": "Choose Display",
+  "Primary display": "Primary display",
+  "Set Position": "Set Position",
+  "center": "center",
+  "custom": "custom",
+  "Left": "Left",
+  "Top": "Top"
 }

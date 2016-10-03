@@ -66,6 +66,9 @@ module.exports = {
         // 相当于管道一样，最后面的loader先传入文件，然后再传出给前面的loader
         loader: cssLoader,
       }, {
+        test: /\.json$/,
+        loader: 'json',
+      }, {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',

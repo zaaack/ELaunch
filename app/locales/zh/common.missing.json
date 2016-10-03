@@ -11,5 +11,7 @@
   "Saving config failed!": "Saving config failed!",
   "Some field couldn't be saved!": "Some field couldn't be saved!",
   "Width": "Width",
-  "Max Height": "Max Height"
+  "Max Height": "Max Height",
+  "Left": "Left",
+  "Top": "Top"
 }

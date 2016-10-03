@@ -34,7 +34,7 @@ test('merge', t => {
 
 test('getType', t => {
 
-  t.is(getType(f=>f), 'function')
+  t.is(getType(f => f), 'function')
   t.is(getType(null), 'null')
   t.is(getType(undefined), 'undefined')
   t.is(getType(void 0), 'undefined')

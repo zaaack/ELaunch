@@ -13,3 +13,6 @@ export const ActionTypes = mirror({
 })
 
 export const languages = appConstants.languages
+
+export const CENTER = 'center'
+export const CUSTOM = 'custom'
