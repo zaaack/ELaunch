@@ -34,4 +34,8 @@ module.exports = {
 
     win.setPosition(x, y)
   },
+  setContentSize(win, width, height, animateOnMac = true) {
+    const sizes = win.getContentSize()
+    win.setContentSize(width || sizes[0], height || sizes[1], animateOnMac)
+  },
 }

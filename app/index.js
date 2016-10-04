@@ -3,7 +3,7 @@ const { app, Tray, Menu, BrowserWindow } = electron
 const ipcMain = electron.ipcMain
 const plugin = require('./plugins')
 const config = require('./config')
-const { setPosition } = require('./utils/winUtils')
+const { setPosition, setContentSize } = require('./utils/winUtils')
 
 let mainWindow
 let prefWindow
@@ -48,7 +48,7 @@ function createMainWindow() {
   })
 
   if (!config.debug) {
-    mainWindow.setContentSize(config.width, config.height, true);
+    setContentSize(mainWindow, config.width, config.height, false);
   }
 
   setPosition(mainWindow, {
@@ -220,11 +220,11 @@ function init() {
     plugin.execItem(data, event)
   })
   ipcMain.on('window-resize', (event, data) => {
-    const dataHeight = data.height || mainWindow.getContentSize().height
+    const dataHeight = data.height || mainWindow.getContentSize()[1]
     const height = Math.min(dataHeight, config.maxHeight)
     const width = data.width || config.width
     if (!config.debug) {
-      mainWindow.setContentSize(width, height, true)
+      setContentSize(mainWindow, width, height)
     }
   })
   ipcMain.on('hide', () => {

@@ -31,7 +31,8 @@
     "i18next": "^3.4.3",
     "i18next-node-fs-backend": "^0.1.2",
     "is-electron-renderer": "^2.0.1",
-    "json5": "^0.5.0"
+    "json5": "^0.5.0",
+    "pkginfo": "^0.4.0"
   },
   "devDependencies": {
     "electron-devtools-installer": "^2.0.1"

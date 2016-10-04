@@ -7,6 +7,7 @@ module.exports = {
   height: 60,
   maxHeight: 500,
   language: null,
+  autoLaunch: true,
   position: 'center', // 'center' or {x: 100, y:200}
   // default is your primary display, you can change it by setting display id(integer),
   // get all ids by require('electron').screen.getAllDisplays().map(d=>d.id)

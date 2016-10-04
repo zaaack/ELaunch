@@ -2,7 +2,8 @@ import styles from './style.scss'
 import electron from 'electron'
 import React, { PropTypes } from 'react'
 import Input from 'react-toolbox/lib/input'
-import Dropdown from 'react-toolbox/lib/dropdown';
+import Dropdown from 'react-toolbox/lib/dropdown'
+import Checkbox from 'react-toolbox/lib/checkbox'
 
 import { languages, CENTER, CUSTOM } from '../../constants'
 import { BaseConfigForm, configForm, configFormProptypes } from '../ConfigForm'
@@ -142,6 +143,13 @@ class General extends BaseConfigForm {
           />
         </section>
         {this.renderPosition()}
+        <section>
+          <Checkbox
+            checked={rawConfig.autoLaunch}
+            label={t('Start on login')}
+            onChange={this.changeAndUpdate('autoLaunch')}
+          />
+        </section>
         {super.render()}
       </div>
     )

@@ -4,6 +4,7 @@ const dotDrop = require('dot-prop')
 const { fallbackLng } = require('../constants')
 const promisify = require('../utils/promisify')
 const winUtils =  require('../utils/winUtils')
+const autoLaunch = require('../utils/autoLaunch')
 
 let config
 let rawConfig
@@ -40,6 +41,18 @@ function syncOnSet(key, value) {
         winUtils.setPosition(mainWin, rawConfig.position)
       }
       break;
+    case 'width':
+    case 'maxHeight':
+      if (!config.isRenderer) {
+        const mainWin = config.context.mainWindow
+        winUtils.setContentSize(mainWin, config.width, config.maxHeight)
+      }
+      break;
+    case 'autoLaunch':
+      if (!config.isRenderer) {
+        autoLaunch(value)
+      }
+      break;
     default:
   }
 }
@@ -50,6 +63,9 @@ function syncOnInit() {
       setLanguage(rawConfig.language)
     }, 500)
   }
+  if (config.isFreshInstalled) {
+    autoLaunch(rawConfig.autoLaunch)
+  }
 }
 
 module.exports = {
@@ -59,5 +75,5 @@ module.exports = {
     // notify all process to change config
     config.on('set-config', syncOnSet)
     syncOnInit()
-  }
+  },
 }

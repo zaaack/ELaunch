@@ -16,6 +16,8 @@ let config = new ElectronBus('config')
 
 let rawConfig = {}
 
+let isFreshInstalled = false
+
 Object.freeze(defaultConfig)
 
 function writeConfig() {
@@ -35,6 +37,7 @@ function loadConfig() {
   const exist = fs.existsSync(userConfigFile)
   if (!exist) {
     writeDefaultConfig()
+    isFreshInstalled = true
   } else {
     const userConfigStr = fs.readFileSync(userConfigFile, 'utf8')
     if (userConfigStr.trim().startsWith('module.exports')) {
@@ -52,6 +55,7 @@ Object.assign(config, {
   debug,
   isRenderer,
   merge,
+  isFreshInstalled,
   getRawConfig() {
     return rawConfig
   },
