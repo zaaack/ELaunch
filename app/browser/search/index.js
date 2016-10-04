@@ -7,28 +7,28 @@ const { $, $$ } = require('../utils/dom-util.js')
 const ipcRenderer = require('electron').ipcRenderer
 const notifier = require('../../utils/notifier').initInRenderer()
 const ui = require('./js/ui')
+const shortcutMgr = require('./js/shortcutMgr')
+const { resizeWindow } = ui
 
+let curItems = []
 let lastCmd = ''
-let _items = []
 
 function onExec(cmd) {
   if (cmd !== lastCmd) {
-    ipcRenderer.send('exec', {
-      cmd: cmd
-    })
+    ipcRenderer.send('exec', { cmd })
     lastCmd = cmd
   }
 }
 function onExecItem($select, cmd) {
   if (!$select) return;
-  let $btn = $select.querySelector('.js-btn.select')
-  let item = {
-    value: _items[+$select.getAttribute('data-index')].value,
-    opt: $btn?$btn.getAttribute('data-name'):null
+  const $btn = $select.querySelector('.js-btn.select')
+  const item = {
+    value: curItems[+$select.getAttribute('data-index')].value,
+    opt: $btn ? $btn.getAttribute('data-name') : null,
   }
   ipcRenderer.send('exec-item', {
-    cmd: cmd,
-    item: item
+    cmd,
+    item,
   })
 }
 
@@ -44,55 +44,37 @@ function onEnter($inp, cmd) {
   }
 }
 
-function resizeWindow() {
-  ipcRenderer.send('window-resize', {
-    height: document.body.offsetHeight
-  })
-}
-
 function bindInputKeyUp() {
-  $('#search-input').addEventListener('keyup', function () {
-    onExec(this.value)
+  $('#search-input').addEventListener('keyup', e => {
+    onExec(e.target.value)
   })
 }
 
 function bindDocKeyUp() {
-  $.on('keyup', function (e) {
-    let $inp = $('#search-input')
-    let cmd = $inp.value
-    if (e.altKey && e.keyCode >= 49 && e.keyCode <= 57) { //输入数字
-      let index = e.keyCode - 49
-      let $select = $$('.js-item')[index]
+  $.on('keyup', (e) => {
+    const $inp = $('#search-input')
+    const cmd = $inp.value
+    if (e.altKey && e.keyCode >= 49 && e.keyCode <= 57) { // 输入数字
+      const index = e.keyCode - 49
+      const $select = $$('.js-item')[index]
       onExecItem($select, cmd)
-    } else { //l 37 u 38 r 39 d 40
+    } else {
       switch (e.keyCode) {
-      case 38: //up
-        ui.selectPrevItem()
-        resizeWindow()
-        break
-      case 40: //down
-        ui.selectNextItem()
-        resizeWindow()
-        break
-      case 37: //left
-        ui.selectPrevItemOpt()
-        break
-      case 39: //right
-        ui.selectNextItemOpt()
-        break
-      case 13: //enter
-        onEnter($inp, cmd)
-        break
-      case 8: //backspace
-        $('#search-input').focus()//auto jump to search input after pressed backspace
-        break
-      default:
-        break
+        case 13: // enter
+          onEnter($inp, cmd)
+          break
+        case 8: // backspace
+          $('#search-input').focus()// auto jump to search input after pressed backspace
+          break
+        default:
+          break
       }
     }
   })
-}
 
+  $.on('keydown', e => shortcutMgr.handleKeyDown(e))
+}
+// TODO: exec on click item
 function bindItemClick() {
   $.on('click', (e) => {
     const item = e.closest('.js-item') || e.closest('.js-btn')
@@ -101,7 +83,7 @@ function bindItemClick() {
 
 function bindIpcEvents() {
   ipcRenderer.on('exec-reply', (event, items) => {
-    _items = items
+    curItems = items
     ui.renderItems(items)
     resizeWindow()
   })
@@ -115,9 +97,9 @@ function bindIpcEvents() {
 }
 
 function bindEvents() {
-   bindInputKeyUp()
-   bindDocKeyUp()
-   bindIpcEvents()
+  bindInputKeyUp()
+  bindDocKeyUp()
+  bindIpcEvents()
 }
 
 function init() {

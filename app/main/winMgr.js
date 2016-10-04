@@ -1,8 +1,12 @@
 const electron = require('electron')
-const config = require('../config')
 
+let config
 
-module.exports = {
+const winMgr = {
+  init(cfg) {
+    config = cfg
+    return winMgr
+  },
   setPosition(win, pos) {
     let display = electron.screen.getPrimaryDisplay()
     if (config.display && Number.isInteger(config.display)) {
@@ -38,4 +42,28 @@ module.exports = {
     const sizes = win.getContentSize()
     win.setContentSize(width || sizes[0], height || sizes[1], animateOnMac)
   },
+  hideMainWindow() {
+    const { mainWindow, app } = config.context
+    mainWindow.hide()
+    // auto focus on last focused window is default feature in window/linux,
+    // we can use app.hide() in osx to implement it
+    if (app.hide) app.hide()
+  },
+  showMainWindow() {
+    const { mainWindow, app } = config.context
+    mainWindow.restore()
+    mainWindow.show()
+    mainWindow.focus()
+    if (app.show) app.show()
+  },
+  toggleMainWindow() {
+    const { mainWindow } = config.context
+    if (mainWindow.isVisible()) {
+      winMgr.hideMainWindow()
+    } else {
+      winMgr.showMainWindow()
+    }
+  },
 }
+
+module.exports = winMgr

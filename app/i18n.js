@@ -55,5 +55,5 @@ i18n
     },
   })
 
-
+i18n.t = i18n.t.bind(i18n)
 module.exports = i18n

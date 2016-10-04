@@ -12,13 +12,12 @@ module.exports = {
   // default is your primary display, you can change it by setting display id(integer),
   // get all ids by require('electron').screen.getAllDisplays().map(d=>d.id)
   display: 'primary',
-  shortcut: {
-    toggle: {
-      default: 'Super+Space',
-      win32: 'Super+Space',
-      linux: 'Super+Space',
-      darwin: 'Super+Space',
-    },
+  shortcuts: {
+    toggle: { default: 'Super+Space' },
+    selectPrevItem: { default: 'Up' },
+    selectNextItem: { default: 'Down' },
+    selectPrevItemOpt: { default: 'Left' },
+    selectNextItemOpt: { default: 'Right' },
   },
   plugins: {
     app: {
@@ -40,7 +39,7 @@ module.exports = {
         win32: {
         },
       },
-      command: {
+      commands: {
         app: {},
       },
     },
@@ -75,13 +74,13 @@ module.exports = {
         },
         limit: 20,
       },
-      command: {
+      commands: {
         find: {},
       },
     },
-    webSearch: {
+    websearch: {
       path: `${__dirname}/../plugins/websearch/index.js`,
-      command: {
+      commands: {
         bi: {
           engine: 'Bing',
           url: 'https://www.bing.com/search/?q=%s',
@@ -106,7 +105,7 @@ module.exports = {
         terminal: 'node', //default
         //terminal: 'platform', //you can set `platform` to auto use different shell in different platform: gnome-terminal for linux, Terminal.app for MacOS and cmd.exe for windows
 
-        // use custom shell to run command
+        // use custom shell to run commands
         // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',
         //terminal: `osapath -e "tell application \\"Terminal\\""
                         // -e "activate"
@@ -119,19 +118,19 @@ module.exports = {
                       //  -e "end tell"` //for iterm2 in mac
         //terminal: 'cmd /k "%s"' //for windows
       },
-      command: {
+      commands: {
         '>': {},
       },
     },
     youdao: {
       path: `${__dirname}/../plugins/youdao/index.js`,
-      command: {
+      commands: {
         yd: {},
       },
     },
     calc: {
       path: `${__dirname}/../plugins/calc/index.js`,
-      command: {
+      commands: {
         calc: {},
       },
     },

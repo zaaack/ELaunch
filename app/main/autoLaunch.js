@@ -1,8 +1,7 @@
 const AutoLaunch = require('auto-launch')
 
 module.exports = (enable = true) => {
-  require('pkginfo')(module)
-  const pkg = module.exports
+  const pkg = require('../package.json')
 
   const launch = new AutoLaunch({
     name: pkg.name,

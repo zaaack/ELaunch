@@ -1,7 +1,8 @@
 import React from 'react'
+import i18n from '../../app/i18n'
 import Main from './containers/Main'
 import General from './components/General'
-import i18n from '../../app/i18n'
+import Shortcuts from './components/Shortcuts'
 
 const container = (props) => props.children
 const t = i18n.t.bind(i18n)
@@ -19,9 +20,9 @@ export default {
       component: General,
       text: t('General'),
     }, {
-      path: 'keymap',
-      text: t('Keymap'),
-      component: container,
+      path: 'shortcuts',
+      text: t('Shortcuts'),
+      component: Shortcuts,
     }],
   }, {
     path: 'plugins',

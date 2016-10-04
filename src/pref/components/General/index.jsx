@@ -26,7 +26,6 @@ class General extends BaseConfigForm {
 
   componentWillMount() {
     this.displays = this.getDisplays()
-    console.info('mount general')
   }
 
   getDisplays() {
@@ -53,7 +52,6 @@ class General extends BaseConfigForm {
   }
 
   handleChangePosition(value) {
-    console.log('pos', value)
     if (value === CENTER) {
       this.changeAndUpdate('position')(value)
     } else {
@@ -67,7 +65,6 @@ class General extends BaseConfigForm {
     const isCustom = position && Number.isInteger(position.x)
       && Number.isInteger(position.y)
     position = isCustom ? CUSTOM : CENTER
-    console.log('render', position)
     const els = [
       <section key="position_type">
         <Dropdown
@@ -103,7 +100,7 @@ class General extends BaseConfigForm {
   }
 
   render() {
-    const { t, rawConfig } = this.props
+    const { t, rawConfig, defaultConfig } = this.props
     return (
       <div>
         <section className={styles.inlineGroup}>
@@ -111,7 +108,7 @@ class General extends BaseConfigForm {
             type="number"
             label={t('Width')}
             value={rawConfig.width}
-            min={200}
+            hint={String(defaultConfig.width)}
             onChange={this.changeAndUpdate('width', 1000, parseInt)}
             className={styles.inline2x}
           />
@@ -119,7 +116,7 @@ class General extends BaseConfigForm {
             type="number"
             label={t('Max Height')}
             value={rawConfig.maxHeight}
-            min={100}
+            hint={String(defaultConfig.maxHeight)}
             onChange={this.changeAndUpdate('maxHeight', 1000, parseInt)}
             className={styles.inline2x}
           />
@@ -146,8 +143,15 @@ class General extends BaseConfigForm {
         <section>
           <Checkbox
             checked={rawConfig.autoLaunch}
-            label={t('Start on login')}
+            label={t('Start at login')}
             onChange={this.changeAndUpdate('autoLaunch')}
+          />
+        </section>
+        <section>
+          <Checkbox
+            checked={rawConfig.checkUpdate}
+            label={t('Auto check update') + ' Not finished yes!'}
+            onChange={this.changeAndUpdate('checkUpdate')}
           />
         </section>
         {super.render()}

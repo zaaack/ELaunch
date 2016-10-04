@@ -3,8 +3,8 @@ const i18n = require('../i18n')
 const dotDrop = require('dot-prop')
 const { fallbackLng } = require('../constants')
 const promisify = require('../utils/promisify')
-const winUtils =  require('../utils/winUtils')
-const autoLaunch = require('../utils/autoLaunch')
+const winMgr = require('../main/winMgr')
+const autoLaunch = require('../main/autoLaunch')
 
 let config
 let rawConfig
@@ -27,6 +27,7 @@ function setLanguage(ln, update = false) {
 }
 
 function syncOnSet(key, value) {
+  const oldRawConfig = config.merge({}, rawConfig)
   dotDrop.set(rawConfig, key, value)
   switch (key) {
     case 'language':
@@ -38,14 +39,14 @@ function syncOnSet(key, value) {
     case 'position.y':
       if (!config.isRenderer) {
         const mainWin = config.context.mainWindow
-        winUtils.setPosition(mainWin, rawConfig.position)
+        winMgr.setPosition(mainWin, rawConfig.position)
       }
       break;
     case 'width':
     case 'maxHeight':
       if (!config.isRenderer) {
         const mainWin = config.context.mainWindow
-        winUtils.setContentSize(mainWin, config.width, config.maxHeight)
+        winMgr.setContentSize(mainWin, config.width, config.maxHeight)
       }
       break;
     case 'autoLaunch':
@@ -71,6 +72,7 @@ function syncOnInit() {
 module.exports = {
   init(_config) {
     config = _config
+    winMgr.init(config)
     rawConfig = config.getRawConfig()
     // notify all process to change config
     config.on('set-config', syncOnSet)

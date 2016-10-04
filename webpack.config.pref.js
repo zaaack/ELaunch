@@ -84,6 +84,17 @@ module.exports = {
       },
     ],
   },
+  "babel": {
+    "presets": [
+      "electron",
+      "react"
+    ],
+    "plugins": [
+      "transform-runtime",
+      "transform-flow-strip-types",
+      "transform-decorators-legacy",
+    ]
+  },
   // postcss-loader 的配置，这里我们主要是使用autoprefixer
   postcss: [autoprefixer({
     browsers: ['last 2 version', 'Explorer >= 9']

@@ -16,3 +16,9 @@ export const languages = appConstants.languages
 
 export const CENTER = 'center'
 export const CUSTOM = 'custom'
+export const platformSource = [
+  { value: 'default', label: 'Default' },
+  { value: 'win32', label: 'Windows' },
+  { value: 'darwin', label: 'MacOS' },
+  { value: 'linux', label: 'Linux' },
+]

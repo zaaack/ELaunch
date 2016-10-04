@@ -9,11 +9,14 @@ import Root from './containers/Root'
 import { hashHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import configureStore from './store/configureStore'
+import { loadCss } from './utils'
 
 const rootEl = document.getElementById('root')
 
 const store = configureStore()
 const history = syncHistoryWithStore(hashHistory, store)
+
+loadCss()
 
 render(
   <Root store={store} history={history} />,

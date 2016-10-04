@@ -1,0 +1,15 @@
+.inlineGroup {
+  margin-right: -15px;
+
+  %inline {
+    display: inline-block;
+  }
+
+  .inline2x {
+    @extend %inline;
+
+    width: 50%;
+    box-sizing: border-box;
+    padding-right: 15px;
+  }
+}

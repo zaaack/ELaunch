@@ -4,8 +4,11 @@ import { connect } from 'react-redux'
 import { translate } from 'react-i18next'
 import autoBind from 'autobind-decorator'
 import Dialog from 'react-toolbox/lib/dialog'
+import dotDrop from 'dot-prop'
 import { changeConfig, updateConfig } from '../actions'
 import config from '../../../app/config'
+
+const defaultConfig = config.getDefaultConfig()
 
 export class BaseConfigForm extends React.Component {
 
@@ -24,18 +27,42 @@ export class BaseConfigForm extends React.Component {
     ]
   }
 
-  handleToggle() {
-    this.setState({ active: !this.state.active })
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.failedKeys.length > 0) {
       this.handleToggle()
     }
   }
 
+  // getPlatformConfig(baseKey, subKey, platform = process.platform) {
+  //   const { rawConfig } = this.props
+  //   const conf = dotDrop.get(rawConfig, baseKey)
+  //   if (!conf) return null
+  //   const platformVal = dotDrop.get(conf[platform], subKey)
+  //   const defaultVal = dotDrop.get(conf.default, subKey)
+  //
+  //   let isDefault = false
+  //   let value = ''
+  //   if (platformVal != null) {
+  //     value = platformVal
+  //   } else if (defaultVal != null) {
+  //     value = defaultVal
+  //     isDefault = true
+  //   }
+  //   return { value, isDefault }
+  // }
+
+  handleToggle() {
+    this.setState({ active: !this.state.active })
+  }
+
   handleChange(key, func = f => f) {
-    return value => this.props.changeConfig(key, func(value))
+    return value => {
+      let selfValue = value
+      if (value == null || value === '') {
+        selfValue = dotDrop.get(defaultConfig, key)
+      }
+      this.props.changeConfig(key, func(selfValue))
+    }
   }
 
   handleUpdate() {
@@ -77,6 +104,7 @@ export class BaseConfigForm extends React.Component {
 function mapStateToProps(state) {
   return {
     ...state.config,
+    defaultConfig,
     config,
   }
 }
@@ -104,4 +132,4 @@ export const ConfigFormProptypes = {
   changedKeySet: PropTypes.object.isRequired,
 }
 
-BaseConfigForm.PropTypes = ConfigFormProptypes
+BaseConfigForm.propTypes = ConfigFormProptypes

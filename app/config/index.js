@@ -59,6 +59,9 @@ Object.assign(config, {
   getRawConfig() {
     return rawConfig
   },
+  getDefaultConfig() {
+    return defaultConfig
+  },
   getCopyedConfig() {
     return merge({}, rawConfig)
   },

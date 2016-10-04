@@ -10,7 +10,9 @@ let isUpdateing = false
 let isExecing = false
 let pluginMap
 
-
+/*
+node command: ELECTRON_RUN_AS_NODE=true `${process.execPath}`
+ */
 
 function getPlugin(pluginInfo) {
   const pluginFile = path.normalize(pluginInfo.path)
@@ -48,7 +50,7 @@ function loadPluginMap() {
   Object.keys(config.plugins).forEach(pluginName => {
     const pluginInfo = config.plugins[pluginName]
     pluginInfo.name = pluginName
-    const cmdConfigMap = pluginInfo.command || { [pluginName]: {} }
+    const cmdConfigMap = pluginInfo.commands || { [pluginName]: {} }
 
     Object.keys(cmdConfigMap).forEach(cmd => {
       if(cmdConfigMap[cmd] && cmdConfigMap[cmd].enable === false) return
