@@ -81,11 +81,7 @@ function initTray() {
   }, {
     label: 'Preferences',
     click(item, focusedWindow) {
-      if (config.debug) {
-        createPrefWindow()
-      } else {
-        electron.shell.openItem(require('os').homedir() + '/.ELaunch/config.js')
-      }
+      createPrefWindow()
     },
   }, {
     label: 'Bug Report',
