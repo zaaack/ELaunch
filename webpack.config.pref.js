@@ -86,13 +86,16 @@ module.exports = {
   },
   "babel": {
     "presets": [
-      "electron",
+      "electron", // uglifyjs can't handle es6 syntx
+      // "es2015",
+      // "stage-0",
       "react"
     ],
     "plugins": [
       "transform-runtime",
       "transform-flow-strip-types",
       "transform-decorators-legacy",
+      // "transform-class-properties"
     ]
   },
   // postcss-loader 的配置，这里我们主要是使用autoprefixer

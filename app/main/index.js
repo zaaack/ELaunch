@@ -3,6 +3,7 @@ const { app, Tray, Menu, BrowserWindow } = electron
 const ipcMain = electron.ipcMain
 const plugin = require('../plugins')
 const config = require('../config')
+const path = require('path')
 const { setPosition, setContentSize,
   hideMainWindow, toggleMainWindow } = require('./winMgr').init(config)
 const shortcutMgr = require('./shortcutMgr')
@@ -64,7 +65,7 @@ function createPrefWindow() {
   if (config.debug) {
     prefWindow.loadURL('http://127.0.0.1:8080/');
   } else {
-    prefWindow.loadURL(`${__dirname}/../browser/pref/index.html`);
+    prefWindow.loadURL(`file://${__dirname}/../browser/pref/index.html`);
   }
   setPosition(prefWindow)
 }
@@ -72,7 +73,7 @@ function createPrefWindow() {
 let tray = null
 
 function initTray() {
-  tray = new Tray(`${__dirname}/../icon_16x16@2x.png`)
+  tray = new Tray(path.normalize(`${__dirname}/../icon_16x16@2x.png`))
   const contextMenu = Menu.buildFromTemplate([{
     label: 'Toggle ELaunch',
     click(item, focusedWindow) {
