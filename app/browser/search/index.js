@@ -5,7 +5,7 @@
  */
 const { $, $$ } = require('../utils/dom-util.js')
 const ipcRenderer = require('electron').ipcRenderer
-const notifier = require('../../utils/notifier').initInRenderer()
+require('../../utils/notifier').initInRenderer()
 const ui = require('./js/ui')
 const shortcutMgr = require('./js/shortcutMgr')
 const { resizeWindow } = ui

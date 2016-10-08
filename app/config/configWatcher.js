@@ -62,7 +62,7 @@ function syncOnInit() {
   if (rawConfig.language) {
     setTimeout(() => { // waiting for react load to trigger event
       setLanguage(rawConfig.language)
-    }, 500)
+    })
   }
   if (config.isFreshInstalled) {
     autoLaunch(rawConfig.autoLaunch)
