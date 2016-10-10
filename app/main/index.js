@@ -58,6 +58,8 @@ function createPrefWindow() {
   prefWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    minWidth: 600,
+    minHeight: 400,
     title: 'ELaunch Preferences',
     autoHideMenuBar: !config.debug,
     backgroundColor: 'alpha(opacity=0)',

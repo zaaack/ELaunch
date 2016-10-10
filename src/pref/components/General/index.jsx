@@ -154,7 +154,7 @@ class General extends BaseConfigForm {
         <section>
           <Checkbox
             checked={rawConfig.checkUpdate}
-            label={t('Auto check update') + ' Not finished yes!'}
+            label={t('Auto check update') + ' (Not finished yet!)'}
             onChange={this.changeAndUpdate('checkUpdate')}
           />
         </section>
