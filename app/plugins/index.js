@@ -4,10 +4,10 @@ const os = require('os');
 const child = require('child_process')
 const config = require('../config')
 
-let lastUpdateTime = 0
-let lastExecTime = 0
-let isUpdateing = false
-let isExecing = false
+// let lastUpdateTime = 0
+// let lastExecTime = 0
+// let isUpdateing = false
+// let isExecing = false
 let pluginMap
 
 /*
@@ -20,7 +20,9 @@ function getPlugin(pluginInfo) {
   const plugin = require(pluginFile)
   if (!pluginIsRequiredBefore) {
     try {
-      // make setConfig once
+      // init once
+      plugin.init && plugin.init(pluginInfo.config, config, config.context)
+      // setConfig was declared
       plugin.setConfig && plugin.setConfig(pluginInfo.config, config, config.context)
     } catch (e) {
       console.error('Plugin [%s] setConfig failed!!', pluginInfo.name, e)

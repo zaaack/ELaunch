@@ -1,5 +1,6 @@
 import styles from './style.scss'
 import React, { Component, PropTypes } from 'react'
+import { translate } from 'react-i18next'
 // import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import autobind from 'autobind-decorator'
@@ -32,6 +33,7 @@ class SideMenu extends Component {
 
   render() {
     const menu = routes.childRoutes
+    const { t } = this.props
     return (
       <List selectable ripple>
         {menu.map((item, index) => {
@@ -43,13 +45,13 @@ class SideMenu extends Component {
           }
           if (item.childRoutes) { // subheader
             els.push(
-              <ListSubHeader caption={item.text} />
+              <ListSubHeader caption={t(item.text)} />
             )
             item.childRoutes.forEach(childItem =>
               els.push(this.renderItem(
-                `${item.path}/${childItem.path}`, childItem.text)))
+                `${item.path}/${childItem.path}`, t(childItem.text))))
           } else {
-            els.push(this.renderItem(item.path, item.text))
+            els.push(this.renderItem(item.path, t(item.text)))
           }
           return els
         })}
@@ -63,4 +65,4 @@ SideMenu.contextTypes = {
   router: React.PropTypes.object,
 }
 
-export default (SideMenu)
+export default translate()(SideMenu)

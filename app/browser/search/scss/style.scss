@@ -48,8 +48,9 @@ body {
 .search-wrapper {
   z-index: 1000;
   width: 100%;
+  height: auto;
   background: white;
-  margin-bottom: $body-padding;
+  padding-bottom: $body-padding * 2;
 
   .search {
     box-sizing: border-box;
@@ -83,6 +84,10 @@ ul {
   word-wrap: break-word;
   max-height: 400px;
   overflow-y: auto;
+
+  &:empty {
+    padding: 0;
+  }
 
   .item {
     position: relative;

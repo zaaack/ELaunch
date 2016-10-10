@@ -16,10 +16,6 @@ import { BaseConfigForm, configForm, configFormProptypes } from '../ConfigForm'
 
 const globalShortcutMgr = electron.remote.require('./main/shortcutMgr')
 
-const ShortcutModel = {
-  command: { type: Object },
-  shortcut: { type: Object },
-}
 
 class Shortcuts extends BaseConfigForm {
 
@@ -81,6 +77,10 @@ class Shortcuts extends BaseConfigForm {
 
   render() {
     const { t } = this.props
+    const ShortcutModel = {
+      command: { type: Object, title: t('Command') },
+      shortcut: { type: Object, title: t('Shortcut') },
+    }
     return (
       <div>
         <section>
@@ -104,10 +104,10 @@ class Shortcuts extends BaseConfigForm {
         </section>
         <section>
           <Snackbar
-            action="Dismiss"
+            action={t('Dismiss')}
             icon="warning"
             active={this.state.activeSnackbar}
-            label={t('Global shortcut is disabled temporarily when setting shortcuts.')}
+            label={t('disable global shortcuts warning')}
             onClick={this.handleSnackbarClick}
             type="warning"
           />

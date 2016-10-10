@@ -32,7 +32,8 @@
     "i18next-node-fs-backend": "^0.1.2",
     "is-electron-renderer": "^2.0.1",
     "json5": "^0.5.0",
-    "key-event-to-string": "^1.1.1"
+    "key-event-to-string": "^1.1.1",
+    "npm": "^3.10.8"
   },
   "devDependencies": {
     "electron-devtools-installer": "^2.0.1"

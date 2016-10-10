@@ -1,6 +1,5 @@
 const ui = require('./ui')
 const event2String = require('key-event-to-string')
-const config = require('../../../config')
 
 const readKey = event2String(({ joinWith: '+' }))
 
@@ -36,6 +35,7 @@ const searchCommands = {
 module.exports = {
   handleKeyDown(e, ...args) {
     const keyStr = readKey(e)
+    const config = require('../../../config')
     const shortcuts = config.shortcuts
     let handled = false
     Object.keys(searchCommands).forEach(cmd => {

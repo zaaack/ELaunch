@@ -14,7 +14,11 @@ class General extends BaseConfigForm {
 
   constructor(props) {
     super(props)
-    const { config, rawConfig, t } = props
+  }
+
+  componentWillMount() {
+    const { config, rawConfig, t } = this.props
+    this.displays = this.getDisplays()
     this.positions = [{
       value: CENTER,
       label: t(CENTER),
@@ -24,8 +28,8 @@ class General extends BaseConfigForm {
     }]
   }
 
-  componentWillMount() {
-    this.displays = this.getDisplays()
+  componentWillUpdate(nextProps, nextState) {
+    this.componentWillMount()
   }
 
   getDisplays() {

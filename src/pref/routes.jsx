@@ -1,11 +1,9 @@
 import React from 'react'
-import i18n from '../../app/i18n'
 import Main from './containers/Main'
 import General from './components/General'
 import Shortcuts from './components/Shortcuts'
 
 const container = (props) => props.children
-const t = i18n.t.bind(i18n)
 
 export default {
   path: '/',
@@ -13,32 +11,32 @@ export default {
   indexRoute: { onEnter: (nextState, replace) => replace('/global/general') },
   childRoutes: [{
     path: 'global',
-    text: t('Global'),
+    text: 'Global',
     component: container,
     childRoutes: [{
       path: 'general', // 样式
       component: General,
-      text: t('General'),
+      text: 'General',
     }, {
       path: 'shortcuts',
-      text: t('Shortcuts'),
+      text: 'Shortcuts',
       component: Shortcuts,
     }],
   }, {
     path: 'plugins',
-    text: t('Plugins'),
+    text: 'Plugins',
     component: container,
     childRoutes: [{
       path: 'installed',
-      text: t('Installed Plugins'),
+      text: 'Installed Plugins',
       component: container,
     }, {
       path: 'available',
-      text: t('Available Plugins'),
+      text: 'Available Plugins',
       component: container,
     }, {
       path: 'themes',
-      text: t('Themes'),
+      text: 'Themes',
       component: container,
     }],
   }],

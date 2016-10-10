@@ -24,7 +24,7 @@ function createMainWindow() {
     autoHideMenuBar: !config.debug,
     backgroundColor: 'alpha(opacity=0)',
     show: config.debug,
-    transparent: true,
+    transparent: !config.debug,
     alwaysOnTop: !config.debug,
     disableAutoHideCursor: true,
   })
@@ -82,7 +82,13 @@ function initTray() {
   }, {
     label: 'Preferences',
     click(item, focusedWindow) {
-      createPrefWindow()
+      if (!prefWindow || prefWindow.isDestroyed()) {
+        createPrefWindow()
+      } else {
+        prefWindow.restore()
+        prefWindow.show()
+        prefWindow.focus()
+      }
     },
   }, {
     label: 'Bug Report',
