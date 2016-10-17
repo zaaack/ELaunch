@@ -50,8 +50,9 @@ function init() {
 module.exports = {
   setConfig(pCfg, gCfg) {
     pluginConfig = pCfg
+    pluginConfig.appPaths = pluginConfig.appPaths
+      .map(file => file.replace('~/', require('os').homedir()))
     globalConfig = gCfg
-    globalConfig.on('reload-config', init)
     init()
   },
   exec(args, event) {

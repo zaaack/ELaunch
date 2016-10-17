@@ -59,13 +59,8 @@ function loadPluginMap() {
       pluginMap[cmd] = getMergedPluginInfo(pluginInfo, cmdConfigMap[cmd])
     })
 
-    if(pluginInfo.config && pluginInfo.config.init_on_start){ //init plugin on program start
+    if(pluginInfo.config && pluginInfo.config.initOnStart){ //init plugin on program start
       const plugin = getPlugin(pluginInfo)
-      try {
-        plugin.initOnStart && plugin.initOnStart(pluginInfo.config, config)
-      } catch (e) {
-        console.error('Plugin [%s] initOnStart failed!', pluginName, e)
-      }
     }
   })
 }

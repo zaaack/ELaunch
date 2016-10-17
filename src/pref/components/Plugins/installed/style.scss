@@ -1,0 +1,26 @@
+@import "../../base-style";
+
+.pluginInfo {
+  max-width: 150px;
+
+  h1,
+  h2 {
+    padding: 0;
+    margin: 0;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+  }
+
+  h1 {
+    font-size: 16px;
+    color: #212121;
+  }
+
+  h2 {
+    font-size: 14px;
+    color: #757575;
+    margin-top: 3px;
+    line-height: 14px;
+  }
+}

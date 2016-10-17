@@ -2,6 +2,10 @@
 ## Intro
 A launcher based on [Electron](https://github.com/electron/electron) and inspired by [UAfred](https://github.com/zhenyangze/uafred), now only support linux and MacOS.
 
+## Donate
+
+
+
 ## Download
 
 see [release](https://github.com/zaaack/ELaunch/releases)
@@ -100,6 +104,17 @@ or
 npm i -g electron-prebuilt
 electron ./app/index.js
 ```
+
+If you see the error below when running npm start
+```
+no such file or directory, open 'xxx/ELaunch/node_modules/electron/path.txt'
+```
+This is caused by pacakge `electron` (used to call `electron-prebuilt`) downloading electron failed. If you in china, you can run commands below to fix it:
+```sh
+ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/ node ./node_modules/electron/install.js
+```
+
+command environment `ELECTRON_MIRROR` can set the electron release mirror.
 
 ## Debug
 

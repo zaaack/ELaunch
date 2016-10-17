@@ -118,6 +118,8 @@ function init() {
 module.exports = {
   setConfig: function (pConfig, gConfig, ctx) {
     pluginConfig = pConfig
+    pluginConfig.appPaths = pluginConfig.appPaths
+      .map(file => file.replace('~/', require('os').homedir()))
     globalConfig = gConfig
     context = ctx
     globalConfig.on('reload-config', init)

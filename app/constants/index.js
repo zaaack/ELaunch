@@ -1,6 +1,7 @@
 const os = require('os')
 
 const debug = process.argv.some(value => value.includes('--debug'))
+  || process.env.NODE_ENV === 'development'
 const dataPath = `${os.homedir()}/.ELaunch`
 const userConfigFile = `${dataPath}/config.json5`
 

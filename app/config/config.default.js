@@ -1,4 +1,5 @@
 const os = require('os')
+const rootPath = require('../utils/rootPath')
 const home = os.homedir()
 
 module.exports = {
@@ -19,9 +20,12 @@ module.exports = {
     selectPrevItemOpt: { default: 'Left' },
     selectNextItemOpt: { default: 'Right' },
   },
+  // only use plugins config in userConfigFile, config.default.js in plugin pacakge
+  // is only used for config ui
   plugins: {
     app: {
-      path: `${__dirname}/../plugins/app/index.js`,
+      name: 'app',
+      path: `${rootPath}/plugins/app/index.js`,
       enable: true, // whether the plugin is enable, default is true
       default: true, // default plugin don't need to input key
       config: {
@@ -44,7 +48,8 @@ module.exports = {
       },
     },
     find: {
-      path: `${__dirname}/../plugins/find/index.js`,
+      name: 'find',
+      path: `${rootPath}/plugins/find/index.js`,
       config: {
         // type: 'locate',
         // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
@@ -79,7 +84,8 @@ module.exports = {
       },
     },
     websearch: {
-      path: `${__dirname}/../plugins/websearch/index.js`,
+      name: 'websearch',
+      path: `${rootPath}/plugins/websearch/index.js`,
       commands: {
         bi: {
           engine: 'Bing',
@@ -99,11 +105,14 @@ module.exports = {
       },
     },
     shell: {
-      path: `${__dirname}/../plugins/shell/index.js`,
+      name: 'shell',
+      path: `${rootPath}/plugins/shell/index.js`,
       config: {
 
         terminal: 'node', //default
-        //terminal: 'platform', //you can set `platform` to auto use different shell in different platform: gnome-terminal for linux, Terminal.app for MacOS and cmd.exe for windows
+        //terminal: 'platform', //you can set `platform` to auto use
+        //different shell in different platform: gnome-terminal for linux,
+        //Terminal.app for MacOS and cmd.exe for windows
 
         // use custom shell to run commands
         // terminal: 'gnome-terminal -x $SHELL -c \'%s;exec $SHELL\'',
@@ -123,13 +132,15 @@ module.exports = {
       },
     },
     youdao: {
-      path: `${__dirname}/../plugins/youdao/index.js`,
+      name: 'youdao',
+      path: `${rootPath}/plugins/youdao/index.js`,
       commands: {
         yd: {},
       },
     },
     calc: {
-      path: `${__dirname}/../plugins/calc/index.js`,
+      name: 'calc',
+      path: `${rootPath}/plugins/calc/index.js`,
       commands: {
         calc: {},
       },

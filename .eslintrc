@@ -1,0 +1,48 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "import/core-modules": [
+    "electron"
+  ],
+  "plugins": [
+    "flowtype",
+    "html"
+  ],
+  "rules": {
+    "semi": [
+      "warn",
+      "never"
+    ],
+    "no-unused-vars": [
+      "warn",
+      { "vars": "all", "args": "after-used" }
+    ],
+    "no-useless-constructor": ["warn"],
+    "comma-dangle": ["warn"],
+    "flowtype/define-flow-type": 1,
+    "flowtype/require-parameter-type": 0,
+    "flowtype/require-return-type": [
+      1,
+      "never",
+      {
+        "annotateUndefined": "never"
+      }
+    ],
+    "flowtype/space-after-type-colon": [
+      1,
+      "always"
+    ],
+    "flowtype/space-before-type-colon": [
+      1,
+      "never"
+    ],
+    "flowtype/type-id-match": [
+      1,
+      "^([A-Z][a-z0-9]+)+Type$"
+    ],
+    "flowtype/use-flow-type": 1
+  },
+  "globals": {
+    "chrome": 1
+  }
+}

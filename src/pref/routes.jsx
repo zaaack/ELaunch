@@ -2,6 +2,7 @@ import React from 'react'
 import Main from './containers/Main'
 import General from './components/General'
 import Shortcuts from './components/Shortcuts'
+import InstalledPlugins from './components/Plugins/installed'
 
 const container = (props) => props.children
 
@@ -29,7 +30,12 @@ export default {
     childRoutes: [{
       path: 'installed',
       text: 'Installed Plugins',
-      component: container,
+      component: InstalledPlugins,
+      childRoutes: [{
+        path: 'settings',
+        text: 'Settings',
+        component: container,
+      }]
     }, {
       path: 'available',
       text: 'Available Plugins',

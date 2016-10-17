@@ -7,6 +7,7 @@ const dotDrop = require('dot-prop')
 const { merge } = require('../utils/merge')
 const ElectronBus = require('../utils/ElectronBus')
 const notifier = require('../utils/notifier')
+const rootPath = require('../utils/rootPath')
 const defaultConfig = require('./config.default.js')
 const configWatcher = require('./configWatcher')
 const i18n = require('../i18n')
@@ -51,6 +52,7 @@ function loadConfig() {
 
 Object.assign(config, {
   dataPath,
+  rootPath,
   userConfigFile,
   debug,
   isRenderer,

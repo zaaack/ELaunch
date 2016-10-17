@@ -26,7 +26,7 @@ export default class Main extends React.Component {
         >
           <SideMenu />
         </Sidebar>
-        <Panel>
+        <Panel scrollY>
           <div style={{ padding: '1.8rem' }}>
             {this.props.children}
           </div>

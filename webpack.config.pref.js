@@ -23,6 +23,12 @@ let buildPlugins = [
     excludeChunks: []
   }),
 ]
+let babelPresets = [
+  "electron", // uglifyjs can't handle es6 syntx, but babili can.
+  // "es2015",
+  // "stage-0",
+  "react",
+]
 let devPlugins = []
 let plugins = buildPlugins
 
@@ -34,6 +40,8 @@ if (isDev) {
   appEntry = [
     'react-hot-loader/patch',
   ].concat([appEntry])
+} else {
+  babelPresets.push("babili")
 }
 
 const baseDir = './app/browser/pref'
@@ -85,12 +93,7 @@ module.exports = {
     ],
   },
   "babel": {
-    "presets": [
-      "electron", // uglifyjs can't handle es6 syntx
-      // "es2015",
-      // "stage-0",
-      "react"
-    ],
+    "presets": babelPresets,
     "plugins": [
       "transform-runtime",
       "transform-flow-strip-types",
