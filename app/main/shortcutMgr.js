@@ -2,7 +2,8 @@ const electron = require('electron')
 const i18n = require('../i18n')
 const config = require('../config')
 const winMgr = require('../main/winMgr').init(config)
-const t = { i18n }
+
+const { t } = i18n
 const dialog = (electron || electron.remote).dialog
 
 const globalCommands = {
@@ -28,7 +29,7 @@ const shortCutMgr = {
             t('Error'), `${t('Shortcut regist error')}
             shortcut: ${shortcut}
             command: ${cmd}
-            `)
+            `.replace(/\s*\n\s*/g, '\n'))
         }
       })
   },
