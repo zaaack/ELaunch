@@ -1,6 +1,13 @@
 $search-height: 50px;
 $body-padding: 5px;
 
+iframe#analytics {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
 %outline {
   outline-color: rgb(24, 166, 236);
   outline-style: auto;

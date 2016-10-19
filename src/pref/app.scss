@@ -1,3 +1,10 @@
+iframe#analytics {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
 body {
   margin: 0;
   font-family: sans-serif;
