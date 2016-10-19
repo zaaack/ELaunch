@@ -103,6 +103,11 @@ function initTray() {
       electron.shell.openExternal('https://github.com/zaaack/ELaunch#readme')
     },
   }, {
+    label: 'Donate',
+    click(item, focusedWindow) {
+      electron.shell.openExternal('https://github.com/zaaack/ELaunch#donate')
+    },
+  }, {
     label: 'Exit',
     click(item, focusedWindow) {
       app.quit()

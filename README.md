@@ -8,13 +8,26 @@ see [release](https://github.com/zaaack/ELaunch/releases)
 
 or download from [BaiduYun](https://pan.baidu.com/s/1qXDQGLA) if you in China.
 
+## Donate
+
+If you really like my work here, please support me a cup of coffee, thanks! :smile:
+
+[![](https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/zaaack/5)
+
+<img src="docs/pictures/alipay.jpg" width="300" />
+
+<img src="docs/pictures/wechat.png" width="300" />
+
+
+
 ## Requirement
 
 * Linux: none
 * MacOS: none
 * Windows:
   * Everything.exe for fastly searching files, this is already packed in, what you need to do is not to quit it on tray.
-  * .NET Framework 2.0 for reading file icon. Usually this is already installed in most PCs, but in some old system like windowsXP it may not being installed, you can download it on [Microsoft's website](https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=1639).
+  * .NET Framework 2.0 for reading file icon. Usually this is already installed in most PCs, but in some old system like windowsXP it may not being installed, you can download it on [Microsoft's website](https://www.microsoft
+  * .com/zh-cn/download/confirmation.aspx?id=1639).
 
 
 ## Config
