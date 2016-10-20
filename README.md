@@ -30,8 +30,7 @@ If you really like my work here, please support me a cup of coffee, thanks! :smi
 * MacOS: none
 * Windows:
   * Everything.exe for fastly searching files, this is already packed in, what you need to do is not to quit it on tray.
-  * .NET Framework 2.0 for reading file icon. Usually this is already installed in most PCs, but in some old system like windowsXP it may not being installed, you can download it on [Microsoft's website](https://www.microsoft
-  * .com/zh-cn/download/confirmation.aspx?id=1639).
+  * .NET Framework 2.0 for reading file icon. Usually this is already installed in most PCs, but in some old system like windowsXP it may not being installed, you can download it on [Microsoft's website](https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=1639).
 
 
 ## Config
