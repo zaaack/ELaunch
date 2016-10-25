@@ -7,11 +7,11 @@ const dotDrop = require('dot-prop')
 const { merge } = require('../utils/merge')
 const ElectronBus = require('../utils/ElectronBus')
 const notifier = require('../utils/notifier')
-const rootPath = require('../utils/rootPath')
 const defaultConfig = require('./config.default.js')
 const configWatcher = require('./configWatcher')
 const i18n = require('../i18n')
-const { debug, dataPath, userConfigFile } = require('../constants')
+const store = require('../utils/jsonStore')
+const { debug, dataPath, userConfigFile, appPath } = require('../constants')
 
 let config = new ElectronBus('config')
 
@@ -52,7 +52,7 @@ function loadConfig() {
 
 Object.assign(config, {
   dataPath,
-  rootPath,
+  appPath,
   userConfigFile,
   debug,
   isRenderer,
@@ -91,6 +91,7 @@ Object.assign(config, {
     mainWindow: null,
     notifier,
     i18n,
+    store,
   },
 })
 

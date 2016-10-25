@@ -1,5 +1,5 @@
 const os = require('os')
-const rootPath = require('../utils/rootPath')
+const { appPath } = require('../constants')
 const home = os.homedir()
 
 module.exports = {
@@ -20,12 +20,13 @@ module.exports = {
     selectPrevItemOpt: { default: 'Left' },
     selectNextItemOpt: { default: 'Right' },
   },
+  defaultPlugin: 'app',
   // only use plugins config in userConfigFile, config.default.js in plugin pacakge
   // is only used for config ui
   plugins: {
     app: {
       name: 'app',
-      path: `${rootPath}/plugins/app/index.js`,
+      path: `${appPath}/plugins/app/index.js`,
       enable: true, // whether the plugin is enable, default is true
       default: true, // default plugin don't need to input key
       config: {
@@ -49,7 +50,7 @@ module.exports = {
     },
     find: {
       name: 'find',
-      path: `${rootPath}/plugins/find/index.js`,
+      path: `${appPath}/plugins/find/index.js`,
       config: {
         // type: 'locate',
         // db_path: require('os').homedir()+'/.ELaunch/find/locate.db',
@@ -85,12 +86,12 @@ module.exports = {
     },
     websearch: {
       name: 'websearch',
-      path: `${rootPath}/plugins/websearch/index.js`,
+      path: `${appPath}/plugins/websearch/index.js`,
       commands: {
         bi: {
           engine: 'Bing',
           url: 'https://www.bing.com/search/?q=%s',
-          icon: 'https://cn.bing.com/sa/simg/bing_p_rr_teal_min.ico',
+          icon: 'https://www.bing.com/sa/simg/bing_p_rr_teal_min.ico',
         },
         bd: {
           engine: 'Baidu',
@@ -106,7 +107,7 @@ module.exports = {
     },
     shell: {
       name: 'shell',
-      path: `${rootPath}/plugins/shell/index.js`,
+      path: `${appPath}/plugins/shell/index.js`,
       config: {
 
         terminal: 'node', //default
@@ -133,14 +134,14 @@ module.exports = {
     },
     youdao: {
       name: 'youdao',
-      path: `${rootPath}/plugins/youdao/index.js`,
+      path: `${appPath}/plugins/youdao/index.js`,
       commands: {
         yd: {},
       },
     },
     calc: {
       name: 'calc',
-      path: `${rootPath}/plugins/calc/index.js`,
+      path: `${appPath}/plugins/calc/index.js`,
       commands: {
         calc: {},
       },

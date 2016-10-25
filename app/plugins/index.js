@@ -1,6 +1,6 @@
-const fs = require('fs');
-let path = require('path');
-const os = require('os');
+const fs = require('fs')
+let path = require('path')
+const os = require('os')
 const child = require('child_process')
 const config = require('../config')
 
@@ -41,7 +41,7 @@ function getMergedPluginInfo(pluginInfo, cmdConfig) {
 
   // console.log(mergedCmdConfig);
   const mergedPluginInfo = config.merge({}, pluginInfo, {
-    config: mergedCmdConfig
+    config: mergedCmdConfig,
   })
 
   return mergedPluginInfo
@@ -55,11 +55,11 @@ function loadPluginMap() {
     const cmdConfigMap = pluginInfo.commands || { [pluginName]: {} }
 
     Object.keys(cmdConfigMap).forEach(cmd => {
-      if(cmdConfigMap[cmd] && cmdConfigMap[cmd].enable === false) return
+      if (cmdConfigMap[cmd] && cmdConfigMap[cmd].enable === false) return
       pluginMap[cmd] = getMergedPluginInfo(pluginInfo, cmdConfigMap[cmd])
     })
 
-    if(pluginInfo.config && pluginInfo.config.initOnStart){ //init plugin on program start
+    if (pluginInfo.config && pluginInfo.config.initOnStart) { // init plugin on program start
       const plugin = getPlugin(pluginInfo)
     }
   })
@@ -79,12 +79,12 @@ function parseCmd(data) {
   }
   const plugin = pluginMap[key]
   return {
-    key: key,
+    key,
     path: path.resolve(config.dataPath, plugin.path),
-    args: args,
+    args,
     type: data.type,
-    plugin: plugin,
-    config: plugin.config || {}
+    plugin,
+    config: plugin.config || {},
   }
 }
 module.exports = {
@@ -101,7 +101,7 @@ module.exports = {
       //   cb(stdout)
       // })
   },
-  execItem: function (data, event) {
+  execItem(data, event) {
     const cmdInfo = parseCmd(data)
     const plugin = getPlugin(cmdInfo.plugin)
     try {
@@ -109,5 +109,5 @@ module.exports = {
     } catch (e) {
       console.error('Plugin [%s] execItem failed!', cmdInfo.plugin.name, e)
     }
-  }
+  },
 }

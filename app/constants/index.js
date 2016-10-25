@@ -1,20 +1,27 @@
 const os = require('os')
+const electron = require('electron')
+const app = electron.app || electron.remote.app
 
-const debug = process.argv.some(value => value.includes('--debug'))
+exports.debug = process.argv.some(value => value.includes('--debug'))
   || process.env.NODE_ENV === 'development'
-const dataPath = `${os.homedir()}/.ELaunch`
-const userConfigFile = `${dataPath}/config.json5`
+exports.dataPath = `${os.homedir()}/.ELaunch`
+exports.userConfigFile = `${dataPath}/config.json5`
 
-module.exports = {
-  debug,
-  dataPath,
-  userConfigFile,
-  languages: [{
-    value: 'zh',
-    label: '简体中文',
-  }, {
-    value: 'en',
-    label: 'English',
-  }],
-  fallbackLng: 'en',
+
+exports.languages = [{
+  value: 'zh',
+  label: '简体中文',
+}, {
+  value: 'en',
+  label: 'English',
+}]
+exports.fallbackLng = 'en'
+
+exports.pluginListUrl = 'https://zaaack.github.io/ELaunch/plugin_list.json'
+
+
+let appPath = app.getAppPath()
+if (appPath.includes('node_modules/electron')) {
+  appPath = `${process.cwd()}/app`
 }
+exports.appPath = appPath

@@ -17,6 +17,6 @@ module.exports = {
     },
   },
   commands: {
-    app: {}
-  }
+    app: {},
+  },
 }
