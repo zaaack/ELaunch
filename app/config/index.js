@@ -71,7 +71,11 @@ Object.assign(config, {
     return dotDrop.get(rawConfig, key, defaultValue)
   },
   write(key, value) {
-    dotDrop.set(rawConfig, key, value)
+    if (value === null || value === void 0) {
+      dotDrop.delete(rawConfig, key)
+    } else {
+      dotDrop.set(rawConfig, key, value)
+    }
     writeConfig()
   },
   set(key, value) { // write with emit event

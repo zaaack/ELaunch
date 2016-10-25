@@ -107,7 +107,7 @@ class Shortcuts extends BaseConfigForm {
             action={t('Dismiss')}
             icon="warning"
             active={this.state.activeSnackbar}
-            label={t('disable global shortcuts warning')}
+            label={t('Disable global shortcuts warning')}
             onClick={this.handleSnackbarClick}
             type="warning"
           />

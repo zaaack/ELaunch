@@ -5,7 +5,7 @@ const app = electron.app || electron.remote.app
 exports.debug = process.argv.some(value => value.includes('--debug'))
   || process.env.NODE_ENV === 'development'
 exports.dataPath = `${os.homedir()}/.ELaunch`
-exports.userConfigFile = `${dataPath}/config.json5`
+exports.userConfigFile = `${exports.dataPath}/config.json5`
 
 
 exports.languages = [{

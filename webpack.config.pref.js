@@ -77,18 +77,14 @@ module.exports = {
         test: /\.json$/,
         loader: 'json',
       }, {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
+        loaders: ["babel"],
         // loader也可以使用使用数组进行配置, loaders:['babel','...']
         // 参数可以用querystring: 'babel?presets[]=es2015&presets[]=react'
         // 或query字段： loader: 'babel', query: {presets: ['es2015', 'react']}
         // 或参数传json:
         // 'babel?{presets:["es2015", "react"]}'
-      }, {
-        test: /\.jsx$/,
-        exclude: /(node_modules|bower_components)/,
-        loaders: ["babel"]
       },
     ],
   },
@@ -109,6 +105,12 @@ module.exports = {
     extensions: ['', '.jsx', '.js']
   },
   externals: [{
+    'node-require': 'var require',
+  }, function (context, request, callback) {
+    if (/^external-/.test(request)) {
+      return callback(null, `require('${request.substring(9)}')`)
+    }
+    callback()
   }],
   // webpack 插件配置
   plugins: [

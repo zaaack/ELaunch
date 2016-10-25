@@ -220,13 +220,13 @@ function init() {
 
 module.exports = { init }
 
-
 // if (config.debug) {
 //   const installer = require('electron-devtools-installer')
 //   const installExtension = installer.default
 //   const { REACT_DEVELOPER_TOOLS } = installer
-//
-//   installExtension(REACT_DEVELOPER_TOOLS)
-//       .then((name) => console.log(`Added Extension:  ${name}`))
-//       .catch((err) => console.log('An error occurred: ', err))
+//   setTimeout(() => {
+//     installExtension(REACT_DEVELOPER_TOOLS)
+//     .then((name) => console.log(`Added Extension:  ${name}`))
+//     .catch((err) => console.log('An error occurred: ', err))
+//   }, 1000)
 // }

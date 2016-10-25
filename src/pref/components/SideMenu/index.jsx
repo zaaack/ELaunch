@@ -36,25 +36,29 @@ class SideMenu extends Component {
     const { t } = this.props
     return (
       <List selectable ripple>
-        {menu.map((item, index) => {
-          const els = []
-          if (index > 0) {
-            els.push(
-              <ListDivider />
-            )
-          }
-          if (item.childRoutes) { // subheader
-            els.push(
-              <ListSubHeader caption={t(item.text)} />
-            )
-            item.childRoutes.forEach(childItem =>
-              els.push(this.renderItem(
-                `${item.path}/${childItem.path}`, t(childItem.text))))
-          } else {
-            els.push(this.renderItem(item.path, t(item.text)))
-          }
-          return els
-        })}
+        {menu
+          .filter(r => !r.ignoredInSideMenu)
+          .map((item, index) => {
+            const els = []
+            if (index > 0) {
+              els.push(
+                <ListDivider />
+              )
+            }
+            if (item.childRoutes) { // subheader
+              els.push(
+                <ListSubHeader caption={t(item.text)} />
+              )
+              item.childRoutes
+                .filter(r => !r.ignoredInSideMenu)
+                .forEach(childItem =>
+                  els.push(this.renderItem(
+                    `${item.path}/${childItem.path}`, t(childItem.text))))
+            } else {
+              els.push(this.renderItem(item.path, t(item.text)))
+            }
+            return els
+          })}
       </List>
     )
   }

@@ -1746,15 +1746,15 @@ cmd-shim@~2.0.2:
     graceful-fs "^4.1.2"
     mkdirp "~0.5.0"
 
+co, co@^4.6.0:
+  version "4.6.0"
+  resolved "http://registry.npm.taobao.org/co/download/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
+
 co-with-promise@^4.6.0:
   version "4.6.0"
   resolved "http://registry.npm.taobao.org/co-with-promise/download/co-with-promise-4.6.0.tgz#413e7db6f5893a60b942cf492c4bec93db415ab7"
   dependencies:
     pinkie-promise "^1.0.0"
-
-co@^4.6.0:
-  version "4.6.0"
-  resolved "http://registry.npm.taobao.org/co/download/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
 
 coa@~1.0.1:
   version "1.0.1"

@@ -5,8 +5,8 @@ import { translate } from 'react-i18next'
 import autoBind from 'autobind-decorator'
 import Dialog from 'react-toolbox/lib/dialog'
 import dotDrop from 'dot-prop'
-import { changeConfig, updateConfig } from '../actions'
-import config from '../../../app/config'
+import { changeConfig, updateConfig } from '../../../actions'
+import config from '../../../../../app/config'
 
 export class BasePluginForm extends React.Component {
 
@@ -22,17 +22,7 @@ export class BasePluginForm extends React.Component {
 
   render() {
     const { t } = this.props
-    return (
-      <Dialog
-        actions={this.actions}
-        active={this.state.active}
-        onEscKeyDown={this.handleToggle}
-        onOverlayClick={this.handleToggle}
-        title={t('Saving config failed!')}
-      >
-        <p>{t('Some field couldn\'t be saved!')}</p>
-      </Dialog>
-    )
+    return (null)
   }
 }
 
@@ -40,7 +30,6 @@ export class BasePluginForm extends React.Component {
 function mapStateToProps(state) {
   return {
     ...state.config,
-    defaultConfig,
     config,
   }
 }
@@ -68,4 +57,4 @@ export const ConfigFormProptypes = {
   changedKeySet: PropTypes.object.isRequired,
 }
 
-BaseConfigForm.propTypes = ConfigFormProptypes
+BasePluginForm.propTypes = ConfigFormProptypes

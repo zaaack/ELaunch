@@ -1,8 +1,10 @@
 @import "../../base-style";
 
-.pluginInfo {
-  max-width: 150px;
+.pluginTable {
+  width: 100%;
+}
 
+.pluginInfo {
   h1,
   h2 {
     padding: 0;
@@ -23,4 +25,11 @@
     margin-top: 3px;
     line-height: 14px;
   }
+}
+
+.row td {
+  position: relative;
+  top: -5px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
 }

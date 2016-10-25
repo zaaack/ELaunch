@@ -16,6 +16,7 @@ export const languages = appConstants.languages
 
 export const CENTER = 'center'
 export const CUSTOM = 'custom'
+export const BUILT_IN = 'built-in'
 export const platformSource = [
   { value: 'default', label: 'Default' },
   { value: 'win32', label: 'Windows' },

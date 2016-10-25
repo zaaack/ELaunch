@@ -36,17 +36,61 @@ exports.getPlugins = () => {
 }
 
 const npm = `${appPath}/node_modules/.bin/npm`
-exports.installPlugin = co(function* (name) {
-  const pluginPath = `${dataPath}/node_modules/${name}`
-  try {
-    yield promisify(exec)(`${npm} ${name} --save --save-exact`, {
-      cwd: dataPath })
-    const defaultPluginConfig = require(`${pluginPath}/config.default.js`)
-    config.set(`plugins.${name}`, {
-      config: defaultPluginConfig.config,
-      commands: defaultPluginConfig.commands
+
+function installPlugin(name) {
+  return co(function* () {
+    const pluginPath = `${dataPath}/node_modules/${name}`
+    console.log('pluginPath', pluginPath, npm)
+    try {
+      yield promisify(exec)(`${npm} i ${name} --save --save-exact`, {
+        cwd: dataPath })
+      const defaultPluginConfig = require(`${pluginPath}/config.default.js`)
+      config.set(`plugins.${name}`, {
+        config: defaultPluginConfig.config,
+        commands: defaultPluginConfig.commands,
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+}
+
+function uninstallPlugin() {
+  return co(function* () {
+    const pluginPath = `${dataPath}/node_modules/${name}`
+    console.log('pluginPath', pluginPath, npm)
+    try {
+      yield promisify(exec)(`${npm} un ${name} --save`, {
+        cwd: dataPath })
+      const defaultPluginConfig = require(`${pluginPath}/config.default.js`)
+      config.set(`plugins.${name}`, null)
+    } catch (e) {
+      throw e
+    }
+  })
+}
+
+exports.initInMain = () => {
+  config.on('install-plugin', name => {
+    installPlugin(name)
+    .then(() => {
+      config.emit(`install-plugin-success:${name}`)
     })
-  } catch (e) {
-    throw e
-  }
-})
+    .catch((e) => {
+      config.emit(`install-plugin-error:${name}`, e)
+    })
+  })
+
+  config.on('uninstall-plugin', name => {
+    uninstallPlugin(name)
+    .then(() => {
+      config.emit(`uninstall-plugin-success:${name}`)
+    })
+    .catch((e) => {
+      config.emit(`uninstall-plugin-error:${name}`, e)
+    })
+  })
+}
+
+exports.installPlugin = installPlugin
+exports.uninstallPlugin = uninstallPlugin

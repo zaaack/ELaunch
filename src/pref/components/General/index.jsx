@@ -73,7 +73,7 @@ class General extends BaseConfigForm {
       <section key="position_type">
         <Dropdown
           auto
-          label={t('Set Position')}
+          label={t('Set position')}
           onChange={this.handleChangePosition}
           source={this.positions}
           value={position}
@@ -118,7 +118,7 @@ class General extends BaseConfigForm {
           />
           <Input
             type="number"
-            label={t('Max Height')}
+            label={t('Max height')}
             value={rawConfig.maxHeight}
             hint={String(defaultConfig.maxHeight)}
             onChange={this.changeAndUpdate('maxHeight', 1000, parseInt)}
@@ -137,7 +137,7 @@ class General extends BaseConfigForm {
         <section>
           <Dropdown
             auto
-            label={t('Choose Display')}
+            label={t('Choose display')}
             onChange={this.changeAndUpdate('display', 0, parseInt)}
             source={this.displays}
             value={rawConfig.display}

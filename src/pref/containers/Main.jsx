@@ -6,8 +6,19 @@ import autoBind from 'autobind-decorator'
 
 @autoBind
 export default class Main extends React.Component {
+
+  static childContextTypes = {
+    routerContext: React.PropTypes.object,
+  }
+
   state = {
     drawerPinned: true
+  }
+
+  getChildContext() {
+    return {
+      routerContext: this.props
+    }
   }
 
   toggleDrawerPinned() {
