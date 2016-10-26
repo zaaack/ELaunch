@@ -157,7 +157,7 @@ npm run dist
 
 ## Plugin Develop
 
-see [plugin.md](docs/plugin.md)
+see [plugin.md](https://github.com/zaaack/ELaunch/wiki/Plugin-Development)
 
 ## Plan
 
