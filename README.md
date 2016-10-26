@@ -14,9 +14,9 @@ If you really like my work here, please support me a cup of coffee, thanks! :smi
 
 [![](https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/zaaack/5)
 
-<img src="docs/pictures/alipay.jpg" width="300" />
+<img src="https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/pictures/alipay.jpg" width="300" />
 
-<img src="docs/pictures/wechat.png" width="300" />
+<img src="https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/pictures/wechat.png" width="300" />
 
 
 
