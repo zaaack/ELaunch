@@ -37,7 +37,9 @@
     "dist-all": "npm run dist -- -l deb tar.xz -w -m",
     "patch-release": "node scripts/release.js patch",
     "minor-release": "node scripts/release.js minor",
-    "major-release": "node scripts/release.js major"
+    "major-release": "node scripts/release.js major",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "ava": {
     "files": [
@@ -123,7 +125,8 @@
     "stylelint-config-standard": "^12.0.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.14.1",
+    "@kadira/storybook": "^2.21.0"
   },
   "build": {
     "appId": "io.gitub.zaaack.elaunch",

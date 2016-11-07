@@ -2,9 +2,41 @@
 ## Intro
 A launcher based on [Electron](https://github.com/electron/electron) and inspired by [UAfred](https://github.com/zhenyangze/uafred), now only support linux and MacOS.
 
-## Donate
+
+## Screen Captures
+
+### Plugin app
+
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/app.jpg)
+
+### Plugin find
+
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/find.jpg)
 
 
+### Plugin websearch
+
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/search.jpg)
+
+
+
+### Plugin shell
+
+#### node
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/shell1.jpg)
+
+#### iterm
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/shell2.jpg)
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/shell3.jpg)
+
+
+### Plugin youdao
+
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/youdao.jpg)
+
+### Plugin calc
+
+![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/calc.jpg)
 
 ## Download
 
@@ -133,41 +165,6 @@ see [electron-builder](https://github.com/electron-userland/electron-builder)
 ```js
 npm run dist
 ```
-
-## Screen Captures
-
-### Plugin app
-
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/app.jpg)
-
-### Plugin find
-
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/find.jpg)
-
-
-### Plugin websearch
-
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/search.jpg)
-
-
-
-### Plugin shell
-
-#### node
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/shell1.jpg)
-
-#### iterm
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/shell2.jpg)
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/shell3.jpg)
-
-
-### Plugin youdao
-
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/youdao.jpg)
-
-### Plugin calc
-
-![](https://raw.githubusercontent.com/zaaack/ELaunch/master/docs/captures/calc.jpg)
 
 ## Plugin Develop
 
