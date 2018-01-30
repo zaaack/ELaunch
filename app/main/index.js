@@ -24,7 +24,7 @@ function createMainWindow() {
     autoHideMenuBar: !config.debug,
     backgroundColor: 'alpha(opacity=0)',
     show: config.debug,
-    transparent: !config.debug,
+    transparent: false,
     alwaysOnTop: !config.debug,
     disableAutoHideCursor: true,
   })

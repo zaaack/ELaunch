@@ -43,3 +43,4 @@ icotool_for_windows/icotool/bin
 common.missing.json
 app/browser/pref/index.html
 app/browser/search/css/style.css.map
+library/icotool/obj/
